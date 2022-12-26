@@ -1,0 +1,441 @@
+\chapter{Fluid structure interaction}\label{chap:fsi}
+\section{Introduction}
+Till now we have developed solvers to model the fluid and elastic dynamics. With
+in the abrasive water jet machining, the interaction between the fluid and the
+rigid or elastic part is remained. In the current chapter we utilize the CTVF
+scheme developed in \cref{chap:ctvf} for fluid and elastic dynamics is coupled to
+handle the fluid structure interaction in the current chapter. Problems with
+free surface and analytical solution are used to validate.
+
+
+Fluid-structure interaction (FSI) is a common engineering problem that is seen
+in daily life. Some examples include the deformation of the wind turbine blade
+due to the fluid flow, the flow traversal due to the deflected blade, blood flow
+in heart value, coastal engineering, and vortex-induced vibration
+\citep{williamson2004vortex,bearman2011circular}. An accurate study of FSI can
+allow us to optimize the systems where FSI is dominant. However, studying the
+FSI phenomena through experiments or analytical techniques is complex due to its
+nonlinear behavior. % Therefore, a computational study is preferred which
+% comprises of mesh-based and meshless methods.
+% \todo{Re-write}
+
+
+
+Handling FSI problems with the transport velocity formulation framework is
+advantageous as it can solve the tensile instability issue in solid dynamics and
+inhomogeneous particle distribution in fluids. In the current chapter, we handle
+FSI problems by the CTVF method, where both fluids and solid phases are modeled
+using CTVF alone. To validate the proposed method, we consider three numerical
+test cases. A uniformly distributed load over a clamped beam (UDL) problem is
+considered to validate the elastic dynamics of CTVF. An aluminum plate over a
+hydrostatic tank for FSI validation is considered. Finally, it is applied to a
+fluid flow hitting an elastic plate. Here, the deformation of the elastic plate
+is compared against the experimental results. A convergence analysis is
+undertaken for both UDL and elastic deformation under hydrodynamic load
+problems. All the results are fully automated with the automan package
+\citep{automan2018} and made hundred percent reproducible. The source code for
+all the problems demonstrated in this manuscript is made available at
+\url{https://github.com/dineshadepu/fsi_etvf}.
+
+\section{Methodology}\label{sec2}
+
+We follow CTVF formulation to model the fluid and solid phase. Following CTVF,
+the particles are moved with a transport velocity rather than the momentum
+velocity, with which we get a homogenized particle distribution as well as it
+eliminates the tensile instability. In the next two sections we show the
+discretized equations of both fluid and solid phase. Please see
+\citep{adepu2021corrected} for more details.
+
+\subsection{Discrete equations of the fluid medium}\label{subsec:discrete-fluid}
+
+The governing equations of the fluid are conservation of mass and momentum.
+Following the weakly compressible SPH scheme, we use an equation of state to
+complete the system. The SPH discretization of the continuity
+equation~\eqref{eq:sph-discretization-continuity} and the EDAC
+based~\citepp{PRKP:edac-sph-iccm2015} pressure evolution
+equation~\eqref{eq:sph-discretization-edac} respectively are,
+\begin{equation}
+  \label{eq:sph-discretization-continuity}
+  \frac{\tilde{d}\rho_a}{dt} = \sum_{b} \; \frac{m_b}{\rho_{b}} \; (
+  \rho_{a} \; \tilde{\ten{u}}_{ab} \; + \;
+  (\rho \; (\tilde{\ten{u}} \; - \;
+  \ten{u}))_{ab}) \; \cdot \nabla_{a} W_{ab},
+\end{equation}
+\begin{multline}
+  \label{eq:sph-discretization-edac}
+  \frac{\tilde{d}p_a}{dt} = \sum_{b} \; \frac{m_b}{\rho_{b}} \; \bigg(
+  (p_{a} - \rho_{a} c_{s}^2) \; \ten{u}_{ab} \; + \;
+  p_{a} \; \tilde{\ten{u}}_{ab} \; - \;
+  (p \; (\tilde{\ten{u}} - \ten{u}))_{ab} \; + \; \\
+  4 \; \nu_{edac}
+  \frac{p_a - p_b}{(\rho_a + \rho_b) (r^2_{ab} + 0.01 h_{ab}^{2})} \ten{r}_{ab}
+  \bigg) \; \cdot \nabla_{a} W_{ab}.
+\end{multline}
+%
+Where $\frac{\tilde{d}}{dt}$ is the material derivative, with $\tilde{u}$ being
+the transport velocity of the particles, $\ten{u}_{ab} = \ten{u}_a - \ten{u}_b$.
+%
+Similarly, the discretized momentum equation for fluids is written as,
+\begin{multline}
+  \label{eq:sph-momentum-fluid}
+  \frac{\tilde{d}\ten{u}_{a}}{dt} = - \sum_{b} m_b \bigg[
+  \bigg(\frac{p_a}{\rho_a^2} + \frac{p_b}{\rho_b^2}\bigg) \ten{I} -
+  \bigg(\frac{\ten{A}_a}{\rho_a^2} + \frac{\ten{A}_b}{\rho_b^2} + \Pi_{ab}
+  \ten{I} \bigg) \bigg]
+  \cdot \nabla_{a} W_{ab} \\
+  + \ten{u}_{a} \sum_{b} \frac{m_b}{\rho_{b}} \; \tilde{\ten{u}}_{ab} \cdot
+  \nabla_{a} W_{ab} \\+ \sum_{b} m_b \frac{4 \eta \nabla W_{ab}\cdot
+    \ten{r}_{ab}}{(\rho_a + \rho_b) (r_{ab}^2 + 0.01 h_{ab}^2)} \ten{u}_{ab} +
+  \ten{g}_{a} + \frac{\ten{F}^a_{\text{FSI}}}{m_a}
+\end{multline}
+where $\ten{A}_a = \rho_a \ten{u}_a \otimes (\ten{\tilde{u}}_a - \ten{u}_a)$,
+$\ten{I}$ is the identity matrix, $\eta$ is the kinematic viscosity of the
+fluid and \citep{morris-lowRe-97} formulation is used to discretize the
+viscosity term. $\Pi_{ab}$ is the artificial
+viscosity~\citep{monaghan-review:2005} to maintain the stability of the
+numerical scheme. It is given as,
+\begin{align}
+  \label{eq:mom-av}
+  \Pi_{ab} =
+  \begin{cases}
+\frac{-\alpha h_{ab} \bar{c}_{ab} \phi_{ab}}{\bar{\rho}_{ab}}
+  & \ten{u}_{ab}\cdot \ten{r}_{ab} < 0, \\
+  0 & \ten{u}_{ab}\cdot \ten{r}_{ab} \ge 0,
+\end{cases}
+\end{align}
+where,
+%
+\begin{equation}
+  \label{eq:av-phiij}
+  \phi_{ab} = \frac{\ten{u}_{ab} \cdot \ten{r}_{ab}}{r^2_{ab} + 0.01 h^2_{ab}},
+\end{equation}
+%
+where, $\ten{r}_{ab} = \ten{r}_a - \ten{r}_b$, $h_{ab} = (h_a + h_b)/2$,
+$\bar{\rho}_{ab} = (\rho_a + \rho_b)/2$, $\bar{c}_{ab} = (c_a + c_b) / 2$, and
+$\alpha$ is the artificial viscosity parameter. $\ten{F}^a_{\text{FSI}}$ is the
+force due to the interaction with elastic structure. This force modeling is
+explained in \cref{subsec:fsi}. We utilize the ghost particle approach proposed
+in \citep{Adami2012} to handle the boundaries.
+
+
+
+\subsection{Solid phase modeling}\label{subsec:solid}
+Similar to discretized fluid governing equation, the elastic structure equations are
+\eqref{eq:sph-discretization-continuity}, and the momentum equation,
+\begin{multline}
+  \label{eq:sph-momentum-solid}
+  \frac{\tilde{d}\ten{u}_{a}}{dt} = - \sum_{b} m_b \bigg[
+  \bigg(\frac{p_a}{\rho_a^2} + \frac{p_b}{\rho_b^2}\bigg) \ten{I} -
+  \bigg(\frac{\teng{\sigma}^{'}_{a}}{\rho_a^2} +
+  \frac{\teng{\sigma}^{'}_{b}}{\rho_b^2} + \Pi_{ab} \ten{I} \bigg) \bigg]  \cdot \nabla_{a} W_{ab} \\
+  + \ten{g}_{a} + \frac{\ten{F}^a_{\text{FSI}}}{m_a},
+\end{multline}
+while the additional stress terms, $\ten{A}$ in momentum equation of solid
+mechanics are not considered as it has a negligible effect. An equation of state
+is utilized to link the pressure with density following a weakly compressible
+SPH scheme. Jaumann stress rate equation is solved to evolve the shear stress,
+given as,
+\begin{multline}
+  \label{eq:sph-modified-jaumann-stress}
+  \frac{\tilde{d}\teng{\sigma}^{'}_{a}}{dt} = 2G (\dot{\teng{\epsilon}}_{a} -
+  \frac{1}{3} \dot{\teng{\epsilon}}_{a} \ten{I}) + \teng{\sigma}^{'}_{a}
+  \teng{\Omega}_{a}^{T} +
+  \teng{\Omega}_{a} \teng{\sigma}^{'}_{a}
+\end{multline}
+The SPH discretization of the
+gradient of velocity is given as,
+\begin{equation}
+  \label{eq:sph-vel-grad}
+  \nabla \ten{u}_a =
+  - \sum_{b} \frac{m_b}{\rho_{b}} (\ten{u}_{a} - \ten{u}_{b}) \otimes (\nabla_{a} W_{ab}),
+\end{equation}
+where $\otimes$ is the outer product. With the strain and rotation tensors as,
+\begin{equation}
+  \label{eq:strain-tensor}
+  \dot{\epsilon}_{ij} = \frac{1}{2} \bigg(\frac{\partial u_i}{\partial x_j} +
+  \frac{\partial u_j}{\partial x_i} \bigg),
+\end{equation}
+and $\Omega_{ij}$ is the rotation tensor,
+\begin{equation}
+  \label{eq:rotational-tensor}
+  \Omega_{ij} = \frac{1}{2} \bigg(\frac{\partial u_i}{\partial x_j} -
+  \frac{\partial u_j}{\partial x_i} \bigg).
+\end{equation}
+
+
+\subsection{Transport velocity computation}\label{subsec:transport-velocity}
+The particles in the current scheme are moved with the transport velocity,
+\begin{equation}
+  \label{eq:transport_velocity_position_derivative}
+  \frac{d\ten{r}_a}{dt} = \ten{\tilde{u}}_a.
+\end{equation}
+%
+The transport velocity is updated using,
+\begin{equation}
+  \label{eq:transport_velocity}
+  \ten{\tilde{u}}_a(t + \Delta t) =\ten{u}_a(t) + \Delta t \; \frac{\tilde{d} \ten{u}_a}{dt} +
+  \bigg(\frac{d \ten{u}_{a}}{dt}\bigg)_{\text{c}} \Delta t
+\end{equation}
+
+Where $\big(\frac{d \ten{u}_a}{dt}\big)_{\text{c}}$ is the homogenization
+acceleration which ensures that the particle positions are homogeneous. In the
+current work we have used Sun's \citep{sun_consistent_2019} PST to homogenization
+the fluid medium while iterative PST (IPST)\citep{huang_kernel_2019} for the
+solid phase. According to \citep{adepu2021corrected} the force formulation of
+\citep{sun_consistent_2019} is,
+\begin{equation}
+  \label{eq:sun2019_pst}
+  \bigg(\frac{d \ten{u}_a}{dt}\bigg)_{\text{c}} = - \frac{\text{M} \;
+    (2h) c_0}{\Delta t} \sum_b \bigg[1 + R \bigg( \frac{W_{ab}}{W(\Delta x)} \bigg)^n
+  \bigg] \nabla_a W_{ab} V_b,
+\end{equation}
+where $R$ is an adjustment factor to handle the tensile instability, and
+$\text{M}$ is the mach number of the flow. $V_b$ is the volume of the
+$b$\textsuperscript{th} particle, $c_0$ is the speed of sound. The acceleration is modified to account for
+particles on the free surface. Here, $R = 0.2$ and $n = 4$ are used. Please see
+\citep{adepu2021corrected} for detailed explanation of PST.
+
+\subsection{Fluid-structure interaction}\label{subsec:fsi}
+Coupling is handled in a straight forward way in SPH. While modelling the fluid
+phase and treating the fluid-structure interactions, the structure particles are
+assumed to be boundary particles. From the boundary handling given in Adami
+\citep{Adami2012}, we compute the pressure of the boundary particles from
+the extrapolated equation as,
+\begin{equation}
+  \label{eq:pressure-bc}
+  p_s = \frac{\Sigma_f p_f W_{sf} + (\ten{g} - \ten{a}_{\ten{s}}) \cdot \Sigma_f
+    \rho_f \ten{r}_{sf} W_{sf}}{\Sigma_f W_{sf}}.
+\end{equation}
+Here, $\ten{a}_s$ is the acceleration of the structure particles. The subscript
+$f$ denotes the fluid particles and $s$ denotes the structure particles. By the
+extrapolated pressure, hydrodynamic density of structure properties are
+computed. Please note that the pressure we set here are only pertaining to the
+FSI force and does not correspond to the real pressure or density of the
+structure particles. By utilizing the previously set hydrodynamic properties on
+the structure, the interaction force is computed using,
+\begin{equation}
+  \ten{F}_{\text{FSI}}^i = -m_i \sum_{a} m_a \bigg(\frac{p_i}{\rho_{i}^2} +
+  \frac{p_a}{\rho_{a}^2} + \Pi_{ia} \bigg) \nabla_{i} W(x_{ia})
+\end{equation}
+where $i$ is fluid particle, $a$ is structure particle.
+
+
+\section{Results And Discussion}\label{sec3}
+
+% =========================================
+% =========================================
+% start
+% =========================================
+% =========================================
+\subsection{Uniformly distributed loading (UDL) on a clamped beam}
+\label{sec:udl}
+
+In the first test case, we validate the structural part of the current solver.
+We chose a homogeneous elastic plate clamped on both ends acted upon by a
+uniformly distributed load ($q = 20$ Nm$\textsuperscript{-1}$) as shown in
+\cref{fig:udl-schematic}. The beam's length (L) and height (H) is 0.2 m and
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.5]{images/fsi/images/khayyer_2021_udl/schematic}
+  \caption{The schematic of a clamped elastic beam being acted upon by a
+    uniformly distributed load.}
+\label{fig:udl-schematic}
+\end{figure}
+$0.012$ m, respectively. The mechanical properties of the plate are set as
+$E=10^7$ Pa in Young's modulus, $\nu=0$ in Poisson's ratio and $\rho=1000$
+kgm$\textsuperscript{-3}$) in density. The numerical solution of the
+y-displacement at the center of the beam is compared against the analytical
+counterpart. The analytical solution for the deflection of a uniformly
+distributed beam clamped at both ends is given by
+\begin{equation}
+  \label{eq:ce-tvf}
+  \eta\left(\frac{L}{2}\right) = \frac{qL^4}{384 D},
+\end{equation}
+where, $D$ is defined as $\frac{E h^3}{12 (1 - (\nu)^2)}$. We consider three
+particle resolutions such that, $10$, $15$, and $20$ particles along the beam's
+width are used. We run for a total physical time of $2$ seconds.
+
+\Cref{fig:udl-disp-plot} depicts the time history of y-displacement of the beam
+center for different particle resolutions computed using the current solver
+compared against the analytical solution. From \cref{fig:udl-disp-plot}, we can
+see that the current solver can accurately predict the displacement of the
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.5]{figures/fsi/figures/khayyer_2021_udl/homogenous}
+  \caption{Time variation of the y-displacement of the center of the beam for
+    three different resolutions, compared against the analytical result.}
+\label{fig:udl-disp-plot}
+\end{figure}
+clamped beam. Convergence of the current scheme is captured in
+\cref{fig:udl-disp-plot}, and the computational results are within a reasonable
+variation of the analytical solution with the variation of the particle spacing.
+
+
+\subsection{Hydrostatic water column on an elastic plate}
+\label{sec:hydrostatic-water-column-on-an-composite-elastic-plate}
+In this example we study the deformation of an elastic plate due to the
+hydrostatic water column. We utilise the current example to examine the accuracy
+and convergence of the current solver. The schematic of fluid with the elastic
+beam is shown in \cref{fig:hs-water-on-plate} along with the initial pressure
+distribution in the fluid. The figure includes the dimensions as well. The
+material properties of the beam are, a density of $2700$
+kgm\textsuperscript{-3}, with an Young's modulus of $67.5$ GPa, and a Poisson
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.4]{images/fsi/images/ng_2020_hydrostatic_water_column_on_elastic_plate/schematic}
+  \caption{Schematic of the hydrostatic water column on an elastic plate. Fluid
+    particle color represents pressure.}
+\label{fig:hs-water-on-plate}
+\end{figure}
+ratio of $0.34$. The material properties of the fluid are, a density of $1000$
+kgm\textsuperscript{-3}, with a dynamic viscosity of $0$
+kgm\textsuperscript{-1}s\textsuperscript{-1}. We consider two particle
+resolutions such that we get $10$, $15$ and $20$ particles along the width
+directing of the beam. We run the simulation for a total physical time of $3$
+seconds. The y-displacement at the center of the beam is compared against the
+analytical with the current numerical solver for quantitative validation. Here,
+the beam deflection computed using an analytical expression results in a
+deflection $d = -6.85 \times 10^{-5}$ m.
+
+\Cref{fig:snapshot-hs-fsi} shows the particle plot of the fluid along with the
+elastic solid at time $2$ seconds with color of the fluid particles describing
+the pressure. This snapshot corresponds to the highest particle resolution i.e.,
+$20$ particles along the width direction. From the \cref{fig:snapshot-hs-fsi},
+we can see that the current solver produces a smooth pressure distribution
+\begin{figure}[!htpb]
+  \centering
+  \begin{subfigure}{0.48\textwidth}
+    \centering
+    \includegraphics[scale=1.0]{figures/fsi/figures/ng_2020_hydrostatic_water_column_on_elastic_plate/snap_t_0}
+  \end{subfigure}
+  \begin{subfigure}{0.48\textwidth}
+    \centering
+    \includegraphics[scale=1.0]{figures/fsi/figures/ng_2020_hydrostatic_water_column_on_elastic_plate/colorbar_t_0}
+  \end{subfigure}
+  \caption{ Snapshot of the fluid and the elastic structure at time 0.5 sec
+   including the pressure of the fluid.}
+\label{fig:snapshot-hs-fsi}
+\end{figure}
+
+demonstrating the stability of the current solver.
+\Cref{fig:ng2020hsplate:deflection} depicts the time history of y-displacement
+of the beam center for different particle resolutions computed using the current
+solver compared against the analytical solution. From
+\cref{fig:ng2020hsplate:deflection} we can see that the current solver is able
+to predict the displacement of the clamped beam within the vicinity of the
+analytical results. Also as the particle spacing is reduced, the beam
+displacement is converging as well.
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.5]{{{figures/fsi/figures/ng_2020_hydrostatic_water_column_on_elastic_plate/y_amplitude}}}
+  \caption{The mid-span deflection of the structure under hydrodynamic loading
+    with time for different resolutions, compared against the analytical and
+    the numerical result of \citep{ng2020coupled}}
+\label{fig:ng2020hsplate:deflection}
+\end{figure}
+%
+
+
+\subsection{Water impact onto an elastic plate}
+\label{sec:water-impact-forefront}
+In this case, we study the deformation of the elastic plate due to the impact of
+a dam breaking flow. \Cref{fig:dam-break-flow-impact-plate-initial-setup} shows
+the initial positions of fluid and the structure inside the dam, including the
+dimensions. Following \citep{sun2019fully} we set the material properties of the
+elastic plate, a density of $2500$ kgm\textsuperscript{-3}, with an Young's
+modulus of $10^6$ Pa, and a Poisson ratio of $0$. The material properties of the
+fluid are, a density of 1000 kgm\textsuperscript{-3}, with a dynamic viscosity
+of 0 kgm\textsuperscript{-1}s\textsuperscript{-1}. A particle spacing of $5$
+$\times$ $10^{-4}$ m is taken, resulting in a total of $182911$ particles, which
+includes fluid, structure and solid wall. We run a total physical time of $0.7$
+seconds. Here the fluid is initially released which attains a certain velocity
+by the time it impacts the structure. The structure will obstruct the fluid
+making it rise and the fluid will deform the elastic plate. The fluid will rise
+and hit the other end of the dam, following it comes back and hits the structure
+from the back. For a quantitative validation, we compare the current solver
+results to the other numerical techniques.
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.4]{images/fsi/images/sun_2019_dam_breaking_flow_impacting_an_elastic_plate/schematic}
+  \caption{Schematic of the dam-break flow impacting an elastic plate. All dimensions are in meters.}
+\label{fig:dam-break-flow-impact-plate-initial-setup}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.45]{figures/fsi/figures/sun_2019_dam_breaking_flow_impacting_an_elastic_plate/x_amplitude}
+  \caption{Time histories of horizontal displacement of the free end of the
+    elastic structure compared against the numerical results of
+    \citep{sun2019fully,bogaers2016evaluation}- Water impact onto an elastic
+    plate.}
+\label{fig:water-impact-plate-deflection-quantitative}
+\end{figure}
+\begin{figure}[H]
+    \centering
+  \begin{subfigure}{0.48\textwidth}
+    \centering
+        \includegraphics[scale=0.5]{figures/fsi/figures/sun_2019_dam_breaking_flow_impacting_an_elastic_plate/snap_t_0.png}
+  \end{subfigure}
+
+  \begin{subfigure}{0.48\textwidth}
+    \centering
+        \includegraphics[scale=0.5]{figures/fsi/figures/sun_2019_dam_breaking_flow_impacting_an_elastic_plate/snap_t_1.png}
+  \end{subfigure}
+
+  \begin{subfigure}{0.48\textwidth}
+    \centering
+        \includegraphics[scale=0.5]{figures/fsi/figures/sun_2019_dam_breaking_flow_impacting_an_elastic_plate/snap_t_2.png}
+  \end{subfigure}
+
+  \begin{subfigure}{0.48\textwidth}
+    \centering
+        \includegraphics[scale=0.5]{figures/fsi/figures/sun_2019_dam_breaking_flow_impacting_an_elastic_plate/snap_t_3.png}
+  \end{subfigure}
+
+  \begin{subfigure}{0.48\textwidth}
+    \centering
+    \includegraphics[scale=0.5]{figures/fsi/figures/sun_2019_dam_breaking_flow_impacting_an_elastic_plate/snap_t_4.png}
+  \end{subfigure}
+    \caption
+    {
+        Snapshot of the fluid and the structure at different time stamps.
+    }
+    \label{fig:dam-breaking-onto-plate-snapshot}
+\end{figure}
+The time variation of the x-displacement of the elastic structure is compared
+against other numerical results~\citep{sun2019fully,bogaers2016evaluation}. From
+the \cref{fig:water-impact-plate-deflection-quantitative} we can see that the
+displacement computed by the current solver is with in a vicinity of the other
+results produced. \Cref{fig:dam-breaking-onto-plate-snapshot} shows the
+snapshots of the fluid and the elastic structure at different time instances.
+From \cref{fig:dam-breaking-onto-plate-snapshot}, we can see that the fluid
+after hitting the structure rises and hits the other end of the tank and travels
+back to hit the structure again.
+
+% ========================================================
+% ========================================================
+\section{Summary}\label{fsi:summary}
+% ========================================================
+% ========================================================
+CTVF is able to eliminate several issues SPH faces while solving fluid and solid
+problems. Through particle shifting techniques and incorporating the missing
+terms, CTVF can produce better approximations in simulating fluid problems.
+Similarly, elimination of tensile instability while solving elastic dynamics
+problems is done with CTVF. With these advantages, we solved both fluid and
+solid phases with CTVF while handling the FSI problems.
+
+We validated the current schemes by solving a UDL problem to test the structure
+equations, and an aluminum plate over a hydrostatic tank where an analytical
+solution is available is utilized to validate the FSI part of the current
+solver. The current solver is applied to the wavefront arising due to a dam
+break hitting an elastic plate. Here, the deformation of the elastic plate
+is compared to the experimental results. A convergence analysis is undertaken
+for both fundamental benchmarks, UDL, and hydrostatic tank.
+
+In the current chapter we have handled the fluid structure interaction using the
+CTVF scheme. With fluid, elastic, contact modeling, and rigid fluid coupling,
+FSI is one essential multiphysics problem to be modeled to handle abrasive water
+jet machining. One of the physics needed to model to handle the water jet
+machining. Leaving us with rigid fluid coupling and solid body erosion. In the
+next chapter we will handle the rigid fluid coupling as it allows us to study
+coupled behaviour of fluid and rigid body together.

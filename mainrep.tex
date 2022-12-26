@@ -4,28 +4,51 @@
 %********************************************************************
 
 %\documentclass[11pt,a4paper,openright]{report}
-\documentclass[twoside]{iitbreport}
+% \documentclass[twoside]{iitbreport}
+\documentclass[twoside,draft]{iitbreport}
 
 %% Default spacing: 1.5
 %% Default font size: 12pt
-%% Default font: txfonts (similar to times new roman) 
+%% Default font: txfonts (similar to times new roman)
 
 %% Selectively comment out sections that you want to be left out but
 %% maintaining the page numbers and other \ref
 \includeonly{%
-  intro/introduction,
-  lit/literature,
-  expt/experimental,
-  rnd/results, 
+  % intro/introduction,
+  % lit/literature,
+  % expt/experimental,
+  % rnd/results,
+  chapter_intro/intro,
+  chapter_ctvf/ctvf,
+  chapter_csph/csph,
+  chapter_fsi/fsi,
+  chapter_rfc/rfc,
+  chapter_erosion/erosion,
+  chapter_conclusions/conclusions,
   dec,abs,pub,ack
+  % chapter_tmp_misc/guide_to_writing,
 }
 
 %%% Some commonly used packages (make sure your LaTeX installation
 %%% contains these packages, if not ask your senior to help installing
 %%% the packages)
+\usepackage{lipsum}
+\newcounter{question}
+\setcounter{question}{0}
 
 \usepackage{booktabs}
 \graphicspath{{expt/}}
+\usepackage{cleveref}
+\usepackage[hidelinks]{hyperref}
+
+% For the TODOs
+\usepackage{xcolor}
+\usepackage{xargs}
+\usepackage[colorinlistoftodos,textsize=footnotesize]{todonotes}
+\newcommand{\todoin}{\todo[inline]}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
 
 
 %%% Macro definitions for Commonly used symbols
@@ -40,21 +63,37 @@
 \newcommand{\Figref}[1]{Figure~\ref{#1}}
 \newcommand{\Appref}[1]{Appendix~\ref{#1}}
 
+%Boldtype for greek symbols
+\newcommand{\teng}[1]{\ensuremath{\boldsymbol{#1}}}
+\newcommand{\ten}[1]{\ensuremath{\mathbf{#1}}}
+
 
 \begin{document}
-	
+
+%%********************************For question and answer format***********************
+\newcommand\Que[1]{%
+   \leavevmode\par
+   \stepcounter{question}
+   \noindent
+   \thequestion. Q --- #1\par}
+
+\newcommand\Ans[2][]{%
+    \leavevmode\par\noindent
+   {\leftskip37pt
+    A --- \textbf{#1}#2\par}}
+
 %%********************************Frontmatter***********************
-% In frontmatter everything comes with roman numbering	
+% In frontmatter everything comes with roman numbering
 \pagenumbering{roman}
 \setcounter{page}{1}
 
 %*******************************************************************
-%                         Title Page                            
+%                         Title Page
 %*******************************************************************
-\title{Essential \LaTeX\ Templates for Report Writing}
-\author{My name}
+\title{SPH DEM coupling for solid particle erosion}
+\author{Dinesh Adepu}
 
-%% Print the date. Today's date comes by default, change it here to 
+%% Print the date. Today's date comes by default, change it here to
 %% other date format, if required:
 
 %\date{\today}
@@ -63,8 +102,8 @@
 
 %% The type of the report can be set here
 
-\reporttype{A Seminar Report}
-%\reporttype{A Thesis}
+% \reporttype{A Seminar Report}
+\reporttype{A Thesis}
 %\reporttype{A Dissertation}
 %\reporttype{A Project Report}
 
@@ -74,118 +113,127 @@
 
 
 %% Department/Centre Name
-\dept{Department of Chemical Engineering}
+\dept{Department of Aerospace Engineering}
 
 %% Supervisor and cosupervisor/excosupervisor are not essential parts
 %% of a report title page, as it is your report!
 
 %% But if you **have** to put it uncomment these
-%\supervisor{Supervisor name}
+\supervisor{Prof. Prabhu Ramachandran}
 %\cosupervisor{Co-super name}
 %\excosupervisor{External Supervisor}
 
 %% Roll number
-\rollnum{Roll No. ....}
+\rollnum{Roll No. 153010009}
 
 \maketitle
 
 %*******************************************************************
-%                         Copyright Page                          
-%******************************************************************* 
-%\mycopyright                    
+%                         Copyright Page
+%*******************************************************************
+%\mycopyright
 
 %*******************************************************************
-%                         Dedication Page                         
+%                         Dedication Page
 %*******************************************************************
-\dedication[Dedicated to \ldots]        
+% \dedication[Dedicated to Nietzsche]
+\dedication[Dedicated to \cdots]
 %\addintoc{Dedication}
 
 %*******************************************************************
-%                        Certificate Page                         
+%                        Certificate Page
 %*******************************************************************
-%\makecertificate[change title name]{report type} 
-\makecertificate{seminar report} 
-%\makecertificate{thesis}
+%\makecertificate[change title name]{report type}
+% \makecertificate{seminar report}
+\makecertificate{thesis}
 %\makecertificate{dissertation}
 %\makecertificate{project report}
 
 %\addintoc{Certificate}
 
 %*******************************************************************
-%                         Approval Sheet                         
+%                         Approval Sheet
 %*******************************************************************
 %\makeapproval{thesis}
 %\makeapproval{dissertation}
 
 %*******************************************************************
-%                          Declaration                           
+%                          Declaration
 %*******************************************************************
-\include{dec} 
+\include{dec}
 %\addintoc{Declaration}
 
-%******************************************************************
-%                          Abstract                             
-%******************************************************************  
-\include{abs}                    
+%*******************************************************************
+%                        Acknowledgements
+%*******************************************************************
+\include{ack}
 
 %******************************************************************
-%                         Contents list                         
+%                          Abstract
+%******************************************************************
+\include{abs}
+
+%******************************************************************
+%                         Contents list
 %******************************************************************
 %\figurespagefalse
 %\tablespagefalse
 \makecontents % Creats toc, lof, and lot
 
 %******************************************************************
-%                        Notations                              
+%                        Notations
 %******************************************************************
-\notations[4cm]{List of Symbols}      
+\notations[4cm]{List of Symbols}
 
 %%********************************Mainmatter***********************
-% In mainmatter everything comes with arabic numbering	
+% In mainmatter everything comes with arabic numbering
 \cleardoublepage
 \setcounter{page}{1}
 \pagenumbering{arabic}
 
 %******************************************************************
-%                         Chapters                           
-%****************************************************************** 
-\include{intro/introduction}
-\include{lit/literature}
-\include{expt/experimental}
-\include{rnd/results}
+%                         Chapters
+%******************************************************************
+% \include{intro/introduction}
+% \include{lit/literature}
+% \include{expt/experimental}
+% \include{rnd/results}
+\include{chapter_intro/intro}
+\include{chapter_ctvf/ctvf}
+\include{chapter_csph/csph}
+\include{chapter_fsi/fsi}
+\include{chapter_rfc/rfc}
+\include{chapter_erosion/erosion}
+\include{chapter_conclusions/conclusions}
+% \include{chapter_tmp_misc/guide_to_writing}
 
-%****************************************************************
-%                         Appendices                           
-%****************************************************************
-%% Additional, supporting material, such as codes, derivations, etc., can be placed in the appendix
-\appendix
-\chapter{Supporting Material}
+% %****************************************************************
+% %                         Appendices
+% %****************************************************************
+% %% Additional, supporting material, such as codes, derivations, etc., can be placed in the appendix
+% \appendix
+% \chapter{Supporting Material}
 
 %******************************************************************
-%                         Bibliography or References          
-%******************************************************************  
-\bibliography{mylit}     
-
-%*******************************************************************
-%                         List of publications               
+%                         Bibliography or References
 %******************************************************************
-\include{pub}            
+\bibliography{mylit}
 
 %*******************************************************************
-%                        Acknowledgements                    
-%******************************************************************* 
-\include{ack}           
+%                         List of publications
+%******************************************************************
+\include{pub}
 
 %*******************************************************************
-%                        About author                    
+%                        About author
 %*******************************************************************
-\colophon % remove this command while using this file.
+% \colophon % remove this command while using this file.
 
 % GAME OVER
 %*******************************************************************
 \end{document}
 
-%%% Local Variables: 
+%%% Local Variables:
 %%% mode: latex
 %%% TeX-master: t
-%%% End: 
+%%% End:

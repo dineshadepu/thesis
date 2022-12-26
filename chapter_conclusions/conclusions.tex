@@ -1,0 +1,101 @@
+\chapter{Conclusions and Future Work}
+\label{chap:conclusions}
+
+Abrasive water jet machining is widely seen phenomenon. AWJM involves several
+physical processes. Fluid, elastic plastic, rigid bodies collision, interaction
+between fluid and elastic solids. Meshbased methods are difficult, faces issues
+modeling free surface flows, large deformation problems, and multiphysics or
+multiphase problems. We have chosen a particle based methods to study the
+physics involved in AWJM. Each subprocess is modelled individually and validated
+against analytical and experimental results.
+
+We started with SPH to model the elastic dynamics and fluid flow. After basic
+SPH introduction is given, it is applied to classic problems of fluid and
+elastic dynamics. It is found that SPH suffers from tensile instability,
+particle inhomogeneity, high pressure oscillation problems. A corrected
+transport velocity formulation in SPH is developed to solve the issues faced by
+the classical SPH. While there exists transport velocity formulation, where the
+particles are moved with transport velocity rather than momentum velocity. The
+corrected transport velocity formulation considers the additional terms missed
+by original formulation, thereafter performing better in terms of accuracy of
+the fluid simulations and at elimination of tensile instability. Smoother
+pressure distributions is achieved with EDAC formulation.
+
+A contact force model based on DEM is incorporated in the developed updated
+Lagrangian SPH model (CTVF) to handle the collision between elastic solids.
+Collision among frictional solids is modeled with the developed solver. Spurious
+interaction between bodies close by but not touching is eliminated. Collision
+between bodies of arbitrary shape were simulated to validate the model. Multiple
+bodies collision, sliding and rolling body cases are considered to validate the
+model.
+
+
+The developed solver to model fluid and solid dynamics, CTVF, is extended to
+solve fluid structure interaction phenomenon. Both the phases are modeled using
+a single unified scheme and by modeling hydrostatic water column on a clamped
+beam and dam breaking flow onto an elastic plate validated. This essentially
+solved the modeling of the interaction between the high speed jet with the
+target.
+
+The influence of the jet on the oncoming projectiles is modeled using the
+coupled CTVF-DEM approach. Here, the interaction among the rigid bodies is
+handled using the discrete element method.
+
+Erosion.
+
+An opensource formulation.
+
+% ========================================================
+% ========================================================
+\section{Future work}\label{conclusions:future_work}
+% ========================================================
+% ========================================================
+
+\subsection{CTVF}
+The newly proposed method has not been applied to three dimensional problems
+or to fluid structure interaction (FSI) problems. We believe that the method
+would be easier to use in the context of FSI since it can handle both fluids
+and solids in the same formulation. We propose to investigate these in the
+future.
+
+
+\subsection{CSPH}
+A non-linear contact force model can be implemented in the future work. The
+current work can be easily extended to the modeling of collision between
+elastic and elastic-plastic bodies. Also, the collision between the bodies
+undergoing breakage can be easily captured with the current framework.
+
+
+\subsection{FSI}
+For the future work, we plan to extend the current solver being extended to handle
+the anisotropic structures and 3D FSI problems.
+
+
+\subsection{RFC}
+For future work, we plan to extend the current solver being extended to handle
+rigid fluid coupling in multiphase flows. Cavitation induced due to the entry
+of rigid objects can be studied. The particle-shifting strategy will be
+helpful in studying the occurring of cavitation due to rigid body entries.
+Further, the current work can be applied to study biomedical applications,
+such as red blood cells transport in a non-newtonian fluid flow, impact of
+arbitrarily shaped rigid objects in fluid flow to note a few.
+
+
+\subsection{Erosion}
+For future work, we plan to extend the current solver being extended to handle
+rigid fluid coupling in multiphase flows. Cavitation induced due to the entry
+of rigid objects can be studied. The particle-shifting strategy will be
+helpful in studying the occurring of cavitation due to rigid body entries.
+Further, the current work can be applied to study biomedical applications,
+such as red blood cells transport in a non-newtonian fluid flow, impact of
+arbitrarily shaped rigid objects in fluid flow to note a few.
+
+
+\subsection{Water jet machining}
+For future work, we plan to extend the current solver being extended to handle
+rigid fluid coupling in multiphase flows. Cavitation induced due to the entry
+of rigid objects can be studied. The particle-shifting strategy will be
+helpful in studying the occurring of cavitation due to rigid body entries.
+Further, the current work can be applied to study biomedical applications,
+such as red blood cells transport in a non-newtonian fluid flow, impact of
+arbitrarily shaped rigid objects in fluid flow to note a few.

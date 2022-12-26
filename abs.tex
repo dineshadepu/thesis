@@ -1,9 +1,42 @@
 %============================= abs.tex================================
 \begin{Abstract}
-This document contains essential templates required to write technical
-reports using \LaTeX.  Particularly it shows how to create an
-equation, figure, table, symbols list, and bibliographic citation in a \LaTeX\
-document.
+  % This work models a framework to model abrasive water jet machining. Numerical
+  % modeling of abrasive water jet machining consists of several multi-physical
+  % processes.
+
+  % Mesh based methods are not suitable for problems involving large mesh
+  % deformation and free surface flows. They need to be equipped with additional
+  % methods such as level set model the free surface flows. Further several rigid
+  % bodies flowing in side the flow field is also not favorable to model. As the
+  % AWJM involves large deformation, body extrusion mesh based methods are not
+  % favorite.
+
+  % Meshless methods are favorable in these areas as they can easily handle the
+  % free surface flow, and large mesh distortion is not involved. Specifically we
+  % have smoothed particle hydrodynamics in meshless techniques, of great
+  % advantage. SPH is successful in simulating elastic dynamic, fluid flows,
+  % rigid-fluid, and fluid-structure phenomenon, erosion due to the solid particle
+  % impact. Though there is no work done in updated Lagrangian SPH formalism.
+  % There is no open-source formulation available out there.
+
+  % We chose an updated Lagrangian framework in SPH to model the full framework.
+  % All the physical processes and multiphase processess are developed and
+  % validated. A variant of weakly compressible SPH, correct transport velocity
+  % formulation, is developed to model the fluid and solid dynamics which
+  % eliminates tensile instability and adds corrected terms and shown that
+  % improved accuracy in modeling fluid flows. Developed solver is modified to
+  % handle the collision among the elastic solids using a contact force model to
+  % eliminate the spurious interaction of close by solids and to incorporate
+  % friction between the colliding solids. The contact force is inspired from DEM
+  % model and can handle collision between arbitrarily shaped solids. The
+  % developed solver is coupled with the discrete element method to model the
+  % two-way rigid fluid coupling. The above scheme ctvf is coupled to model fluid
+  % structure interaction problem. Problems with hs tank and plate and dam
+  % breaking flow on to elastic obstacle are studied. A framework including the
+  % above is developed an elasto-plastic constitutive model is incorporated to
+  % handle the elastic plastic behaviour of the ductile target when modeling the
+  % impact due to the projectile. Several analytical, experimental results were
+  % considered to validate the proposed schemes.
 %
 %
 %
@@ -11,4 +44,3 @@ document.
 %
 \end{Abstract}
 %=======================================================================
-
