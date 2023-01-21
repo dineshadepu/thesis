@@ -51,7 +51,7 @@ derived. We then give a brief overview of SPH. We then consider a suite of
 benchmark problems for both fluids and solids and compare our results with those
 of other methods where applicable.
 
-\section{Governing equations}
+\section{Governing Equations}
 For elastic dynamics we use the same equations as in
 \citep{gray-ed-2001,zhang_hu_adams17} which we summarize below. The governing
 equations of motion involve the conservation of mass, which in Lagrangian
@@ -120,12 +120,12 @@ $c_0$ is computed as $\sqrt{\frac{E}{3 (1 - 2 \nu)\rho_{0}}}$, $\nu$ is the
 Poisson ratio, $E$ is the Young's modulus.
 
 
-\section{Smoothed particle hydrodynamics}
+\section{Smoothed Particle Hydrodynamics}
 In the current section, we introduce the basics of smoothed particle
 hydrodynamics. A fundamental overview of the discrete approximations of
 function, derivative, and divergence is discussed.
 
-\subsection{Function approximation}
+\subsection{Function Approximation}
 From the dirac delta function definition, the function value of a smooth
 function $A$ defined over a domain $\Omega$ at point $x$ can be written as
 \begin{equation}
@@ -198,7 +198,7 @@ discrete form as follows
 Where $A(\boldsymbol{x}_i = A_i)$ is the value of the field property of particle
 i, similarly for $A_j$.
 
-\subsection{Derivative approximation}
+\subsection{Derivative Approximation}
 The continuous SPH interpolation of the derivative of a field variable is
 written as
 \begin{equation}
@@ -208,8 +208,8 @@ written as
 By applying integration by parts to the right hand side results in,
 \begin{equation}
   \label{eq:sph-continu-derivative-interpolation}
-  \nabla A(\ten{x}) = - \int_{\Omega}\> A(\ten{x}') \> \nabla_{\ten{x}'} W(\ten{x} - \ten{x}', h)  \> d\ten{x}' +
-  - \int_{\Omega}\> \nabla \left( A(\ten{x}') \> W(\ten{x} - \ten{x}', h)\right)  \> d\ten{x}'
+  \nabla A(\ten{x}) = - \int_{\Omega}\> A(\ten{x}') \> \nabla_{\ten{x}'} W(\ten{x} - \ten{x}', h)  \> d\ten{x}'
+  + \int_{\Omega}\> \nabla \left( A(\ten{x}') \> W(\ten{x} - \ten{x}', h)\right)  \> d\ten{x}'
 \end{equation}
 From chain rule we get the derivative of the kernel as antisymmetric, given as,
 \begin{equation}
@@ -262,7 +262,7 @@ A symmetric gradient operator ensures equal and opposite forces acting on the
 particles.
 
 
-\subsection{Divergence approximation}
+\subsection{Divergence Approximation}
 We now look at an SPH approximation of the divergence operator. An approximation
 of the divergence operator is used to discretize the \cref{eq:ce}. It is given
 as,
@@ -282,7 +282,7 @@ In the current work, we employ expression for $n=1$. The discrete SPH approximat
 \end{equation}
 
 
-\section{Numerical method}
+\section{Numerical Method}
 
 Following the TVF~\citep{Adami2013} and similar
 formulations~\citep{oger_ale_sph_2016}, we move the particles with a
@@ -411,7 +411,7 @@ transport velocity as,
 \end{multline}
 
 
-\subsection{The EDAC-SPH method}
+\subsection{The EDAC-SPH Method}
 \label{sec:edac-tvf}
 
 We apply the EDAC-SPH~\citep{edac-sph:cf:2019} in order to evolve the pressure
@@ -460,7 +460,7 @@ problems, we propose to use the EDAC approach for elastic equations as well as
 this reduces the amount of artificial viscosity that is needed.
 
 
-\subsection{SPH discretization}\label{sec:ctvf-sph-equations}
+\subsection{SPH Discretization}\label{sec:ctvf-sph-equations}
 
 In the current work, both fluid and solid modelling uses the same continuity
 and pressure evolution equation. The SPH discretization of the continuity
@@ -568,7 +568,7 @@ The SPH discretization of the modified Jaumann stress rate
 
 
 
-\subsection{Particle transport}
+\subsection{Particle Transport}
 
 The particles in the current scheme are moved with the transport velocity,
 \begin{equation}
@@ -671,7 +671,7 @@ computed as
 where $\ten{r}_a^M$ is the final position of the particle, $a$.
 
 
-\subsection{Free surface identification algorithm}
+\subsection{Free Surface Identification Algorithm}
 \label{subsec:free-surface}
 
 Free surfaces must be handled with care especially in the context of the PST
@@ -806,7 +806,7 @@ correctly.
 %
 %
 %
-\subsection{PST close to the free surface}
+\subsection{PST Close to the Free Surface}
 \label{sec:pst-free-surf}
 
 Near the free-surface the PST has to be performed with some care for both
@@ -896,7 +896,7 @@ final shifting acceleration, we adjust the increment in the position of
  \end{cases}
 \end{equation}
 
-\subsection{Boundary conditions}
+\subsection{Boundary Conditions}
 
 The ghost particle approach of \cite{Adami2012} is used to model the
 boundaries. We use three layers of ghost particles to model the solid wall.
@@ -965,7 +965,7 @@ where $s$ denotes the solid particles.
 
 
 
-\subsection{Time integration}
+\subsection{Time Integration}
 
 We use the kick-drift-kick scheme for the time integration. We first move the
 velocities of the particles to half time step,
@@ -1044,7 +1044,7 @@ available at \url{https://gitlab.com/pypr/ctvf}.
 
 \FloatBarrier%
 
-\subsection{Taylor-Green vortex}
+\subsection{Taylor-Green Vortex}
 \label{sec:tgv}
 
 In the first benchmark, we test the accuracy of the correction terms and
@@ -1263,7 +1263,7 @@ IPST  appears to be better than that of SPST.
 
 
 \FloatBarrier%
-\subsection{Lid driven cavity}
+\subsection{Lid Driven Cavity}
 \label{sec:ldc}
 
 We evaluate the ability of the proposed scheme to handle solid wall boundary
@@ -1376,7 +1376,7 @@ created due to the splashing of the fluid. The colors in
 
 
 \FloatBarrier%
-\subsection{Oscillating plate}
+\subsection{Oscillating Plate}
 \label{sec:oscillating-plate}
 In this section, we test the improvement due to the correction terms while
 simulating elastic solids. We show the elimination of tensile instability
@@ -1450,9 +1450,18 @@ Similarly, another case where plate of height $0.01$ m and a width of $0.2$ m is
 run for a time of $0.51$ s.
 \Cref{fig:oscillating-plate:etvf-sun2019-l-0-2-h-0-22} and
 \cref{fig:oscillating-plate:etvf-sun2019-l-0-2-h-0-01} shows particles of the
-plate at time $t=0.22$ s and $0.51$ s of these two cases respectively. As we can
-see from the figure that the plate is free of numerical fracture, thus the
-tensile instability is eliminated.
+plate at time $t=0.22$ s and $0.51$ s of these two cases respectively.
+\Cref{fig:oscillating-plate:etvf-ipst-l-0-4-h-0-02} shows the snapshot of an
+oscillating plate of length of $0.4$ m and a height of $0.02$ m, with $V_f$
+equal to $0.08$ m\,s\textsuperscript{-1}.
+\Cref{fig:oscillating-plate:etvf-ipst-l-0-4-h-0-02} depicts the large
+deformation of the oscillating plate simulated with the current solver. We can
+see from the
+\cref{fig:oscillating-plate:etvf-sun2019-l-0-2-h-0-22,fig:oscillating-plate:etvf-sun2019-l-0-2-h-0-01,fig:oscillating-plate:etvf-ipst-l-0-4-h-0-02},
+that the plate is free of numerical fracture. Thus we can say that the current
+solver is able to eliminate tensile instability with particle shifting
+techniques for problems involving small and large deformations.
+
 %
 %
 \begin{figure}
@@ -1470,6 +1479,15 @@ tensile instability is eliminated.
   \caption{Oscillating plate at time $t=0.51$s with a length of $0.2$m and
     height of $0.01$m simulated with SPST with CTVF scheme.}
 \label{fig:oscillating-plate:etvf-sun2019-l-0-2-h-0-01}
+\end{figure}
+%
+%
+\begin{figure}[!htpb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{figures/oscillating_plate_large_deformation/ctvf_ipst}
+  \caption{Oscillating plate at time $t=0.359$ seconds with a length of $0.4$m and
+    height of $0.02$m simulated with IPST with CTVF scheme.}
+\label{fig:oscillating-plate:etvf-ipst-l-0-4-h-0-02}
 \end{figure}
 
 The accuracy of the current scheme is evaluated by comparing with the
@@ -1519,7 +1537,7 @@ able to work with different PST methods and removes the tensile instability.
 %
 %
 \FloatBarrier%
-\subsection{Uniaxial compression}
+\subsection{Uniaxial Compression}
 \label{sec:uniaxial-compression}
 
 This benchmark is used to test the proposed scheme. A uniaxial bar is
@@ -1783,7 +1801,7 @@ problem.
 
 
 \FloatBarrier%
-\subsection{High velocity impact}
+\subsection{High Velocity Impact}
 
 High-velocity impact problems are important in various contexts like space
 debris applications. This case tests if the scheme is capable of hand large
@@ -1939,10 +1957,10 @@ In the current chapter, we have developed a transport velocity formulation-based
 method in SPH to solve fluid and solid dynamics problems. The developed method
 is robust and is able to eliminate several issues raised in conventional SPH. We
 have an updated Lagrangian solver with reasonable fidelity, which can solve
-fluid and elastic problems. As part of developing a water jet machining
-framework, we can couple the improved technique to handle various multiphysics
-problems in water jet machining. In the next chapter, we will model the
-collision among impacting bodies when they are assumed as elastic. We will
+fluid and elastic problems. As part of developing a framework to model complex
+physical processes, we can couple the improved technique to handle various
+multiphysics problems in water jet machining. In the next chapter, we will model
+the collision among impacting bodies when they are assumed as elastic. We will
 extend the current solver to handle the collision between the elastic solids,
 where the collision is dealt with a contact force using the boundary particles.
 Using a contact force model, we will eliminate various issues SPH faces while

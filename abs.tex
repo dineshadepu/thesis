@@ -10,9 +10,9 @@
   these physical phenomena are dominant. We use SPH to model the fluid and
   elastic-plastic dynamics, while DEM handles the interaction among the
   arbitrarily shaped bodies. We implement the current work in the open-source
-  framework PySPH. We use an automan package to automate all our results and
-  make it fully reproducible. We produce an open-source framework of
-  the current formulation in handling all these different physical processes.
+  framework PySPH. We automate all our results and make it fully reproducible.
+  We produce an open-source framework to handle all these different physical
+  processes.
 
 
   We first develop a technique in SPH to model fluid and elastic dynamics.
@@ -30,8 +30,8 @@
   benchmark problems involving both fluid and solid mechanics to demonstrate the
   accuracy and applicability of the method.
 
-  We extend the CTVF model to handle the collision among the frictional
-  elastic solids using a contact force model. Classically, smoothed particle
+  We extend the CTVF model to handle the collision among frictional elastic
+  solids using a contact force model. Classically, smoothed particle
   hydrodynamics (SPH) is used to model collision between elastic solids, which
   involves handling the deformation of bodies and the interaction with other
   bodies. However, this does not allow one to incorporate friction and also
@@ -40,16 +40,16 @@
   contact force model into a variant of the updated-Lagrangian SPH to model the
   interaction between elastic solids. This approach models friction as well as
   eliminates the spurious interaction between nearby bodies. The current model
-  is validated with several numerical examples involving a collision between two
-  and multiple elastic solids, with and without friction. These results compare
-  well with finite element modeling (FEM), analytical, and experimental studies.
-  We discuss the implementation details of contact force formulation to handle contact
-  between the colliding bodies in PySPH. The model is easy to incorporate in any
-  updated-Lagrangian SPH scheme.
+  is validated with several numerical examples involving a collision between
+  multiple elastic solids, with and without friction. These results compare well
+  with finite element modeling (FEM), analytical, and experimental studies. We
+  discuss the implementation details of contact force formulation to handle
+  contact between the colliding bodies in PySPH. The model is easy to
+  incorporate in any updated-Lagrangian SPH scheme.
 
 
   We further study the deformation of elastic structures under hydrodynamic
-  loads with the CTVF model. CTVF is adopted to handle both fluid and structural
+  loads with the CTVF model. CTVF is used to handle both fluid and structural
   dynamics, as it can eliminate inhomogeneous particle distribution in fluid
   flow and tensile instability in elastic structures without any additional
   terms. A dummy particle-based approach is used to handle the coupling between
@@ -82,13 +82,8 @@
   adapt the contact force formulation between the elastic-elastic bodies to
   rigid-elastic bodies. We further build a framework that can handle erosion of
   the target due to the impact of multiple bodies, which are allowed to interact
-  or do not interact among each other. 2D and 3D numerical cases are simulated
-  to demonstrate the developed framework abilities. Erosion of a 2D ductile
-  target due to multiple square particle impacts, with cases where square
-  particles can self-interact and with no self-interaction, is simulated. A
-  rotating spherical particle impacting a ductile target at different impact
-  velocities is considered as part of a 3D case.
-
+  or do not interact among each other. Two and three-dimensional numerical cases
+  are simulated to demonstrate the developed framework.
 %
 %
 %

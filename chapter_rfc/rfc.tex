@@ -1,4 +1,4 @@
-\chapter{Rigid fluid coupling}
+\chapter{Rigid Fluid Coupling}
 \label{chap:rfc}
 
 \section{Introduction}
@@ -27,7 +27,7 @@ handled using the dummy particle approach \citep{Adami2012}.
 
 
 \FloatBarrier%
-\section{Numerical methodology}
+\section{Numerical Methodology}
 \label{sec:rfc:rbd}
 % The rigid body is discretized into particles with equal spacing each particle
 % with mass $m_i$ and density $\rho_i$. Rigid body has a total 6 degrees of
@@ -187,7 +187,7 @@ The particles are transported with a transport velocity as described in
 \cref{chap:ctvf,chap:fsi}. The boundaries are handled using the dummy particle
 approach as described in \cref{chap:ctvf}.
 
-\subsection{Time integration}
+\subsection{Time Integration}
 
 Rigid body and the fluid phase follow the kick-drift-kick time integration
 scheme. The modeling of rigid-rigid interaction requires lower time step than the fluid. We choose the minimum of both the timesteps to move the system forward
@@ -214,7 +214,7 @@ A minimum timestep is chosen as
 
 
 \FloatBarrier%
-\section{Results and discussion}
+\section{Results and Discussion}
 \label{sec:rfc:results}
 In the current section we validate the developed schemes. We first, validate the
 DEM model by simulating, rolling, sliding and collapse of rigid bodies. Falling
@@ -226,7 +226,7 @@ problems demonstrated in this manuscript is made available at
 
 
 \FloatBarrier%
-\subsection{Cylinder rolling on an inclined plane}
+\subsection{Cylinder Rolling on an Inclined Plane}
 \label{sec:cylinder-rolling-on-an-inclined-plane}
 A cylinder of diameter $1.0$ m rolling on an inclined plane under gravity is
 simulated in the current test case. The physical model is shown in
@@ -303,7 +303,7 @@ current solver matches well with the analytical solution.
 
 
 \FloatBarrier%
-\subsection{Rigid body sliding down an inclined plane}
+\subsection{Rigid Body Sliding Down an Inclined Plane}
 \label{sec:rigid-body-sliding}
 In this test case, free sliding of a rigid cube on a frictional inclined plane
 is studied. The frictional part of the current solver is validated through this
@@ -380,7 +380,7 @@ regimes of the sliding case.
 \label{fig:results-solid-sliding-velocity-vs-time-2d}
 \end{figure}
 
-\subsubsection{Three-dimensional body sliding}
+\subsubsection{Three-Dimensional Body Sliding}
 \label{sec:results-3d-sliding}
 
 \Cref{fig:mohseni-2021-sliding-3d} shows the snapshots of the rigid body at
@@ -500,7 +500,7 @@ regimes of the sliding case for a 3D case.
 
 
 \FloatBarrier%
-\subsection{Stack of cylinders}
+\subsection{Stack of Cylinders}
 \label{sec:stack-of-cylinders}
 This test case is used to validate the current solid-solid contact force model
 with an experimental problem. In this test case, a stack of cylinders initially
@@ -640,7 +640,7 @@ center of mass of the cylinders is in good agreement with the experiment result.
 % % To be done
 
 \FloatBarrier%
-\subsection{Cylinder rising in a hydrostatic tank}
+\subsection{Cylinder Rising in a Hydrostatic Tank}
 \label{sec:water-entry-sphere}
 % https://www.sciencedirect.com/science/article/pii/S0997754621001412#fig2
 In this section, we study the behavior of a circular cylinder of density $500$
@@ -709,7 +709,7 @@ and the center of mass co-inside as time increases.
 
 
 \FloatBarrier%
-\subsection{Water entry of a rigid cube}
+\subsection{Water Entry of a Rigid Cube}
 \label{sec:falling-solid-in-water}
 In this section, the rigid fluid coupling part of the current solver is
 evaluated by simulating water entry of a rigid cube in a hydrostatic tank

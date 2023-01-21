@@ -72,10 +72,10 @@ among the elastic solids.
 
 
 \FloatBarrier%
-\section{SPH model for structural dynamics}
+\section{SPH Model for Structural Dynamics}
 \label{sec:SPH-model-for-structural-dynamics}
-
-\subsection{Discrete governing equations}
+In this section, we discuss the formulation of collision SPH.
+\subsection{Discrete Governing Equations}
 \label{sec:discrete-governing-equations}
 We follow the CTVF formulation developed in \cref{chap:ctvf} to handle the
 structural dynamics of the solid. The governing equations of including the new
@@ -110,7 +110,7 @@ of the particles.
 
 
 \FloatBarrier%
-\section{Contact algorithm}
+\section{Contact Algorithm}
 \label{sec:contact-algorithm}
 In the current work we have utilized the contact force model proposed by
 \cite{mohseni2021particle}. The force acting on a particle $a$ of body A due
@@ -178,7 +178,7 @@ overlap, rather than per particle interaction. This is effectively able to model
 the interaction between non-smooth surfaces in contrast with particle-particle
 force computation.
 
-\subsection{Tangential force computation}
+\subsection{Tangential Force Computation}
 \label{sec:tangential-force-computation}
 We associate a tangential spring attached to particle $a$
 ($|\Delta \textit{\textbf{l}}_a|$) and body $B$ to compute the tangential force
@@ -277,7 +277,7 @@ when different bodies are chosen as primary.
 % =========================================== %
 
 \FloatBarrier%
-\section{Results and discussion}
+\section{Results and Discussion}
 \label{sec:results}
 In the interest of reproducibility and easier ability
 for researchers to build on this work, our code is open source and can be
@@ -286,7 +286,7 @@ found at \url{https://gitlab.com/pypr/collision_sph}. We use the
 generated.
 
 \FloatBarrier%
-\subsection{Curved interface}
+\subsection{Curved Interface}
 \label{sec:results-circular-interface}
 \begin{figure}[!htpb]
   \centering
@@ -406,7 +406,7 @@ modulus, where we can see that the proposed model is behaving as expected.
 % ===================================================
 % ===================================================
 \FloatBarrier%
-\subsection{Flat interface}
+\subsection{Flat Interface}
 \label{sec:results-linear-interface}
 In the current section, we test our solver in handling collision between two
 elastic solids, where the collision front is flat in shape. The model is
@@ -468,7 +468,7 @@ The current scheme results are better than the CTVF model.
 
 
 \FloatBarrier%
-\subsection{Colliding rubber rings}
+\subsection{Colliding Rubber Rings}
 \label{sec:results-rings}
 This test applies the current solver in modeling large deformation solids
 under collision. We consider the collision between two elastic rubber rings.
@@ -581,7 +581,7 @@ results are consistent with other numerical methods proposed by
 % ====================================================================================
 % ====================================================================================
 \FloatBarrier%
-\subsection{Near miss of two solids}
+\subsection{Near Miss of Two Solids}
 \label{sec:results-two-solids-passing-by}
 In this section, we study the collision behavior of two solids moving toward
 each other, initially placed such that they are not touching. The schematic is
@@ -711,7 +711,7 @@ in modeling the free moment of elastic solids passing close by each other.
 % ====================================================================================
 % ====================================================================================
 \FloatBarrier%
-\subsection{Elastic solid sliding on a slope}
+\subsection{Elastic Solid Sliding on a Slope}
 \label{sec:results-elastic-solid-sliding-on-slope}
 In the current problem, we test if the current scheme models the friction
 between the elastic solids accurately. The free sliding of an elastic solid on
@@ -793,7 +793,7 @@ time.
 % ====================================================================================
 % ====================================================================================
 \FloatBarrier%
-\subsection{Circular elastic body rolling on a plane}
+\subsection{Circular Elastic Body Rolling on a Plane}
 \label{sec:de-cylinder}
 
 In the current section, the motion of a 2D elastic cylinder rolling on a
@@ -924,7 +924,7 @@ with the analytical solution.
 % ====================================================================================
 % ====================================================================================
 \FloatBarrier%
-\subsection{A rigid sphere hitting a wall at different impact angles}
+\subsection{A Rigid Sphere Hitting a Wall at Different Impact Angles}
 \label{sec:r-vyas}
 \begin{figure}[!htpb]
   \centering
@@ -993,7 +993,7 @@ in the current scheme.
 
 
 \FloatBarrier%
-\subsection{Stress wave propagation in granular media}
+\subsection{Stress Wave Propagation in Granular Media}
 \label{sec:results-stress-wave-propagation-with-friction}
 \begin{figure}[!htpb]
   \centering
@@ -1082,7 +1082,7 @@ TLMPM, the current scheme fringes are smooth and are similar to the
 experimental result.
 
 \FloatBarrier%
-\subsection{Primary secondary analysis}
+\subsection{Primary Secondary Analysis}
 \label{sec:results-primary-secondary-analysis}
 
 In the current section we have studied the dependence of the behaviour of the
@@ -1169,8 +1169,8 @@ collision between arbitrarily shaped elastic solids. This chapter's work in
 handling collision is extended to the rigid-elastic and rigid-plastic contacts
 in the next few chapters. We have modeled the elastic dynamics, fluid dynamics,
 and the collision between the impacting solids with our aim of handling problems
-such as abrasive water jet machining. In the next chapter, we will model the
-interaction between the fluid and the elastic structure, fluid-structure
-interaction, as this is seen when the water from the inlet impacts the target.
-We propose an updated Lagrangian solver by coupling the solver developed in
-\cref{chap:ctvf} and handling fluid-structure interaction.
+with complex physics. In the next chapter, we will model the interaction between
+the fluid and the elastic structure, fluid-structure interaction, as this is
+seen when the water from the inlet impacts the target. We propose an updated
+Lagrangian solver by coupling the solver developed in \cref{chap:ctvf} and
+handling fluid-structure interaction.

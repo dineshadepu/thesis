@@ -1,4 +1,4 @@
-\chapter{Fluid structure interaction}\label{chap:fsi}
+\chapter{Fluid-Structure Interaction}\label{chap:fsi}
 \section{Introduction}
 In the current chapter, we couple the CTVF scheme developed in \cref{chap:ctvf}
 to model fluid-structure interaction problems. Fluid-structure interaction (FSI)
@@ -21,7 +21,7 @@ hydrostatic tank for FSI validation is considered. Finally, it is applied to a
 fluid flow striking an elastic plate. Here, the deformation of the elastic plate
 is compared against the experimental results.
 
-\section{Numerical modeling}\label{sec2}
+\section{Numerical Modeling}\label{sec2}
 We follow the CTVF formulation to model both fluid and solid phases. The
 particles are moved with a transport velocity rather than the momentum velocity,
 which provides us with a homogenized particle distribution and eliminates
@@ -29,7 +29,7 @@ tensile instability. In the following two sections we briefly describe the
 governing equations of the fluid and solid dynamics in discretized form.
 
 
-\subsection{Discrete equations of the fluid and solid medium}\label{subsec:discrete-fluid}
+\subsection{Discrete Equations of the Fluid and Solid Medium}\label{subsec:discrete-fluid}
 The governing equations of the fluid are conservation of mass and momentum. We
 follow the SPH discretization of the continuity
 equation~\eqref{eq:fsi:sph-discretization-continuity} and the EDAC
@@ -92,7 +92,7 @@ We utilize SPST formulation described in \cref{sec:sunpst} to compute the
 transport velocity of the fluid particles, while for the elastic phase
 IPST \citep{huang_kernel_2019} formulation is used.
 
-\subsection{Fluid-structure interaction}\label{subsec:fsi}
+\subsection{Fluid-Structure Interaction}\label{subsec:fsi}
 Coupling is handled in a straight forward way in SPH. While modelling the fluid
 phase and treating the fluid-structure interactions, the solid particles are
 assumed to be boundary particles. From the boundary handling given in Adami
@@ -132,7 +132,7 @@ the problems demonstrated in this manuscript is made available at
 % start
 % =========================================
 % =========================================
-\subsection{Uniformly distributed loading (UDL) on a clamped beam}
+\subsection{Uniformly Distributed Loading (UDL) on a Clamped Beam}
 \label{sec:udl}
 In the first test case, we validate the structural part of the current solver.
 We consider a homogeneous elastic plate clamped on both ends acted upon by a
@@ -175,7 +175,7 @@ clamped beam. Convergence of the current scheme is captured in
 variation of the analytical solution with the variation of the particle spacing.
 
 
-\subsection{Hydrostatic water column on an elastic plate}
+\subsection{Hydrostatic Water Column on an Elastic Plate}
 \label{sec:hydrostatic-water-column-on-an-composite-elastic-plate}
 In this example, we study the deformation of an elastic plate due to the
 hydrostatic water column. We utilize the current example to examine the accuracy
@@ -238,7 +238,7 @@ beam displacement is shown with the particle spacing is reduced.
 %
 
 
-\subsection{Water impact onto an elastic plate}
+\subsection{Water Impact onto an Elastic Plate}
 \label{sec:water-impact-forefront}
 In this case, we study the deformation of the elastic
 plate due to the impact of water from a dam break.
@@ -335,6 +335,6 @@ results of other numerical models. A convergence analysis is undertaken for both
 UDL, and hydrostatic tank.
 
 FSI is one essential multiphysics problem to be modeled in order to simulate
-abrasive water jet machining. In the next chapter we will consider the rigid-fluid
+complex physical processes. In the next chapter we will consider the rigid-fluid
 coupling as it allows us to study coupled behaviour of fluid and rigid body
 together.

@@ -1,4 +1,4 @@
-\chapter{Implementation details}
+\chapter{Implementation Details}
 \label{chap:implementation_detail}
 \section{Introduction}
 \label{sec:intro}
@@ -11,7 +11,7 @@ details of the sub-stepping algorithm while handling different materials in a
 simulation. We discuss the implementation details and outline the implementation
 of the algorithms proposed in earlier chapters and the upcoming ones. The
 current work is implemented in an open-source framework, PySPH
-\citep{pysph2020}. In PySPH, particle arrays are initiated using a struct of
+\citep{pysph2020}. In PySPH, particle arrays are initiated using a structure of
 arrays formulation, with each index corresponding to a particle. Equations
 compute accelerations on the particles using these particle arrays. PySPH is
 primarily written to model SPH schemes. However, it can be used to implement
@@ -19,31 +19,31 @@ other meshless techniques as well. PySPH has several SPH methods implemented,
 such as, WCSPH, TVF, and Godunov SPH, to note a few among others. The
 documentation at \url{https://pysph.readthedocs.io} covers details on how to
 implement new SPH algorithms in PySPH in some detail. We assume the reader to
-have some familiarity with PySPH and one may safely skip the chapter if not
-interested in the details.
+have some familiarity with PySPH and one may safely skip the chapter if one
+is not interested in the details.
 
 
 % Write the difficulty of implementing contact algorithm in PySPH (discuss
 % linked list). No documentation regarding the multiphase or we write here.
-We implement the discretized equations of \cref{chap:ctvf} following the
+We implement the discretized equations of \cref{chap:ctvf} following the PySPH
 documentation. In order to implement the contact force formulation developed in
 \cref{chap:csph}, we need to track the pairwise quantities to evolve the
 tangential force with time. However, the PySPH documentation does not describe
 how to implement such algorithms. SPH is used to model fluid and structural
 dynamics through the current work. Collision among elastic solids is handled
-with a contact force as demonstrated in \cref{chap:csph}. PySPH provides several
-pre-computed values. The discretized governing equations of the fluid and the
-solid do not need to track the particles which are in contact. However, to
-implement contact interaction for DEM we need to keep track of the tangential
-displacement per particle. It is not straightforward to implement the
-per-particle pairwise interaction with the philosophy of SPH.
+with a contact force as demonstrated in \cref{chap:csph}. The discretized
+governing equations of the fluid and the solid do not need to track the
+particles which are in contact. However, to implement contact interaction for
+DEM we need to keep track of the tangential displacement per particle. It is not
+straightforward to implement the per-particle pairwise interaction with the
+philosophy of PySPH. We show how this can be done in this chapter.
 
 When simulating different materials, they often require different timesteps. A
 sub-stepping algorithm is suitable, where a material with a larger timestep is
 updated first with a larger timestep, and a material with a smaller timestep is
 updated with a smaller timestep. Substepping is efficient as it reduces
 computations for the material with a higher timestep. The documentation at
-\url{https://pysph.readthedocs.io} doesn't have clear details on how to
+\url{https://pysph.readthedocs.io} doesn't provide clear details on how to
 implement this algorithm. However, PySPH provides tools to implement this. We
 consider a problem involving fluid and solids to demonstrate a sub-stepping
 algorithm. The implemented sub-stepping algorithm is used in \cref{chap:fsi}.
@@ -51,7 +51,7 @@ Minimal code snippets are provided covering the basic outline of the algorithm.
 
 
 \FloatBarrier%
-\section{Contact force modeling with a few number of bodies}
+\section{Contact Force Modeling with a Few Number of Bodies}
 \label{sec:tracking-few-bodies}
 In this section, we compute the contact force on a particle due to the
 interaction with three other bodies composed of particles. As a representative
@@ -94,9 +94,9 @@ list data structure to track the overlap with this body, and the value of this
 is retrieved and updated until the body stays in contact with the particle.
 However, PySPH does not allow one to use a linked list data structures. Here, we
 propose an algorithm where we can track these pairwise contact quantities using
-one-dimensional arrays. A unique $body\_id$ is assigned to particles belonging
-to the bodies. In the current case, all particles belonging to the body $0$ in
-\cref{fig:id:four_bodies_contact} have their $body\_id$ set to $0$. This
+one-dimensional arrays. A unique \texttt{body\_id} is assigned to each particle. In the
+current case, all particles belonging to the body $0$ in
+\cref{fig:id:four_bodies_contact} have their \texttt{body\_id} set to $0$. This
 property is used to index the pairwise contact property of a particle with other
 bodies. To demonstrate the algorithm, we consider the computation of contact
 force on particles of the body $1$, such that $x=1$ and $y$ corresponds to
@@ -137,8 +137,8 @@ the throughout the simulation.
 \label{fig:stride_index_trace}
 \end{figure}
 
-At an intermediate time $t_1$, let us assume particle with an index $k$ of body
-$1$ is in contact with body $2$ and $l$ with body $3$. This can be seen in
+At an intermediate time $t_1$, let us assume that a particle with an index $k$ of body
+$1$ is in contact with body $2$ and particle with index $l$ with body $3$ as seen in
 \cref{fig:id:four_bodies_contact}. The updated overlap amount of particles $k$
 and $l$ is given in \cref{fig:id:k_f_overlap_t_1},
 \begin{figure}[!htpb]
@@ -251,9 +251,7 @@ describing the creation of a particle array is given as
 \begin{lstlisting}[label={contact:equations},frame=lines,language=Python,upquote=True]
 body_2 = get_particle_array(x=[0., 1., 2., 3.],
                             y=[0., 0., 0., 0.],
-                            m=m,
-                            rho=rho,
-                            ...=...
+                            # ... Code redacted ...
                             name="body")
 \end{lstlisting}
 
@@ -288,14 +286,14 @@ class ComputeContactForce(Equation):
         d_overlap[t2] += RIJ
         # ... Code redacted ...
 \end{lstlisting}
-Here, \textit{d\_total\_no\_bodies} is the total number of bodies that consist
-in a given case. In the above code listing, in order to compute the overlap of
-the particles on a given body with the other bodies, we first initialize the
-pairwise quantity, overlap, to zero. $initialize$ method depicts the
-initialization of overlap to zero. In $loop$ method, we compute the pairwise
+Here, \textit{d\_total\_no\_bodies} is the total number of bodies in a given
+case. In the above code listing, in order to compute the overlap of the
+particles on a given body with the other bodies, we first initialize the
+pairwise quantity, overlap, to zero. \texttt{initialize} method depicts the
+initialization of overlap to zero. In \texttt{loop} method, we compute the pairwise
 overlap of the particle when colliding with the bodies. We compute the forces on
-the bodies using the above equation using the $Group$ function in PySPH
-$Application$ class routine as,
+the bodies using the above equation using the \texttt{Group} function in PySPH
+\texttt{Application} class routine as, 2.1 $2.1$
 \lstset{caption={Code segment to compute the forces on the bodies.}} \lstset{basicstyle=\footnotesize\ttfamily}
 \begin{lstlisting}[label={contact:equations},frame=lines,language=Python,upquote=True]
   Group(equations=[
@@ -310,12 +308,12 @@ $Application$ class routine as,
     ])
 \end{lstlisting}
 We execute the equation of computation of the contact force of each body due to the
-$sources$. Four equations are used to compute the forces on four bodies due to
+\texttt{sources}. Four equations are used to compute the forces on four bodies due to
 the interaction with the other three bodies.
 
 
 \FloatBarrier%
-\section{Contact force modeling with a large number of particles}
+\section{Contact Force Modeling with a Large Number of Particles}
 \label{sec:tracking-many-bodies}
 In the previous section, we used a strided array with a fixed index per
 interaction to handle the tracking of pairwise interactions while computing the
@@ -331,7 +329,7 @@ consider two cases, one where all the particles belong to the same particle
 array and another case where particles belonging to two different particle
 arrays interact with each other and among themselves.
 
-\subsection{Single particle array}
+\subsection{Single Particle Array}
 \begin{figure}[!htpb]
   \centering
   \includegraphics[width=0.3\textwidth]{images/implementation_detail/images/many_bodies/many_bodies_t_0}
@@ -347,7 +345,7 @@ particles have the same index. Since, with a large number of bodies involved, we
 do not have a prefixed index for the pairwise interaction, we additionally need
 to save the index of the contacting particle in addition to the pairwise contact
 properties. \Cref{fig:many_bodies_initialize_overlap_t_0}, shows the additional
-property, $contact id$, added to the particle array to track the indices which a
+property, \texttt{contact\_id}, added to the particle array to track the indices which a
 given particle of index $k$ is in contact with. The contact indices are
 initialized to $-1$ and other pairwise interaction properties are initialized to
 $0$ similar to the previous algorithm.
@@ -559,7 +557,7 @@ class RemoveParticlesNotInContact(Equation):
                 count += 1
 \end{lstlisting}
 
-The above equations are used in the $create\_equations$ method of $Application$
+The above equations are used in the \texttt{create\_equations} method of \texttt{Application}
 class of PySPH to execute in execution loop using the following code.
 \lstset{caption={An equation execution order to handle the pairwise tracking algorithm in PySPH.}} \lstset{basicstyle=\footnotesize\ttfamily}
 \begin{lstlisting}[label={contact:equations},frame=lines,language=Python,upquote=True]
@@ -574,7 +572,7 @@ class of PySPH to execute in execution loop using the following code.
 
 
 \FloatBarrier%
-\subsection{Dealing with multiple particle arrays}
+\subsection{Dealing with Multiple Particle Arrays}
 Let us consider a case where particles of two different particle arrays
 interact with each other. A schematic is shown in \cref{fig:mb:2_pa}. Here,
 we consider each particle array to have $15$ particles, as shown in
@@ -585,10 +583,11 @@ we consider each particle array to have $15$ particles, as shown in
   \caption{}
 \label{fig:mb:2_pa}
 \end{figure}
-Let's name particle array $1$ as $grains_1$ and particle array $2$ as $grains_2$.
-As described in the previous section, in PySPH, to compute the interaction, we
-use the following code snippet.
-\lstset{caption={Code snipped to compute contact force on particle arrays.}} \lstset{basicstyle=\footnotesize\ttfamily}
+Let's name particle array $1$ as \texttt{grains\_1} and particle array $2$ as
+\texttt{grains\_2}. As described in the previous section, in PySPH, to compute
+the interaction, we use the following code snippet.
+\lstset{caption={Code snipped to compute contact force on particle arrays.}}
+\lstset{basicstyle=\footnotesize\ttfamily}
 \begin{lstlisting}[label={contact:equations},frame=lines,language=Python,upquote=True]
   Group(equations=[
       RemoveParticlesNotInContact(dest='grains_1',
@@ -606,8 +605,9 @@ use the following code snippet.
 
 
 Let us consider the computation of contact force on particles belonging to
-particle array 1. From the previous algorithm, we initialize the $contact\_id$
-and $overlap$ arrays to particle array $1$ as shown in \cref{fig:mb-2-pa-prev-algo}.
+particle array 1. From the previous algorithm, we initialize the
+\texttt{contact\_id} and \texttt{overlap} arrays to particle array $1$ as shown
+in \cref{fig:mb-2-pa-prev-algo}.
 \begin{figure}[!htpb]
   \centering
   \begin{tikzpicture}
@@ -627,7 +627,7 @@ and $overlap$ arrays to particle array $1$ as shown in \cref{fig:mb-2-pa-prev-al
 
 \Cref{fig:mb-2-pa-t-2} shows the particle arrays' particles
 interacting with each other. From \cref{fig:mb-2-pa-t-2}, we can see particles
-of both arrays interact with each other. \cref{fig:zoomed-8-id} depicts
+of both arrays interact with each other. \Cref{fig:zoomed-8-id} depicts
 contacts of particle with index $8$. The contact array and the pairwise overlap
 of a particle with index $8$ are shown in \cref{fig:id-8-mb-array}. From
 \cref{fig:id-8-mb-array,fig:zoomed-8-id}, we can see that the particle with
@@ -668,9 +668,9 @@ differentiate between which particle array the given contacting particle belongs
 
 To solve this issue, we assign an additional property to the particles, a unique
 id, to each different particle array. Such as, here, we would add a property
-named $unique\_id$, where for each particle array, we would assign a unique id.
-The updated tracking properties with the $unique\_id$ included is shown in
-\cref{fig:mb-ui-included}.
+named \texttt{unique\_id}, where for each particle array, we would assign a
+unique id. The updated tracking properties with the \texttt{unique\_id} included
+is shown in \cref{fig:mb-ui-included}.
 \begin{figure}[!htpb]
   \centering
   \begin{tikzpicture}
@@ -765,22 +765,23 @@ results when the drum is not rotating, and the bottom row is when the drum is ro
 
 
 \FloatBarrier%
-\section{Sub-stepping update algorithm}
+\section{Sub-stepping Update Algorithm}
 \label{sec:substepping-algorithm}
 Problems involving two different materials, such as fluid-structure interaction,
 rigid-fluid coupling, etc., involve solving two different materials, such that
 one material is stiffer than the other. Let us consider a problem that has both
-fluid and solid. Assume timesteps of fluid and solid are related as follows,
+fluid and solid particles. Assume timesteps of fluid and solid are related as
+follows,
 \begin{equation}
 \Delta t_f = K \Delta t_s,
 \end{equation}
 where $K$ is some integer. We use a sub-stepping integration scheme to update
-the state of $fluid$ and $solid$ particles. Let us say $fluid$ has $10,000$
-particles, and the solid has $1000$ particles, and let $K$ be $10$. Using a
-sub-stepping scheme, instead of iterating $10,000$ particles $10$ times, we only
-do it one time. We first move the higher timestep material to the next timestep,
-here fluid, then update the material with lower timestep $K$ times, such that
-the simulation is stable.
+the state of \texttt{fluid} and \texttt{solid} particles. Let us say
+\texttt{fluid} has $10,000$ particles, and the solid has $1000$ particles, and
+let $K$ be $10$. Using a sub-stepping scheme, instead of iterating $10,000$
+particles $10$ times, we only do it one time. We first move the higher timestep
+material to the next timestep, here fluid, then update the material with lower
+timestep $K$ times, such that the simulation is stable.
 \begin{figure}[!htpb]
   \centering
   \includegraphics[width=1.0\textwidth]{images/implementation_detail/images/multiphase/time_stepping}
@@ -788,7 +789,7 @@ the simulation is stable.
 \label{fig:id:multiphase}
 \end{figure}
 \Cref{fig:id:multiphase} depicts idea of sub-stepping algorithm. Here,
-$\Delta t_{\text{factor}}$ is choosen as a timestep for $solid$ particles.
+$\Delta t_{\text{factor}}$ is chosen as a timestep for \texttt{solid} particles.
 $\Delta t_{\text{factor}}$ is computed based on two factors. One is it is a
 integer multiple of $\Delta t_{\text{material 1}}$
 (\cref{eqn:id:dt_factor_chose}) and the second is it has to be less than or
@@ -810,7 +811,7 @@ class SubSteppingIntegrator(Integrator):
     def one_timestep(self, t, dt):
         self.compute_accelerations()
 \end{lstlisting}
-We can see that only one method $self.compute\_accelerations()$ is
+We can see that only one method \texttt{self.compute\_accelerations()} is
 called at every timestep in a sub-stepping scheme. We use the PySPH feature of
 being able to iterate a group of equations to implement this algorithm. We
 iterate using the larger $\Delta t$ value, but inside that, we use an iterated
@@ -831,11 +832,11 @@ arrays with different timesteps is given as,
   ]
   iterate=True, max_iterations=10, min_iterations=10)
 \end{lstlisting}
-Since here, $fluid$ has a higher timestep, we first update it to the next
-timestep using $FluidEquations$ and the $solid$ state is updated to $t + \Delta t_1$
-timestep using $10$ updates with a timestep of $\frac{\Delta t_1}{10}$. At each
-iteration we advance the $solid$ particles by $\Delta t_1 / 10$ time using
-$SolidEquations$ equations.
+Since here, \texttt{fluid} has a higher timestep, we first update it to the next
+timestep using \texttt{FluidEquations} and the \texttt{solid} state is updated
+to $t + \Delta t_1$ timestep using $10$ updates with a timestep of
+$\frac{\Delta t_1}{10}$. At each iteration we advance the $solid$ particles by
+$\Delta t_1 / 10$ time using \texttt{SolidEquations} equations.
 
 
 \FloatBarrier%
