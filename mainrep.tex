@@ -4,8 +4,8 @@
 %********************************************************************
 
 %\documentclass[11pt,a4paper,openright]{report}
-% \documentclass[twoside]{iitbreport}
-\documentclass[twoside,draft]{iitbreport}
+\documentclass[tikz, twoside]{iitbreport}
+% \documentclass[twoside,draft]{iitbreport}
 
 %% Default spacing: 1.5
 %% Default font size: 12pt
@@ -21,6 +21,7 @@
   chapter_intro/intro,
   chapter_ctvf/ctvf,
   chapter_csph/csph,
+  chapter_implementation_detail/implementation_detail,
   chapter_fsi/fsi,
   chapter_rfc/rfc,
   chapter_erosion/erosion,
@@ -49,6 +50,8 @@
 \usepackage{graphicx}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 
 
 %%% Macro definitions for Commonly used symbols
@@ -67,6 +70,41 @@
 \newcommand{\teng}[1]{\ensuremath{\boldsymbol{#1}}}
 \newcommand{\ten}[1]{\ensuremath{\mathbf{#1}}}
 
+% ================= python ===========================
+% ================= python ===========================
+% ================= python ===========================
+% Default fixed font does not support bold face
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{12} % for bold
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{12}  % for normal
+
+% Custom colors
+\usepackage{color}
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+
+\usepackage{listings}
+\usepackage{minted}
+
+\lstset{language=Python,
+  basicstyle=\ttfamily\bfseries\small,
+  commentstyle=\color{red}\itshape,
+  stringstyle=\ttfamily\color{green!50!black},
+  showstringspaces=false,
+  keywordstyle=\color{blue}\bfseries}%
+% ================= python ===========================
+% ================= python ===========================
+% ================= python ===========================
+
+
+% ================= tikz ===========================
+% ================= tikz ===========================
+\usetikzlibrary{arrows.meta,chains,%
+                decorations.pathreplacing}
+
+\usetikzlibrary{matrix,backgrounds}
+% ================= tikz ===========================
+% ================= tikz ===========================
 
 \begin{document}
 
@@ -90,7 +128,8 @@
 %*******************************************************************
 %                         Title Page
 %*******************************************************************
-\title{SPH DEM coupling for solid particle erosion}
+\title{Coupled Smoothed Particle Hydrodynamics - Discrete Element Method
+  for Fluid and Solid Mechanics}
 \author{Dinesh Adepu}
 
 %% Print the date. Today's date comes by default, change it here to
@@ -137,7 +176,7 @@
 %                         Dedication Page
 %*******************************************************************
 % \dedication[Dedicated to Nietzsche]
-\dedication[Dedicated to \cdots]
+\dedication[To \\ \cdots]
 %\addintoc{Dedication}
 
 %*******************************************************************
@@ -154,7 +193,7 @@
 %*******************************************************************
 %                         Approval Sheet
 %*******************************************************************
-%\makeapproval{thesis}
+\makeapproval{thesis}
 %\makeapproval{dissertation}
 
 %*******************************************************************
@@ -201,6 +240,7 @@
 \include{chapter_intro/intro}
 \include{chapter_ctvf/ctvf}
 \include{chapter_csph/csph}
+\include{chapter_implementation_detail/implementation_detail}
 \include{chapter_fsi/fsi}
 \include{chapter_rfc/rfc}
 \include{chapter_erosion/erosion}

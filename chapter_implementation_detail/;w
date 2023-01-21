@@ -1,0 +1,612 @@
+\chapter{Implementation details}
+\label{chap:implementation_detail}
+
+\section{Introduction}
+\label{sec:intro}
+
+Current work primary goal is to provide an open-source framework of the current
+multiphase processes. It is implemented in PySPH. In the current chapter we
+discuss implementation details of discrete element method. Tracking per particle
+histories.
+
+In the current work we have implemented SPH to model fluid and structural
+dynamics. Using a contact force law, interaction between the colliding solids is
+handled. Essentially we need to implement discretized equations (ref equations)
+in PySPH. PySPH provides with several precomputed and these equations doesn't
+need us to track the particles which are in contact and there is no need to save
+pair wise interaction. However, to model the interaction between the solids we
+need to keep track of the tangential displacement. Per particle pairwise
+interactions can be implemented with a new data structure where adding and
+removing are simple, however such data structures are not cache friendly and
+slows down the computations due to the memory management. In order to save the
+per particle pairwise interaction is non-trivial to implement with the
+philosophy of SPH. \url{https://pysph.readthedocs.io} covers implementation of
+SPH algorithms in PySPH in a good detail. In the current chapter we discuss how
+to track the pairwise interactions efficiently with in the given tools of PySPH.
+PySPH essentially is built only on top of fixed size arrays, and gives the best
+performance when there is no frequent creation of arrays or adding or removing
+of elements from the array. Framework of PySPH broadly follows entity-component
+system philosophy. Where with the given components, such as the vectors, we run
+equations on the components to compute the accelerations and several different
+variable to move the system forward in time.
+
+
+\FloatBarrier%
+\section{Contact force computation}
+\label{sec:tracking-particles-histories}
+To compute the force on particle $a$ of body $A$ in
+\cref{sec:contact-algorithm}, we explicitly need to track tangential spring
+displacement as soon as the particle $a$ comes into contact with body $B$. Each
+particle $a$ can be in contact with $k$ number of bodies at a given time. Here,
+$k$ is not a constant and maximum number of bodies a particle at an instant can
+be in contact can vary with two and three dimensions and with time. We need to
+track the tangential spring displacement attached to particle $a$ with $k$
+number of bodies until they lose contact, while the two bodies being in contact
+is verified by \cref{eq:csph:cf-overlap}. Since, PySPH algorithms only work on
+array, we need to save these per particle tangential displacement values in
+arrays. We will discuss two efficient ways of implementing tracking pair wise
+interaction algorithms, one where there are few number of bodies in a given
+simulation in \cref{sec:tracking-few-bodies}, and simulations involving many
+bodies in \cref{sec:tracking-many-bodies}.
+
+Put DEM simulation.
+
+
+
+
+\FloatBarrier%
+\section{Tracking particles histories with fixed number of constants}
+\label{sec:tracking-few-bodies}
+
+In the current section, we consider the computation of contact force on a
+particle of a body due to the contact with three other bodies.
+\Cref{fig:id:four_bodies_contact} shows the positions of bodies at three
+different instants. Here, body 2 is in contact with three other bodies at
+different time instants. This examples is utilized to describe the contact force
+algorithm implemented in \cref{chap:csph} where elastic solids are colliding. We deal with cases where there are a maximum of $10$ number of
+bodies in a given simulation. In these cases we can create an array with a fixed
+size by assigning each index to a specific pair.
+% \begin{figure}[!htpb]
+%   \centering
+%   \includegraphics[width=0.7\textwidth]{images/implementation_detail/images/few_bodies/four_bodies_interact_initial}
+%   \caption{}
+% \label{}
+% \end{figure}
+
+\begin{figure}[!htpb]
+  \centering
+  \begin{subfigure}{0.32\textwidth}
+    \centering
+    \includegraphics[width=1.0\textwidth]{images/implementation_detail/images/few_bodies/four_bodies_initial}
+    \subcaption{A sliding body.}%\label{fig:rings:ipst-nu-0.47-0}
+  \end{subfigure}
+  \begin{subfigure}{0.32\textwidth}
+    \centering
+    \includegraphics[width=1.0\textwidth]{images/implementation_detail/images/few_bodies/four_bodies_interact}
+    \subcaption{A sliding body.}%\label{fig:rings:ipst-nu-0.47-0}
+  \end{subfigure}
+  \begin{subfigure}{0.32\textwidth}
+    \centering
+    \includegraphics[width=1.0\textwidth]{images/implementation_detail/images/few_bodies/four_bodies_final}
+    \subcaption{A symmetric collision between rectangular solids.}%\label{fig:rings:ipst-nu-0.47-1}
+  \end{subfigure}
+  \caption{Examples used to explore the importance of choosing a primary.}
+\label{fig:id:four_bodies_contact}
+\end{figure}
+
+
+Let us consider the computation of contact force for body $1$ due to the interaction
+with the three other bodies. Body $1$ is discretized into $M$ number of particles,
+while creation of the particle array, PySPH provides each of these particles
+with mass, density, and other properties as assigned by the user. Code segment
+describing the initiation of a particle array in
+\begin{python}
+body_2 = get_particle_array(x=[0., 1., 2., 3.],
+                            y=[0., 0., 0., 0.],
+                            m=m,
+                            rho=rho,
+                            ...=...
+                            name="body")
+\end{python}
+
+Cases with fewer bodies, we assign a constant index for each particle. This is
+achieved by the stride property of PySPH. In \Cref{fig:stride_index_trace} we
+initialize an array of size $M \times 4$. Here $M$ is the number of particles of
+the $1^{st}$ body.
+\begin{figure}[!htpb]
+  \centering
+  \begin{tikzpicture}
+    \matrix (m) [matrix of nodes,
+    nodes={draw, minimum size=10mm,anchor=center},
+    nodes in empty cells, minimum height = 1cm,
+    row 1/.style={nodes={draw=none}},]
+    {
+      Body Id: & 0 & 1 & 2 & 3 & & 0 & 1 & 2 & 3 & &  0 & 1 & 2 & 3 \\
+      Index & 0 &1& 2 &3 & $\cdots$ &4k& 4k+1& 4k+2& 4k+3 & $\cdots$ &4M-4 &4M-3 &4M-2& 4M-1\\
+    };
+  \end{tikzpicture}
+  \caption{Another Tikz figure}
+\label{fig:stride_index_trace}
+\end{figure}
+From \Cref{fig:stride_index_trace}, we assign add a property to the particle
+array of stride length no of bodies, which in the current case is $4$. Pair wise
+properties which are needed to be tracked all are assigned in the way. Each body
+is given a identity, in the current case we assign a $dem\_id$ to each body. We
+initialize the tangential displacement of the each particle to $0$, and as the
+particle of body comes into contact of another body, we increment it using
+\cref{eq:tangential-force}.
+
+To describe the tracking algorithm, we choose \cref{fig:tracking_indices}. We
+will compute the pairwise interactions of body $1$ with three other bodies. Let
+us track the overlap amount of particle $b$ belonging to body $2$ with time. At
+the initiation of the simulation, the overlap is zero.
+\begin{figure}[!htpb]
+  \centering
+  \begin{tikzpicture}
+    \matrix (m) [matrix of nodes,
+    nodes={draw, minimum size=10mm,anchor=center},
+    nodes in empty cells, minimum height = 1cm,
+    row 1/.style={nodes={draw=none}},]
+    {
+      Body Id: & 0 & 1 & 2 & 3 & & 0 & 1 & 2 & 3 & &  0 & 1 & 2 & 3 \\
+      Index & 0 & 1 & 2 & 3 & $\cdots$ & 4k & 4k+1 & 4k+2 & 4k+3 & $\cdots$ & 4M-4 & 4M-3 & 4M-2 & 4M-1\\
+      Overlap & 0 & 0 & 0 & 0 & $\cdots$ & 0 & 0 & 0 & 0 & $\cdots$ & 0 & 0 & 0 & 0 \\
+    };
+  \end{tikzpicture}
+  \caption{Another Tikz figure}
+\label{fig:few_bodies_initialize_overlap}
+\end{figure}
+At an intermediate time body $1$ interacts with body $2$ and body $3$. Lets
+assume particle with index $k$ and $f$ of body $1$ are in contact with body $2$, $3$
+respectively. The overlap amount is updated as
+\begin{figure}[!htpb]
+  \centering
+  \begin{tikzpicture}
+    \matrix (m) [matrix of nodes,
+    nodes={draw, minimum size=12mm,anchor=center},
+    nodes in empty cells, minimum height = 1cm,
+    row 1/.style={nodes={draw=none}},]
+    {
+      Body Id: & & 0 & 1 & 2 & 3 & &  0 & 1 & 2 & 3 & & \\
+      Index & $\cdots$ & 4k & 4k+1 & 4k+2 & 4k+3 & $\cdots$ & 4f & 4f+1 & 4f+2 & 4f+3 & $\cdots$ \\
+      Overlap & $\cdots$ & 0 & 0 & $\delta$ & 0 & $\cdots$ & 0 & 0 & 0 & $\delta$ & $\cdots$ \\
+    };
+  \end{tikzpicture}
+  \caption{Another Tikz figure}
+\label{fig:stride_index_trace}
+\end{figure}
+Let us assume particle with index $q$ is in contact with both body$2$ and body $3$ at an intermediate stage.
+\begin{figure}[!htpb]
+  \centering
+  \begin{tikzpicture}
+    \matrix (m) [matrix of nodes,
+    nodes={draw, minimum size=12mm,anchor=center},
+    nodes in empty cells, minimum height = 1cm,
+    row 1/.style={nodes={draw=none}},]
+    {
+      Body Id: & & 0 & 1 & 2 & 3 & & \\
+      Index & $\cdots$ & 4q & 4q+1 & 4q+2 & 4q+3 & $\cdots$ \\
+      Overlap & $\cdots$ & 0 & 0 & $\delta$ & $\delta$ & $\cdots$ \\
+    };
+  \end{tikzpicture}
+  \caption{Another Tikz figure}
+\label{fig:stride_index_trace}
+\end{figure}
+After some time let the particle $l$ lose its collision with body $3$, and
+particle $k$ is still contact with body $2$. The overlap array is updated as,
+\begin{figure}[!htpb]
+  \centering
+  \begin{tikzpicture}
+    \matrix (m) [matrix of nodes,
+    nodes={draw, minimum size=12mm,anchor=center},
+    nodes in empty cells, minimum height = 1cm,
+    row 1/.style={nodes={draw=none}},]
+    {
+      Body Id: & & 0 & 1 & 2 & 3 & &  0 & 1 & 2 & 3 & & \\
+      Index & $\cdots$ & 4k & 4k+1 & 4k+2 & 4k+3 & $\cdots$ & 4f & 4f+1 & 4f+2 & 4f+3 & $\cdots$ \\
+      Overlap & $\cdots$ & 0 & 0 & $\delta$ & 0 & $\cdots$ & 0 & 0 & 0 & 0 & $\cdots$ \\
+    };
+  \end{tikzpicture}
+  \caption{Another Tikz figure}
+\label{fig:stride_index_trace}
+\end{figure}
+
+While let particle $q$ lose its contact with bodies $2$ and $3$, and came into
+contact with body $0$. In this case, the overlap array for the indices belonging
+to the particle $q$ are updated as
+\begin{figure}[!htpb]
+  \centering
+  \begin{tikzpicture}
+    \matrix (m) [matrix of nodes,
+    nodes={draw, minimum size=12mm,anchor=center},
+    nodes in empty cells, minimum height = 1cm,
+    row 1/.style={nodes={draw=none}},]
+    {
+      Body Id: & & 0 & 1 & 2 & 3 & & \\
+      Index & $\cdots$ & 4q & 4q+1 & 4q+2 & 4q+3 & $\cdots$ \\
+      Overlap & $\cdots$ & $\delta$ & 0 & 0 & 0 & $\cdots$ \\
+    };
+  \end{tikzpicture}
+  \caption{Another Tikz figure}
+\label{fig:stride_index_trace}
+\end{figure}
+
+We add a stride property to all bodies to track the pairwise interaction. Here,
+as a proof of concept, a sample property of stride length of $4$ (no of bodies
+here) is added to the particle array as
+\begin{python}
+body_2.add_property(name='overlap', stride=4)
+\end{python}
+
+To compute the pairwise interaction we use the following code
+
+\begin{python}
+class ComputeContactForceDistanceAndClosestPointMohseni(Equation):
+    def initialize(self, d_idx, d_overlap, d_total_no_bodies, dt, t):
+        i, t1, t2 = declare('int', 3)
+
+        t1 = d_total_no_bodies[0] * d_idx
+
+        for i in range(d_total_no_bodies[0]):
+            t2 = t1 + i
+            d_overlap[t2] = 0.
+
+    def loop(self, d_idx, d_total_no_bodies, s_idx,
+            s_dem_id, dt, RIJ):
+        t1, t2 = declare('int', 2)
+
+        t1 = d_total_no_bodies[0] * d_idx
+        t2 = t1 + s_dem_id[s_idx]
+
+        d_overlap[t2] += RIJ
+\end{python}
+
+
+
+
+\FloatBarrier%
+\section{Tracking particles histories adding removing particles}
+\label{sec:tracking-many-bodies}
+
+It is advantageous to use a fixed set of strided array and assign a specific
+index to all the possible interaction to track a certain pairwise quantity when
+the total number of interaction a particle can possible have are small. However,
+physical processes like soil modeling, a particle can be contact with several
+million particles through out the simulation and at a given time a maximum limit
+will be fixed.
+
+In such a case we will dynamically add and remove the contacts for efficient
+simulation.
+
+\subsection{Single particle array}
+\begin{figure}[!htpb]
+  \centering
+  \includegraphics[width=0.3\textwidth]{images/implementation_detail/images/many_bodies/many_bodies_t_0}
+  \caption{}
+\label{}
+\end{figure}
+Let us consider a problem where there are $15$ particles in a given simulation.
+At a given time no particle can have more than $3$ contacts. Given this,
+\begin{figure}[!htpb]
+  \centering
+  \begin{tikzpicture}
+    \matrix (m) [matrix of nodes,
+    nodes={draw, minimum size=12mm,anchor=center},
+    nodes in empty cells, minimum height = 1cm,
+    row 1/.style={nodes={draw=none}},]
+    {
+      Contact Id: & -1 & -1 & -1 &  & -1 & -1 & -1 & & -1 & -1 & -1  \\
+      Index & 0 & 1 & 2 & $\cdots$ & 4k & 4k+1 & 4k+2 & $\cdots$ & 42 & 43 & 44 \\
+      Overlap & 0 & 0 & 0 & $\cdots$ & 0 & 0 & 0 & $\cdots$ & 0 & 0 & 0 \\
+    };
+  \end{tikzpicture}
+  \caption{Another Tikz figure}
+\label{fig:many_bodies_initialize_overlap}
+\end{figure}
+We assign a property to the particle array with a stride length of $3$. Since
+there are $15$ particles, the resulting length of the tracking property would be
+$45$. These $15$ particles belong to the same particle array. Since, we are not
+assigning a constant index for a particle with another particle, we need
+additional stride property of integer type, to keep track of the contact
+particle indices at a given time. Code fragment of adding these two stride
+properties is
+\begin{python}
+  pa.add_property('cnt_idx', stride=3, type="int")
+  pa.cnt_idx[:] = -1
+  pa.add_property(name='overlap', stride=3)
+\end{python}
+
+
+\begin{figure}[!htpb]
+  \centering
+  \includegraphics[width=0.3\textwidth]{images/implementation_detail/images/many_bodies/many_bodies_t_1}
+  \caption{}
+\label{}
+\end{figure}
+At an intermediate time $t_1$, the particles are as shown in figure. From figure,
+we can see that particle with index $1$ is in contact with $0, 6, 7$ particles
+and particle with index $8$ with $5$ and $9$. Let us assume the contacts are
+formed for the first time.
+\begin{figure}[!htpb]
+  \centering
+  \begin{tikzpicture}
+    \matrix (m) [matrix of nodes,
+    nodes={draw, minimum size=10mm,anchor=center},
+    nodes in empty cells, minimum height = 1cm,
+    row 1/.style={nodes={draw=none}},]
+    {
+      Contact Id: & $\cdots$ & 0 & 6 & 7 &  & 5 & 9 & -1 & & 14 & -1 & -1 & & \\
+      Index & $\cdots$ & 3 & 4 & 5 & $\cdots$ & 24 & 25 & 26 & $\cdots$ & 33 & 34 & 35 & $\cdots$\\
+      Overlap  &$\cdots$ & 0 & 0 & 0 & $\cdots$ & 0 & 0 & 0 & $\cdots$ & 0 & 0 & 0 & $\cdots$ \\
+    };
+  \end{tikzpicture}
+  \caption{Another Tikz figure}
+\label{fig:many_bodies_initialize_overlap}
+\end{figure}
+
+We use two equations, one is to add new contacts and update the existing
+contacts value, while the second one is to remove particle indices which are no
+more in contact. We assign the new formed contact for the particles $1, 8$ and
+$11$. This is achieved in PySPH using the following code snippet.
+\begin{python}
+class TrackTheOverlap(Equation):
+    def loop(self, d_idx, d_m, d_cnt_idx, d_overlap, d_total_contacts,
+             d_max_contacts_limit, RIJ, d_rad, s_idx, s_rad):
+        p, q1, tot_ctcs, j, found_at, found = declare('int', 6)
+        overlap = -1.
+
+        # check the particles are not on top of each other.
+        if RIJ > 1e-12:
+            overlap = d_rad[d_idx] + s_rad[s_idx] - RIJ
+
+        # ---------- force computation starts ------------
+        # if particles are overlapping
+        if overlap > 0:
+            # total number of contacts of particle i in destination
+            tot_ctcs = d_total_tng_contacts[d_idx]
+
+            # d_idx has a range of tracking indices with sources
+            # starting index is p
+            p = d_idx * d_max_tng_contacts_limit[0]
+            # ending index is q -1
+            q1 = p + tot_ctcs
+
+            # check if the particle is in the tracking list
+            # if so, then save the location at found_at
+            found = 0
+            for j in range(p, q1):
+                if s_idx == d_tng_idx[j]:
+                    found_at = j
+                    found = 1
+                    break
+            # if the particle is not been tracked then assign an index in
+            # tracking history.
+            if found == 0:
+                found_at = q1
+                d_tng_idx[found_at] = s_idx
+                d_total_tng_contacts[d_idx] += 1
+
+            # implies we are tracking the particle
+            else:
+                # Save the pair wise quantity at found_at
+                d_overlap[found_at] = overlap
+\end{python}
+
+
+
+\begin{figure}[!htpb]
+  \centering
+  \includegraphics[width=0.3\textwidth]{images/implementation_detail/images/many_bodies/many_bodies_t_2}
+  \caption{}
+\label{}
+\end{figure}
+At another time $t_2$, few particles lose contacts, and some other particles
+gain new contact. The particle addition follows above code. However, after every
+time step, before adding new contacts, we will remove any contacts from previous
+times, which are not in contact.
+\todoin{Add tikz figure of removing algorithm}
+
+\begin{python}
+class RemoveParticlesNotInContact(Equation):
+    def initialize_pair(self, d_idx, d_x, d_y, d_z, d_rad,
+                        d_total_contacts, d_cnt_idx,
+                        d_max_contacts_limit, d_overlap,
+                        s_rad):
+        p = declare('int')
+        count = declare('int')
+        k = declare('int')
+        xij = declare('matrix(3)')
+        last_idx_tmp = declare('int')
+        sidx = declare('int')
+        rij = 0.0
+
+        idx_total_ctcs = declare('int')
+        idx_total_ctcs = d_total_contacts[d_idx]
+        # particle idx contacts has range of indices
+        # and the first index would be
+        p = d_idx * d_max_contacts_limit[0]
+        last_idx_tmp = p + idx_total_ctcs - 1
+        k = p
+        count = 0
+
+        # loop over all the contacts of particle d_idx
+        while count < idx_total_ctcs:
+            # The index of the particle with which
+            # d_idx in contact is
+            sidx = d_cnt_idx[k]
+
+            if sidx == -1:
+                break
+            else:
+                xij[0] = d_x[d_idx] - s_x[sidx]
+                xij[1] = d_y[d_idx] - s_y[sidx]
+                xij[2] = d_z[d_idx] - s_z[sidx]
+                rij = sqrt(xij[0] * xij[0] + xij[1] * xij[1] +
+                           xij[2] * xij[2])
+
+                overlap = d_rad_s[d_idx] + s_rad_s[sidx] - rij
+
+                if overlap <= 0.:
+                    # if the swap index is the current index then
+                    # simply make it to null contact.
+                    if k == last_idx_tmp:
+                        d_cnt_idx[k] = -1
+                        d_overlap[k] = 0.
+                    else:
+                        # swap the current tracking index with the final
+                        # contact index
+                        d_cnt_idx[k] = d_cnt_idx[last_idx_tmp]
+                        d_cnt_idx[last_idx_tmp] = -1
+
+                        # swap tangential x displacement
+                        d_overlap[k] = d_overlap[last_idx_tmp]
+                        d_overlap[last_idx_tmp] = 0.
+
+                        # decrease the last_idx_tmp, since we swapped it to
+                        # -1
+                        last_idx_tmp -= 1
+
+                    # decrement the total contacts of the particle
+                    d_total_contacts[d_idx] -= 1
+                else:
+                    k = k + 1
+                count += 1
+\end{python}
+
+
+\subsection{Particle index clash}
+Let us consider particles which are divided into two particle arrays, as per
+PySPH. Two particle arrays here has $15$ particles in each of its particle
+array. Each particle can interact with particles in its particle array as well as in the 2nd particle array.
+\begin{figure}[!htpb]
+  \centering
+  \includegraphics[width=0.7\textwidth]{images/implementation_detail/images/many_bodies/many_bodies_two_pa_t_0}
+  \caption{}
+\label{}
+\end{figure}
+Figure 1 shows the initial configuration of the particles in particle array 1 and particle array 2.
+\begin{figure}[!htpb]
+  \centering
+  \begin{tikzpicture}
+    \matrix (m) [matrix of nodes,
+    nodes={draw, minimum size=12mm,anchor=center},
+    nodes in empty cells, minimum height = 1cm,
+    row 1/.style={nodes={draw=none}},]
+    {
+      Contact Id: & -1 & -1 & -1 &  & -1 & -1 & -1 & & -1 & -1 & -1  \\
+      Index & 0 & 1 & 2 & $\cdots$ & 4k & 4k+1 & 4k+2 & $\cdots$ & 42 & 43 & 44 \\
+      Overlap & 0 & 0 & 0 & $\cdots$ & 0 & 0 & 0 & $\cdots$ & 0 & 0 & 0 \\
+    };
+  \end{tikzpicture}
+  \caption{Another Tikz figure}
+\label{fig:many_bodies_initialize_overlap}
+\end{figure}
+We use a similar approach of adding subtracting particle as the single particle
+array. However, this approach may fail due to a particle being in contact with a
+similar index particle from two different particle arrays, such as particle 8 of
+particle array 1, being in contact with particle 5 of particle array 1 and
+\begin{figure}[!htpb]
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/implementation_detail/images/many_bodies/many_bodies_two_pa_t_1}
+  \caption{}
+\label{}
+\end{figure}
+particle array 2. The resulting array would be,
+\begin{figure}[!htpb]
+  \centering
+  \begin{tikzpicture}
+    \matrix (m) [matrix of nodes,
+    nodes={draw, minimum size=10mm,anchor=center},
+    nodes in empty cells, minimum height = 1cm,
+    row 1/.style={nodes={draw=none}},]
+    {
+      Contact Id: & & 5 & 5 & 1 & & \\
+      Index & $\cdots$ & 24 & 25 & 26 & $\cdots$\\
+      Overlap  &$\cdots$ & 0 & 0 & 0 & $\cdots$\\
+    };
+  \end{tikzpicture}
+  \caption{Another Tikz figure}
+\label{fig:many_bodies_initialize_overlap}
+\end{figure}
+\begin{figure}[!htpb]
+  \centering
+  \includegraphics[width=0.2\textwidth]{images/implementation_detail/images/many_bodies/many_bodies_two_pa_t_1_zoomed}
+  \caption{}
+\label{}
+\end{figure}
+From figure x, it is not clear which particle array does index 5 belong to. To
+solve this issue, when dealing with many particle arrays, we assign one unique
+id to particle arrays. Such as, here, we would add a property named
+$dem\_id$, where for each particle array we would assign a unique id.
+The updated array would look like,
+\begin{figure}[!htpb]
+  \centering
+  \begin{tikzpicture}
+    \matrix (m) [matrix of nodes,
+    nodes={draw, minimum size=10mm,anchor=center},
+    nodes in empty cells, minimum height = 1cm,
+    row 1/.style={nodes={draw=none}},]
+    {
+      Unique id : & & 1 & 2 & 2 & & \\
+      Contact Id: & & 5 & 5 & 1 & & \\
+      Index & $\cdots$ & 24 & 25 & 26 & $\cdots$\\
+      Overlap  &$\cdots$ & 0 & 0 & 0 & $\cdots$\\
+    };
+  \end{tikzpicture}
+  \caption{Another Tikz figure}
+\label{fig:many_bodies_initialize_overlap}
+\end{figure}
+The updated code, with multiple particle arrays reads,
+\begin{python}
+class TrackTheOverlap(Equation):
+    def loop(self, d_idx, d_m, d_cnt_idx, d_overlap, d_total_contacts,
+             d_max_contacts_limit, RIJ, d_rad, s_idx, s_rad):
+        p, q1, tot_ctcs, j, found_at, found = declare('int', 6)
+        overlap = -1.
+
+        # check the particles are not on top of each other.
+        if RIJ > 1e-12:
+            overlap = d_rad[d_idx] + s_rad[s_idx] - RIJ
+
+        # ---------- force computation starts ------------
+        # if particles are overlapping
+        if overlap > 0:
+            # total number of contacts of particle i in destination
+            tot_ctcs = d_total_contacts[d_idx]
+
+            # d_idx has a range of tracking indices with sources
+            # starting index is p
+            p = d_idx * d_max_contacts_limit[0]
+            # ending index is q -1
+            q1 = p + tot_ctcs
+
+            # check if the particle is in the tracking list
+            # if so, then save the location at found_at
+            found = 0
+            for j in range(p, q1):
+                if s_idx == d_cnt_idx[j] and s_unique_id[s_idx] == d_cnt_unique_idx[j]:
+                    found_at = j
+                    found = 1
+                    break
+            # if the particle is not been tracked then assign an index in
+            # tracking history.
+            if found == 0:
+                found_at = q1
+                d_cnt_idx[found_at] = s_idx
+                d_cnt_unique_idx[found_at] = s_unique_id[s_idx]
+                d_total_contacts[d_idx] += 1
+
+            # implies we are tracking the particle
+            else:
+                # Save the pair wise quantity at found_at
+                d_overlap[found_at] = overlap
+\end{python}
+
+
+\FloatBarrier%
+\subsection{Particles in Drum DEM case}
+\label{sec:discrete-element-method}
+
+\FloatBarrier%
+\section{Multiphase flows with substepping}
+\label{sec:tracking-particles-histories}

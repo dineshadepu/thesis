@@ -705,26 +705,6 @@
     volume       = 337,
     pages        = {216--232}
 }
-@inproceedings{PRKP:edac-sph-iccm2015,
-    title        = {Entropically Damped Artificial Compressibility for {SPH}},
-    author       = {Prabhu Ramachandran and Kunal Puri},
-    year         = 2015,
-    month        = {14th -- 17th, July},
-    booktitle    = {Proceedings of the 6th International Conference on Computational Methods 5 conference},
-    address      = {Auckland, New Zealand},
-    volume       = 2,
-    pages        = {Paper ID 1210},
-    url          = {http://www.sci-en-tech.com/ICCM2015/PDFs/1210-3216-1-PB.pdf},
-    optcrossref  = {},
-    optkey       = {},
-    editor       = {G.~R.~Liu and Raj Das},
-    optnumber    = {},
-    optseries    = {},
-    optorganization = {},
-    optpublisher = {ScienTech},
-    optnote      = {},
-    optannote    = {}
-}
 @inproceedings{PRKP:PySPH-particles13,
     title        = {{PySPH}: a framework for parallel particle simulations},
     author       = {Prabhu Ramachandran and Kunal Puri},
@@ -2167,7 +2147,7 @@
 @article{dettmer_computational_2006,
     title        = {A computational framework for fluid–rigid body interaction: Finite element formulation and applications},
     shorttitle   = {A computational framework for fluid–rigid body interaction},
-    author       = {Dettmer, W. and Perić, D.},
+    author       = {Dettmer, W and Peri{\'c}, D},
     year         = 2006,
     series       = {A Tribute to Thomas J.R. Hughes on the Occasion of his 60th Birthday},
     volume       = 195,
@@ -2892,25 +2872,19 @@
     pages        = {214--226},
     doi          = {http://dx.doi.org/10.1006/jcph.1997.5776}
 }
-@inproceedings{PRKP:edac-sph-iccm2015,
-    title        = {Entropically Damped Artificial Compressibility for {SPH}},
-    author       = {Prabhu Ramachandran and Kunal Puri},
-    year         = 2015,
-    month        = {14th -- 17th, July},
-    booktitle    = {Proceedings of the 6th International Conference on Computational Methods 5 conference},
-    address      = {Auckland, New Zealand},
-    volume       = 2,
-    pages        = {Paper ID 1210},
-    url          = {http://www.sci-en-tech.com/ICCM2015/PDFs/1210-3216-1-PB.pdf},
-    optcrossref  = {},
-    optkey       = {},
-    editor       = {G.~R.~Liu and Raj Das},
-    optnumber    = {},
-    optseries    = {},
-    optorganization = {},
-    optpublisher = {ScienTech},
-    optnote      = {},
-    optannote    = {}
+
+@article{PRKP:edac-sph-iccm2015,
+title = {Entropically damped artificial compressibility for SPH},
+journal = {Computers & Fluids},
+volume = {179},
+pages = {579-594},
+year = {2019},
+issn = {0045-7930},
+doi = {https://doi.org/10.1016/j.compfluid.2018.11.023},
+url = {https://www.sciencedirect.com/science/article/pii/S0045793018309046},
+author = {Prabhu Ramachandran and Kunal Puri},
+keywords = {SPH, Entropically Damped Artificial Compressibility, Artificial Compressibility, Free Surface Flows},
+abstract = {In this paper, the Entropically Damped Artificial Compressibility (EDAC) formulation of Clausen (2013) is used in the context of the Smoothed Particle Hydrodynamics (SPH) method for the simulation of incompressible fluids. Traditionally, weakly-compressible SPH (WCSPH) formulations have employed artificial compressiblity to simulate incompressible fluids. EDAC is an alternative to the artificial compressiblity scheme wherein a pressure evolution equation is solved in lieu of coupling the fluid density to the pressure by an equation of state. The method is explicit and is easy to incorporate into existing SPH solvers using the WCSPH formulation. This is demonstrated by coupling the EDAC scheme with the recently proposed Transport Velocity Formulation (TVF) of Adami etÂ al.Â (2013). The method works for both internal flows and for flows with a free surface. Several benchmark problems are considered to evaluate the proposed scheme and it is found that the EDAC scheme gives results that are as good or sometimes better than those produced by the TVF or standard WCSPH. The scheme is robust and produces smooth pressure distributions and does not require the use of an artificial viscosity in the momentum equation although using some artificial viscosity is beneficial.}
 }
 @article{sun_consistent_2019,
     title        = {A consistent approach to particle shifting in the delta - {Plus} -{SPH} model},
@@ -3041,4 +3015,51 @@ dong2016smoothed,
     year = {2017},
     pages = {e3174904},
     file = {Full Text PDF:/home/dinesh/phd/zotero/storage/929EWEV7/Qiu et al. - 2017 - A 3D Simulation of a Moving Solid in Viscous Free-.pdf:application/pdf;Snapshot:/home/dinesh/phd/zotero/storage/46GKA2XS/3174904.html:text/html},
+}
+
+@article{luding_dem_2008,
+author = { Stefan   Luding },
+title = {Introduction to discrete element methods},
+journal = {European Journal of Environmental and Civil Engineering},
+volume = {12},
+number = {7-8},
+pages = {785-826},
+year  = {2008},
+publisher = {Taylor & Francis},
+doi = {10.1080/19648189.2008.9693050},
+URL = {https://doi.org/10.1080/19648189.2008.9693050},
+eprint = {https://doi.org/10.1080/19648189.2008.9693050}}
+
+
+@article{wu_two-way_2014,
+    title = {A two-way coupled simulation of moving solids in free-surface flows},
+    volume = {100},
+    issn = {0045-7930},
+    url = {https://www.sciencedirect.com/science/article/pii/S0045793014002023},
+    doi = {https://doi.org/10.1016/j.compfluid.2014.05.010},
+    abstract = {This study developed a novel two-way dynamic coupled numerical model to simulate moving solids in free surface flows. The fluid flows and hydrodynamic pressures are simulated by a Large Eddy Simulation model, and the free surface is tracked by the Volume-of-Fluid (VOF) method. The fluid response from the solid motion is modeled through specifying the cell-face velocity with partial-cell treatment (PCT). The displacement and rotation of the solids are calculated by the Discrete Element Method (DEM). In order to verify the present model, two laboratory experiments of rectangular blocks floating and sinking in a water tank are conducted. The numerical simulations compare favorably with the experimental results on the trajectory of the moving blocks. The numerical scheme presented in this paper can be used as a design tool for practical problems involved moving objects in free-surface flows.},
+    journal = {Computers \& Fluids},
+    author = {Wu, Tso-Ren and Chu, Chia-Ren and Huang, Chih-Jung and Wang, Chung-Yue and Chien, Ssu-Ying and Chen, Meng-Zhi},
+    year = {2014},
+    keywords = {Discrete Element Method, Fluid structure interaction, Free surface flow, Large Eddy Simulation, Moving solid, Volume of Fluid},
+    pages = {347--355},
+}
+
+@article{johnson1983constitutive,
+  title={A constitutive model and data for materials subjected to large strains, high strain rates, and high temperatures},
+  author={Johnson, Gordon R},
+  journal={Proc. 7th Inf. Sympo. Ballistics},
+  pages={541--547},
+  year={1983}
+}
+
+@article{fatehi2011error,
+  title={Error estimation in smoothed particle hydrodynamics and a new scheme for second derivatives},
+  author={Fatehi, Rouhollah and Manzari, Mehrdad Taghizadeh},
+  journal={Computers \& Mathematics with Applications},
+  volume={61},
+  number={2},
+  pages={482--498},
+  year={2011},
+  publisher={Elsevier}
 }

@@ -5,17 +5,15 @@
 
 \section{Introduction}
 \label{sec:intro}
-With several particles impinging the target while solid particle erosion, the
-particles among themselves collide. One needs to model the interaction between
-these impacting bodies to handle the collision among these colliding bodies when
-they are elastic. Such contact modeling allows us to handle the interaction
-between the target and the impactor when they are assumed as elastic or
-elastic-plastic. The currently developed solver leads to unphysical interactions
-in modeling the collision of objects when they are close by but not touching.
-Further, the solver doesn't incorporate the friction between the colliding
-bodies. In the current chapter, a contact force model is incorporated into the
-existing solver to handle the interaction between the colliding solids.
-Specifically, we consider bodies with arbitrary shapes.
+In the current chapter we model the collision between elastic bodies. Modeling
+the collision among elastic solids allows us to handle the interaction between
+the target and the impactor when they are assumed as elastic or elastic-plastic.
+An SPH based solution leads to unphysical interactions in modeling the collision
+of objects when they are close by but not touching. Further, SPH model does not
+incorporate friction between the colliding bodies. In the current chapter, a
+contact force model is incorporated into the existing solver to handle the
+interaction between the colliding solids. Specifically, we consider bodies with
+arbitrary shapes.
 
 
 The collision of arbitrary solid bodies occurs everywhere around us. Apart
@@ -58,7 +56,9 @@ to simulate such problems accurately.
 
 
 In the current work, the collision between elastic solids is modeled using a
-penalty-based contact force model. Unlike the approach of
+penalty-based contact force model. A contact force based approach for collision
+handling will eliminate the spurious interaction between bodies, which occurs
+while modeling with an SPH-based model. Unlike the approach of
 \citep{yan2021simulation}, the proposed contact force model can handle friction
 between the solids as well. The bodies themselves are elastic and this is
 simulated using the CTVF SPH method \citep{adepu2021corrected}. The
@@ -75,23 +75,11 @@ secondary body. We explore these questions in the present work. The work of
 primary and secondary bodies. \cite{vyas2021collisional} also consider the
 collision between a rigid and elastic body. In the present work we only
 implement the collision model of \citep{mohseni2021particle} due to its
-simplicity. The model proposed by \cite{vyas2021collisional} is more complex
-to implement. Several examples are simulated to validate the current scheme,
+simplicity. The model proposed by \cite{vyas2021collisional} is more complex to
+implement. Several examples are simulated to validate the current scheme,
 ranging from simulations compared with FEM, analytical results as well as
-experimental. Finally, in the interest of reproducibility and easier ability
-for researchers to build on this work, our code is open source and can be
-found at \url{https://gitlab.com/pypr/collision_sph}. We use the
-\texttt{automan} package~\citep{automan2018} to automate all the results
-generated in the current manuscript.
-
-This current chapter is structured as follows. In
-\cref{sec:SPH-model-for-structural-dynamics}, we demonstrate the numerical
-method utilized to model the dynamics of collision of frictional elastic solids.
-In \cref{sec:contact-algorithm}, we present the contact force model used to
-resolve the collision among the elastic bodies. The results are provided in
-\cref{sec:results}, where different problems from the literature are simulated
-to show the capability of the current solver. Problems with collision involving
-two and multiple frictional and friction-less elastic solids are simulated.
+experimental. We next look at the numerical method used to model the collision
+among the elastic solids.
 
 
 \FloatBarrier%
@@ -100,7 +88,9 @@ two and multiple frictional and friction-less elastic solids are simulated.
 
 \subsection{Discrete governing equations}
 \label{sec:discrete-governing-equations}
-The governing equations of CTVF\citep{adepu2021corrected} scheme including the new contact force term are:
+We follow the CTVF formulation developed in \cref{chap:ctvf} to handle the
+structural dynamics of the solid. The governing equations of including the new
+contact force term are:
 \begin{equation}
 \label{eqn:sph-continuity}
   \frac{\tilde{d}\rho_a}{dt} = \sum_{b \in A} \; \frac{m_b}{\rho_{b}} \; (
@@ -116,11 +106,7 @@ The governing equations of CTVF\citep{adepu2021corrected} scheme including the n
   \frac{\teng{\sigma}^{'}_{b}}{\rho_b^2} + \Pi_{ab} \ten{I} \bigg) \bigg]  \cdot \nabla_{a} W_{ab} +
   \ten{g}_{a} + \frac{1}{m_a}\sum_{b \in B} \ten{F}^{\text{cont}}_{a \leftarrow b}.
 \end{equation}
-In the above equations, the density, mass, pressure, deviatoric stress,
-momentum velocity, and transport velocity of particle $a$ are denoted by
-$\rho_a$, $m_a$, $p_a$, $\teng{\sigma}^{'}_a$, $\ten{u}_a$ and
-$\ten{\tilde{u}}_a$ respectively. $\ten{g}_{a}$, is the acceleration due to
-gravity and $\ten{F}^{cont}_{a}$ is the force acting on particle $a$ due to
+Here, $\ten{F}^{cont}_{a}$ is the force acting on particle $a$ due to
 \begin{figure}[!htpb]
   \centering
   \includegraphics[width=1.0\textwidth]{images/csph/images/contact_force/contact_force_description}
@@ -128,204 +114,10 @@ gravity and $\ten{F}^{cont}_{a}$ is the force acting on particle $a$ due to
     secondary.}
 \label{fig:bodies_under_collision}
 \end{figure}
-
 contact with the other elastic bodies which will be discussed in
-\cref{sec:contact-algorithm}. The pressure $p_a$ is evaluated using an
-equation of state:
-\begin{equation}
-\label{eqn:sph-eos}
-  p_a = K \bigg(\frac{\rho_a}{\rho_{0}} - 1 \bigg).
-\end{equation}
-Where, $K=\rho_0 \, c_0^2$ is bulk modulus of the body, with
-$c_0=\sqrt{\frac{E}{3 (1 - 2 \nu)\rho_0}}$ is speed of sound, while $\rho_0$
-as the initial density of the particles. Here, $E$ and $\nu$ are Young's
-modulus and Poisson ratio of the body. The modified material derivative
-($\frac{\tilde{d} }{d t}$) is given as,
-\begin{equation}
-\label{eqn:sph-tvf-material-derivative}
-  \frac{\tilde{d} }{d t} = \frac{\partial }{\partial t} +
-  \tilde{u}_j \frac{\partial }{\partial x_j}.
-\end{equation}
-The additional artificial viscosity term
-$\Pi_{ab}$~\citep{monaghan2005smoothed} in the momentum \cref{eqn:sph-momentum}
-is to maintain the stability of the numerical scheme, given as,
-\begin{align}
-  \label{eq:mom-av}
-  \Pi_{ab} =
-  \begin{cases}
-\frac{-\alpha h_{ab} \bar{c}_{ab} \phi_{ab}}{\bar{\rho}_{ab}}
-  & \ten{u}_{ab}\cdot \ten{r}_{ab} < 0, \\
-  0 & \ten{u}_{ab}\cdot \ten{r}_{ab} \ge 0,
-\end{cases}
-\end{align}
-where,
-%
-\begin{equation}
-  \label{eq:av-phiij}
-  \phi_{ab} = \frac{\ten{u}_{ab} \cdot \ten{r}_{ab}}{r^2_{ab} + 0.01 h^2_{ab}},
-\end{equation}
-%
-where $\ten{r}_{ab} = \ten{r}_a - \ten{r}_b$, $r_{ab} = |\bf{r}_{ab}|$,
-$\ten{u}_{ab} = \ten{u}_a - \ten{u}_b$, $h_{ab} = (h_a + h_b)/2$,
-$\bar{\rho}_{ab} = (\rho_a + \rho_b)/2$, $\bar{c}_{ab} = (c_a + c_b) / 2$,
-$\alpha$ is the artificial viscosity parameter, and $h_a$ is the smoothing
-length.
-
-Deviatoric stress $\teng{\sigma}_a$ evolution follows the Hooke's stress as,
-\begin{equation}
-  \label{eq:jaumann-stress-rate}
-  \frac{d \sigma'_{ij}}{dt} = 2G (\dot{\epsilon}_{ij} - \frac{1}{3}
-  \dot{\epsilon}_{kk} \delta_{ij}) + \sigma^{'}_{ik}  \Omega_{jk} +
-  \Omega_{ik} \sigma^{'}_{kj},
-\end{equation}
-where, $G$ is the shear modulus, $\dot{\epsilon}_{ij}$ is the strain rate
-tensor,
-$ \dot{\epsilon}_{ij} = \frac{1}{2} \bigg(\frac{\partial u_i}{\partial x_j} +
-\frac{\partial u_j}{\partial x_i} \bigg), $ and
-$\Omega_{ij} = \frac{1}{2} \bigg(\frac{\partial u_i}{\partial x_j} -
-\frac{\partial u_j}{\partial x_i} \bigg)$ is the rotation tensor. Here, SPH
-discretization of the gradient of velocity is given as,
-$ \nabla \ten{u}_a = - \sum_{b \in A} \frac{m_b}{\rho_{b}} (\ten{u}_{a} -
-\ten{u}_{b}) \otimes (\nabla_{a} W_{ab}), $ where $\otimes$ is the outer
-product.
-
-The position of the particle is moved using the transport velocity, given as,
-\begin{equation}
-\label{eqn:sph-tvf-velocity}
-  \frac{d\ten{r}_a}{dt} = \ten{\tilde{u}}_a,
-\end{equation}
-where, $\ten{r}_a$ is the position of the particle $a$. The transport velocity
-$\ten{\tilde{u}}_a$ is computed with,
-\begin{equation}
-\label{eqn:particle-tv}
-  \ten{\tilde{u}}_a(t + \Delta t) = \ten{u}_a(t) + \Delta t \; \frac{\tilde{d} \ten{u}_a}{dt} +
-  \bigg(\frac{d \ten{u}_{a}}{dt}\bigg)_{\text{c}} \Delta t.
-\end{equation}
-$\big(\frac{d \ten{u}_a}{dt}\big)_{\text{c}}$ is the homogenization
-acceleration in \cref{eqn:particle-tv} and is computed with an iterative particle
-shifting technique (IPST) \citep{huang_kernel_2019}. In IPST, at each time
-instant a shifting vector of particle $a$ is computed as
-\begin{equation}
-  \label{eq:ipst_step1}
-  \delta r_a^k = U_{\text{IPST}} \; \Delta t \; \sum_{b \in A} (V_b \; \ten{n}_{ab} \; W_{ab}),
-\end{equation}
-where k is the iteration number, $k=(1, 2, 3, \dots)$. $U_{\text{IPST}}$ is
-taken to be four times the maximum velocity of the particles, can possibly
-achieve in a given simulation, found from the numerical experiments. The
-particles are then moved as,
-\begin{equation}
-  \label{eq:ipst_step2}
-  \ten{r}_a^{k+1} = \ten{r}_a^{k} + \delta \ten{r}_a^{k}.
-\end{equation}
-New particle positions are found until the convergence criterion is achieved,
-defined as,
-\begin{equation}
-  \label{eq:ipst_convergence_criterion}
-  |\max(\chi_a^k) - \overline{\chi_a^k}| \leq \epsilon,
-\end{equation}
-where
-\begin{equation}
-  \label{eq:ipst_chi_0}
-  \chi_a^k = h^2 \sum_{b \in A} W^k_{ab}.
-\end{equation}
-%
-Here $\overline{\chi_a^k}$ is set to the maximum value of all the particles at
-initial configuration, which corresponds to the free surface particle. We find
-setting the value to the maximum gives better tensile instability control.
-
-Using the initial ($\ten{r}_a^0$) and final ($\ten{r}_a^K$) positions at the
-given time instant, $\bigg(\frac{d \ten{u}_a}{dt}\bigg)_{\text{c}}$ is
-computed as,
-\begin{equation}
-  \label{eq:ipst_force}
-  \bigg(\frac{d \ten{u}_a}{dt}\bigg)_{\text{c}} =
-  2 \; \frac{\ten{r}_a^{K} - \ten{r}_a^0}{\Delta t^2},
-\end{equation}
-where $\ten{r}_a^K$ is the final position of the particle $a$.
-
-The particle shifting force needs to be adjusted near the free surface, this
-is due to the lack of support for the particles near the free-surface. In
-order to do so we first identify the particles on the free surface, which
-starts with the computation of $\ten{n}^*_a$,
-\begin{equation}
-  \label{eq:normal-approx}
-  \ten{n}^*_a = \sum_{b \in A} -\frac{m_b}{\rho_b} \nabla_a W_{ab},
-\end{equation}
-where, particles with the magnitude of $\ten{n}^*_a$ less than $\frac{1}{4h_a}$, is set to
-zero else we normalize. Next, we smooth $\ten{n}^*_a$ using an SPH approximation,
-\begin{equation}
-  \label{eq:normal}
-  \hat{\ten{n}}_a = \sum_{b \in A} \frac{m_b}{\rho_b}\ten{n}^*_b W_{ab}.
-\end{equation}
-Finally, we compute the normals by normalizing $\hat{\ten{n}}_a$,
-\begin{equation}
-  \label{eq:normal}
-  \ten{n}_a = \frac{\hat{\ten{n}}_a}{||\hat{\ten{n}}_a||}.
-\end{equation}
-The PST is treated near the free surface by adjusting the increment in the
-position near the free surface. We employ a new variable, $h_b$, initialized
-to smoothing length $h$. For particles near the free surface, it is readjusted
-to a value such that its kernel support is up to the closest boundary
-particle. This algorithm identifies the particles close to the free surface.
-By using the identified free surface particles, and particles near the free
-surface, the increment of the position is adjusted as,
-\begin{equation}
- \label{eq:shifting_force_free_surface_adjust_ipst}
- \delta \ten{r}_a =\begin{cases}
-   0& \text{if free-surface},\\
-   \delta \ten{r}_a - (\delta \ten{r}_a  \cdot \ten{n}_a) \ten{n}_a& \text{if $h_b < h$},\\
-   \delta \ten{r}_a & \text{if $h_b = h$}.
- \end{cases}
-\end{equation}
-
-
-\subsection{Time integration}
-
-The time integration follows a kick-drift-kick scheme: first we move the
-velocities of the particles to half time step by using the acceleration at the
-n$\textsuperscript{th}$ time step,
-\begin{equation}
-\begin{aligned}
-\begin{split}
-  \label{eq:velocity-update-stage-1}
-  \ten{u}_a^{n+\frac{1}{2}} &= \ten{u}_a^{n} + \frac{\Delta t}{2} \bigg(\frac{\tilde{d}\ten{u}_{a}}{dt}\bigg)^n,\\
-  \ten{\tilde{u}}_a^{n+\frac{1}{2}} &= \ten{u}_a^{n+\frac{1}{2}} + \frac{\Delta t}{2} \bigg(\frac{d\ten{u}_{a}}{dt}\bigg)^{n}_{c}.
-\end{split}
-\end{aligned}
-\end{equation}
-%
-The time derivatives of density and deviatoric stresses are calculated using
-the \cref{eqn:sph-continuity} and
-\cref{eq:jaumann-stress-rate} by utilizing the velocities at n+$\frac{1}{2}$
-time step. The density, deviatoric stresses and particle position are updated
-by,
-\begin{equation}
-  \label{eq:density-update-stage-2}
-  \rho_{a}^{n+1} = \rho_{a}^{n} + \Delta t \; \bigg(\frac{\tilde{d}\rho_{a}}{dt}\bigg)^{n+\frac{1}{2}},
-\end{equation}
-\begin{equation}
-  \label{eq:stress-update-stage-2}
-  \teng{\sigma}_{a}^{' \; n+1} = \teng{\sigma}_{a}^{' \; n} +
-  \Delta t \; \bigg(\frac{\tilde{d}\teng{\sigma}^{'}_{a}}{dt}\bigg)^{n+\frac{1}{2}},
-\end{equation}
-\begin{equation}
-  \label{eq:position-update-stage-2}
-  \ten{r}_{a}^{n+1} = \ten{r}_{a}^{n} + \Delta t \; \ten{\tilde{u}}_{a}^{n+1}.
-\end{equation}
-
-%
-Finally, the momentum velocity is updated to the n+$1$ time step
-\begin{equation}
-  \label{eq:velocity-update-stage-3}
-  \ten{u}_a^{n+1} = \ten{u}_a^{n+\frac{1}{2}} + \frac{\Delta t}{2} \bigg(\frac{\tilde{d}\ten{u}_{a}}{dt}\bigg)^{n+1}.
-\end{equation}
-
-For the numerical stability, the time step is set based on the CFL criterion,
-\begin{equation}
-  \label{eq:time-step-body-force}
-  \Delta t \leq 0.25 \; \bigg(\frac{h}{c_0 + |U|} \bigg),
-\end{equation}
-and $|U|$ is the maximum velocity magnitude.
+\cref{sec:contact-algorithm}. We follow \cref{chap:ctvf} in handling the
+boundaries , in updating the state of the bodies to the next stage, while
+transporting particles with a PST.
 
 
 \FloatBarrier%
@@ -335,7 +127,7 @@ In the current work we have utilized the contact force model proposed by
 \cite{mohseni2021particle}. The force acting on a particle $a$ of body A due
 to the interaction with the particles of body $B$ can be resolved into a
 normal and tangential component. The normal force component is utilised to
-make sure that the particles of different body do not penetrate into each
+make sure that the particles of different bodies do not penetrate into each
 other, while the tangential component is used to model the friction between
 the interacting solids. According to \cite{mohseni2021particle}, we divide the
 bodies under interaction into primary and secondary bodies, as shown in
@@ -356,7 +148,7 @@ computed as,
 \end{equation}
 Here, the overlap $\delta_{n^{c}}^{a}$ is computed using
 \begin{equation}
-  \label{eq:cf-overlap}
+  \label{eq:csph:cf-overlap}
   \delta_{n^{c}}^{a} = \Delta x - d_a,
 \end{equation}
 where,
@@ -383,22 +175,29 @@ and the normal contact vector $\ten{n}_a^{c}$ is computed using
   \label{eq:cf-normal-vector}
   \ten{n}_a^{c} = \frac{\teng{\hat{n}}_a^{c}}{||\teng{\hat{n}}_a^{c}||}.
 \end{equation}
-With $\Delta x$ being the initial spacing between the particles, $k_r$ is the normal
-spring stiffness coefficient. Note that while computing the overlap of
-particle $a$ with the body $B$ we have computed an effective overlap, rather
-than per particle interaction. This effectively is able to model the
-interaction between non smooth surfaces in contrast with particle-particle
+\begin{figure}[!htpb]
+  \centering
+  \includegraphics[width=0.3\textwidth]{images/csph/images/contact_force/contact_force_delta_computation}
+  \caption{Pictorial representation of distance between a particle and a body.}
+\label{fig:contact_force_delta_computation}
+\end{figure}
+Where $\Delta x$ being the initial spacing between the particles, $k_r$ is the
+normal spring stiffness coefficient. \Cref{fig:contact_force_delta_computation}
+shows $\Delta x$ and $d_a$ quantities, respectively. Note that while computing
+the overlap of particle $a$ with the body $B$ we have computed an effective
+overlap, rather than per particle interaction. This is effectively able to model
+the interaction between non-smooth surfaces in contrast with particle-particle
 force computation.
-
 
 \subsection{Tangential force computation}
 \label{sec:tangential-force-computation}
-We associate a tangential spring attached to particle $i$ and body $B$ to
-compute the tangential force, which initially has a magnitude of zero
-($|\Delta \textit{\textbf{l}}_a|=0$). And the tangential spring is activated
-when the particle comes into contact with body $B$. The tangential force is
-history-dependent. The contact friction force is proportional to the
-tangential spring displacement, which is integrated over the contact time as
+We associate a tangential spring attached to particle $a$
+($|\Delta \textit{\textbf{l}}_a|$) and body $B$ to compute the tangential force
+($\ten{F}_{a}^{t}$), which initially has a magnitude of zero
+($|\Delta \textit{\textbf{l}}_a|=0$). The tangential spring is activated when
+the particle comes into contact with body $B$. The tangential force is
+history-dependent. The contact friction force is proportional to the tangential
+spring displacement, which is integrated over the contact time as
 \begin{equation}
   \label{eq:tangential-force}
   \ten{F}_{a}^{t^{n+1}} =
@@ -408,9 +207,10 @@ tangential spring displacement, which is integrated over the contact time as
   \ten{t}_a^{n + 1},
 \end{equation}
 where $\Delta t$ is the time step, $\ten{v}_{ab} = \ten{v}_{a} - \ten{v}_b$ is
-the relative velocity of the primary particle $a$ with respect to the
-closest secondary particle $b$, and $k_f$ is the tangential spring stiffness
-coefficient. The tangential unit vector is computed by,
+the relative velocity of the primary particle $a$ with respect to the closest
+secondary particle $b$, $\ten{t}_a$ is the tangential unit vector, and $k_f$ is the tangential spring stiffness
+coefficient. Here, $n$ and $n+1$ represent the times which are $\Delta t$ apart.
+The tangential unit vector is computed by,
 \begin{equation}
   \label{eq:tangential-vect}
   \ten{t}_a = \frac{\ten{v}_{ab} - (\ten{v}_{ab} \cdot \ten{n}_a^{c}) \ten{n}_a^{c}}{|\ten{v}_{ab} - (\ten{v}_{ab} \cdot \ten{n}_a^{c}) \ten{n}_a^{c}|}.
@@ -490,7 +290,11 @@ when different bodies are chosen as primary.
 \FloatBarrier%
 \section{Results and discussion}
 \label{sec:results}
-
+In the interest of reproducibility and easier ability
+for researchers to build on this work, our code is open source and can be
+found at \url{https://gitlab.com/pypr/collision_sph}. We use the
+\texttt{automan} package~\citep{automan2018} to automate all the results
+generated.
 
 \FloatBarrier%
 \subsection{Curved interface}
@@ -511,7 +315,7 @@ imposed on the right disc. The radius of each disk is $0.4$ m, and made of
 Aluminium, whose material properties are shown in
 \cref{tab:curved-interface-material-params}. No friction and gravity is
 assumed in the current case. A particle spacing of 0.01 m is used, resulting
-in a $4779$ number of particles per disc. The numerical parameters utilized in
+in a $4779$ particles per disc. The numerical parameters utilized in
 the current example are shown in \cref{tab:curved-interface-numerical-params}.
 \begin{table}[!ht]
   \centering
@@ -585,6 +389,7 @@ the velocity of the center of mass of both the discs in comparison with the
 results by FEM solver presented in \citep{yan2021simulation}. The rebound the
 velocity of the bodies with the current scheme is in good match with the FEM
 result.
+% \todoin{Add why CTVF is different}
 \begin{figure}[!htpb]
   \centering
   \includegraphics[width=0.6\textwidth]{figures/csph/figures/yan_2021_curved_interface/velocity_vs_time}
@@ -658,10 +463,11 @@ velocities match well with the FEM results provided, as well as the
 interaction between the bodies start when their physical boundaries have come
 into contact, in contrast to SPH, where the bodies interact when the other
 body is in its smoothing length influence. The rebound velocity of the current
-scheme is matches well with FEM result. Since the body is elastic
+scheme is matches well with FEM result. Since the body is elastic,
 after the collision, both the bodies move with the base oscillation amplitude
-which is the reason for the left body to not achieve absolute zero velocity.
-The current scheme results are better than the \cite{adepu2021corrected} SPH model.
+% \todoin{Try to explain oscillation amplitude}
+which is the reason why the left body does not achieve a zero velocity.
+The current scheme results are better than the CTVF model.
 \begin{figure}[!htpb]
   \centering
   \includegraphics[width=0.6\textwidth]{figures/csph/figures/yan_2021_linear_interface/velocity_vs_time}
@@ -788,29 +594,29 @@ results are consistent with other numerical methods proposed by
 \FloatBarrier%
 \subsection{Near miss of two solids}
 \label{sec:results-two-solids-passing-by}
-In this section, we simulate two elastic solids which are not touching are
-moved towards each other with a constant velocity. We show that the current
-model is able to eliminate the unphysical interaction arises due to the
-conventional SPH which is due to the physical influence of the particles at
-the boundary. We expect no change in the velocity of the elastic solids as
-they pass by. We show that with the current model no interaction exists when
-the elastic solids are physically not touching, and no variation in their path
-is found. As a qualitative validation the particle plots is shown and for
-quantitative validation, variation of the velocity of the center of mass of
-the elastic body with time is considered.
+In this section, we study the collision behavior of two solids moving toward
+each other, initially placed such that they are not touching. The schematic is
+shown in \cref{fig:results-solid-passing-by-schematic}. We show that the current
+model is able to eliminate the unphysical interaction that arises due to the
+conventional SPH, which is due to the physical influence of the particles at the
+boundary. We expect no change in the velocity of the elastic solids as they pass
+by. We show that with the current model no interaction exists when the elastic
+solids are physically not touching, and no variation in their path is found. As
+a qualitative validation the particle plots is shown and for quantitative
+validation, variation of the velocity of the center of mass of the elastic body
+with time is considered.
 
 \begin{figure}[!htpb]
   \centering
   \includegraphics[width=0.7\textwidth]{images/csph/images/dinesh_2022_elastic_solids_passing_by/schematic}
   \caption{Schematic of the two elastic solids which are placed close to each
-    other and allowed to move at a constant velocity $v_0$.}
+    other and allowed to move at a constant velocity $v_0$ with opposite signs.}
 \label{fig:results-solid-passing-by-schematic}
 \end{figure}
 The dimensions of the elastic bodies under consideration are as follows, the
 length and height are $0.2$ m and $0.1$ m, respectively. Both bodies are made
 of density $1200$ kg\,m\textsuperscript{-3}, Young¡¯s modulus of $10$ MPa and
-Poisson¡¯s ratio of $0.4$. The schematic is shown in
-\cref{fig:results-solid-passing-by-schematic}. The left body is allowed to
+Poisson¡¯s ratio of $0.4$. The left body is allowed to
 move to the right in the x-direction with a velocity of $v_0=20$
 m\,s\textsuperscript{-1}, and the right body with $v_0=-20$
 m\,s\textsuperscript{-1}. A particle spacing of dx $=0.0025$ m is used, which
@@ -821,25 +627,25 @@ shifting in the current test case as no deformation of the bodies is expected.
   \centering
   \begin{subfigure}{0.48\textwidth}
     \centering
-    \includegraphics[width=1.0\textwidth]{figures/csph/figures/dinesh_2022_elastic_solids_passing_by/CSPH/time0}
+    \includegraphics[width=1.0\textwidth]{figures/csph/figures/dinesh_2022_elastic_solids_passing_by/CTVF/time0}
     \subcaption{t = $0$ ms}\label{fig:passing-0}
   \end{subfigure}
   %
   \begin{subfigure}{0.48\textwidth}
     \centering
-    \includegraphics[width=1.0\textwidth]{figures/csph/figures/dinesh_2022_elastic_solids_passing_by/CSPH/time1}
+    \includegraphics[width=1.0\textwidth]{figures/csph/figures/dinesh_2022_elastic_solids_passing_by/CTVF/time1}
     \subcaption{t = $1.4$ ms}\label{fig:passing-1}
   \end{subfigure}
 
   \begin{subfigure}{0.48\textwidth}
     \centering
-    \includegraphics[width=1.0\textwidth]{figures/csph/figures/dinesh_2022_elastic_solids_passing_by/CSPH/time2}
+    \includegraphics[width=1.0\textwidth]{figures/csph/figures/dinesh_2022_elastic_solids_passing_by/CTVF/time2}
     \subcaption{t = $10$ ms}\label{fig:passing-2}
   \end{subfigure}
   %
   \begin{subfigure}{0.48\textwidth}
     \centering
-    \includegraphics[width=1.0\textwidth]{figures/csph/figures/dinesh_2022_elastic_solids_passing_by/CSPH/time3}
+    \includegraphics[width=1.0\textwidth]{figures/csph/figures/dinesh_2022_elastic_solids_passing_by/CTVF/time3}
     \subcaption{t = $12$ ms}\label{fig:passing-3}
   \end{subfigure}
   \caption{Snapshots of the bodies passing close by when simulated with CTVF.}
@@ -929,12 +735,11 @@ solid is shown in \cref{fig:results-solid-sliding-schematic}.
 \label{fig:results-solid-sliding-schematic}
 \end{figure}
 
-The dimensions of the elastic solid involved are as follows. An elastic solid
-of length $0.1$ m and width $0.1$ m is initially placed at zero velocity on an
-inclined plane at an angle of $30$ degrees. The material properties are as
-follows: An Young's modulus of $10$ MPa with a Poisson ratio of $0.3975$ is
-considered. We have turned the particle homogenization off in the current
-problem, as the particle shifting effects are negligible. A stiffness
+An elastic solid of length $0.1$ m and width $0.1$ m is initially placed at zero
+velocity on an inclined plane at an angle of $30$ degrees. The material
+properties are as follows: An Young's modulus of $10$ MPa with a Poisson ratio
+of $0.3975$ is considered. We have turned the particle homogenization off in the
+current problem, as the particle shifting effects are negligible. A stiffness
 coefficient $k_r$ of $10^{10}$ in \cref{eq:contact-algorithm-normal} is used.
 From the analytical solution, we have the evolution of velocity as follows,
 \begin{equation}
@@ -1004,9 +809,9 @@ time.
 
 In the current section, the motion of a 2D elastic cylinder rolling on a
 frictional inclined plane is carried out. The theoretical and computational
-model are shown in \cref{fig:circular-rolling}. In addition to
-\cref{sec:results-elastic-solid-sliding-on-slope}, the current problem will be
-helpful in testing the frictional part of the current
+model are shown in \cref{fig:circular-rolling}. In addition to the problem
+considered in \cref{sec:results-elastic-solid-sliding-on-slope}, the current
+problem will be helpful in testing the frictional part of the current
 \begin{figure}[!htpb]
   \centering
   \begin{subfigure}{0.40\textwidth}
@@ -1192,7 +997,7 @@ velocity vector. The simulated results are compared to the experimental
 results by \cite{thornton2011investigation}. From the
 \cref{fig:results-sphere-impact-theta-vs-omega}, we can see that the current
 solver is able to replicate the original behavior to an acceptable
-approximation. We observe that the variation of the $\omega^{*}_r$ with
+degree. We observe that the variation of the $\omega^{*}_r$ with
 $\theta^{*}_i$ to be linear with the current solver whereas the experimental
 result to be a nonlinear, this may be due to the usage of the linear force model
 in the current scheme.
@@ -1209,17 +1014,17 @@ in the current scheme.
 \end{figure}
 So far, we have modeled the collision between two bodies, in the current
 section, we study the collision among multiple bodies. The elastic wave
-propagation in a granular media is carried out, and whose experimental study
-was executed by \cite{guilkey2001improved}. To our knowledge this problem has
-not yet done in SPH literature yet. We consider five identical disks placed at
-an angle of $45$ degrees, allowed to be impacted by a striker from right with
-a velocity $5.6$ m\,s\textsuperscript{-1} in horizontal direction as depicted
-in \cref{fig:results-stress-wave-propagation-part-II}. Each granular disk has
-a radius of $50$ mm, which are initially placed such that just touching. A
-particle spacing of $1.25$ mm is used, which results in $7830$ particles per
-disk. The rigid box are modelled as rigid surfaces. The material parameters of
-the disc as well as the numerical parameters used in the numerical simulation
-are listed in \cref{tab:de-stress-part-2-params}.
+propagation in a granular media is carried out, and whose experimental study was
+executed by \cite{guilkey2001improved}. To our knowledge this problem has not
+yet been performed in SPH literature yet. We consider five identical disks
+placed at an angle of $45$ degrees, allowed to be impacted by a moving wall from
+right with a velocity $5.6$ m\,s\textsuperscript{-1} in horizontal direction as
+depicted in \cref{fig:results-stress-wave-propagation-part-II}. Each granular
+disk has a radius of $50$ mm, which are initially placed such that they are just
+touching. A particle spacing of $1.25$ mm is used, which results in $7830$
+particles per disk. The rigid box are modelled as rigid surfaces. The material
+parameters of the disc as well as the numerical parameters used in the numerical
+simulation are listed in \cref{tab:de-stress-part-2-params}.
 \begin{table}[!ht]
   \centering
   \begin{tabular}[!ht]{ll}
@@ -1291,9 +1096,9 @@ experimental result.
 \subsection{Primary secondary analysis}
 \label{sec:results-primary-secondary-analysis}
 
-In the current section we have studied the dependence of the behaviour of
-current contact force model on the variation of different bodies being
-primary. We have considered the following examples:
+In the current section we have studied the dependence of the behaviour of the
+current contact force model on the variation of different bodies being primary.
+We have considered the following examples:
 \begin{itemize}
 \item Collision between symmetric bodies
 \item Circular cylinder rolling down an inclined plane
@@ -1306,10 +1111,10 @@ or position of the elastic bodies involved in above cases. From
 the elastic solids in a symmetric collision are invariant to the primary body
 chosen. While, considering the wall as primary in rolling cylinder, and
 sliding solid case, the error is more compared to the body being taken as
-primary. And in the case of granular particle impacting a wall, the angular
+primary. In the case of granular particle impacting a wall, the angular
 velocity of the granular particle deviates from the experimental result when
 the wall being the primary body. With these results, we conclude that body
-with more curvature is advised to take as primary.
+with more curvature is more suitable to take as primary.
 \begin{figure}[!htpb]
   \centering
   \begin{subfigure}{0.48\textwidth}
@@ -1341,10 +1146,9 @@ with more curvature is advised to take as primary.
 
 
 \FloatBarrier%
-\section{Conclusions}
-\label{sec:conclusions}
+\section{Discussions and Summary}
 
-In this paper we have demonstrated a simple approach to effectively handle the
+In this chapter we have demonstrated a simple approach to effectively handle the
 collision between elastic solids modeled using an updated Lagrangian SPH
 model. A contact force model is used to handle the collision between bodies. A
 surface aware spring based contact force is used to handle the collision
@@ -1366,21 +1170,18 @@ the full scale model is applied to model the stress propagation in granular
 discs for the first time in SPH. The results compare well with those of FEM as
 well as analytical studies.
 
-A non-linear contact force model can be implemented in the future work. The
-current work can be easily extended to the modeling of collision between
-elastic and elastic-plastic bodies. Also, the collision between the bodies
-undergoing breakage can be easily captured with the current framework.
+% A non-linear contact force model can be implemented in the future work. The
+% current work can be easily extended to the modeling of collision between
+% elastic and elastic-plastic bodies. Also, the collision between the bodies
+% undergoing breakage can be easily captured with the current framework.
 
-Till now, we have a Lagrangian solver without any problems, with good particle
-homogenization and a higher Poisson ratio; in the current chapter, we have
-incorporated a contact force model to handle the collision between arbitrarily
-shaped elastic solids. This eliminates the spurious interaction between the
-bodies moving close but not touching and includes friction. This chapter's work
-in handling collision is extended to the rigid-elastic and rigid-plastic
-contacts in the next few chapters. We have modeled the elastic phase, fluid
-phase, and the collision between the impacting solids in our aim of handling
-abrasive water jet machining. In the next chapter, we will model the interaction
-between the fluid and the elastic structure, fluid-structure interaction, as
-this is seen when the water from the inlet impacts the target. We will propose
-an updated Lagrangian solver by coupling the solver developed in chapter 2 and
-handling fluid-structure interaction.
+We have incorporated a contact force model in the current chapter to handle the
+collision between arbitrarily shaped elastic solids. This chapter's work in
+handling collision is extended to the rigid-elastic and rigid-plastic contacts
+in the next few chapters. We have modeled the elastic dynamics, fluid dynamics,
+and the collision between the impacting solids with our aim of handling problems
+such as abrasive water jet machining. In the next chapter, we will model the
+interaction between the fluid and the elastic structure, fluid-structure
+interaction, as this is seen when the water from the inlet impacts the target.
+We propose an updated Lagrangian solver by coupling the solver developed in
+\cref{chap:ctvf} and handling fluid-structure interaction.

@@ -92,6 +92,7 @@
 \RequirePackage{fancyhdr}
 
 \RequirePackage[bookmarks,%
+            hidelinks,
             breaklinks,%
             backref=false,%
             pdfhighlight=/I,%

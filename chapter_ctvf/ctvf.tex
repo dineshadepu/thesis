@@ -9,19 +9,16 @@
 % ============================
 \section{Introduction}
 \label{sec:intro}
-To model the abrasive water jet machining, in the previous chapter, we
-introduced the numerical method to model the fluid fluid and elastic solid
-phase. SPH is a meshless numerical technique, which is used to discretize the
-governing equations. SPH suffers from inhomogeneous particle distribution
-leading to poor accuracy and tensile instability. In the current chapter, we
-propose developments to the existing technique through a transport velocity
-formulation. The developed technique is applied to a different class of problems
-involving boundaries and free surfaces in both fluid and solid dynamics for
-validation.
+SPH is a meshless numerical technique, which is used to discretize the governing
+equations. SPH suffers from inhomogeneous particle distribution leading to poor
+accuracy and tensile instability. In the current chapter, we propose
+developments to the existing techniques through a transport velocity
+formulation. The developed technique is applied to different problems involving
+boundaries and free surfaces in both fluid and solid dynamics for validation.
 
-In this current chapter, we propose a scheme which we called Corrected Transport
-Velocity Formulation (CTVF) that is inspired by the various recent developments
-but is consistent and which works for both solid mechanics and fluid mechanics
+In this current chapter, we propose a scheme which we call Corrected Transport
+Velocity Formulation (CTVF) that is inspired by the various recent developments.
+CTVF is consistent and works for both solid mechanics and fluid mechanics
 problems. We derive the transport velocity equations afresh and note that there
 are some important terms that are ignored in earlier approaches using TVF. These
 terms are significant and improve the accuracy of the method. Similar to
@@ -29,13 +26,17 @@ terms are significant and improve the accuracy of the method. Similar to
 particles and compute their normals using a simpler and computationally
 efficient approach which does not require the computation of eigenvalues. This
 allows the method to work with free-surfaces without the introduction of
-numerical parameters or a variable background pressure. We employ the EDAC
-formulation and show that there are additional correction terms in the EDAC
-scheme that should be introduced to improve the accuracy of the method.
-Furthermore, we show how the EDAC scheme can be used in the context of solid
-mechanics problems. We make use of the particle velocity rather than the
-transport velocity to compute the velocity gradient, strain, and rotation rate
-tensors. Our method can be used with any PST and we consider the method of
+numerical parameters or a variable background pressure. We employ the
+EDAC~\citep{PRKP:edac-sph-iccm2015} formulation and show that there are
+additional correction terms in the EDAC scheme that should be introduced to
+improve the accuracy of the method. Furthermore, we show how the EDAC scheme can
+be used in the context of solid mechanics problems. We make use of the particle
+velocity rather than the transport velocity to compute the velocity gradient,
+strain, and rotation rate tensors. Unlike the case of GTVF, where velocity
+gradient, strain, and rotation rate tensors are computed using the transport
+velocity.
+
+Our method can be used with any PST and we consider the method of
 \cite{sun_consistent_2019} as well as the iterative PST of
 \cite{huang_kernel_2019}. The method is also robust to the choice of the
 smoothing kernel. The resulting method works for both weakly-compressible fluids
@@ -45,8 +46,8 @@ mechanics problems.
 
 The method is implemented using the PySPH
 framework~\citep{PR:pysph:scipy16,pysph2020}. The source code for all the
-problems demonstrated in this manuscript is made available at
-\url{https://gitlab.com/pypr/ctvf}. Every result produced in the manuscript is
+problems demonstrated in this chapter is made available at
+\url{https://gitlab.com/pypr/ctvf}. Every result produced in the chapter is
 fully automated using the \texttt{automan} package~\citep{pr:automan:2018}.
 
 We next discuss the formulation for fluid mechanics as well as solid mechanics
@@ -120,11 +121,172 @@ isothermal equation of state, given as,
 where $K = \rho_{0} c_0^2$ is the bulk modulus. Here, the constants $c_0$ and
 $\rho_0$ are the reference speed of sound and density, respectively. For solids,
 $c_0$ is computed as $\sqrt{\frac{E}{3 (1 - 2 \nu)\rho_{0}}}$, $\nu$ is the
-Poisson ratio.
+Poisson ratio, $E$ is the Young's modulus.
+
+
+\section{Smoothed particle hydrodynamics}
+In the current section, we introduce the basics of smoothed particle
+hydrodynamics. A fundamental overview of the discrete approximations of
+function, derivative, and divergence is discussed.
+
+\subsection{Function approximation}
+From the dirac delta function definition, the function value of a smooth
+function $A$ defined over a domain $\Omega$ at point $x$ can be written as
+\begin{equation}
+  \label{eq:dirac_repr}
+  A(\ten{x}) = \int_{\Omega}\> A(\ten{x}') \> \delta(\ten{x} - \ten{x}') \> d\ten{x}',
+\end{equation}
+where $\delta(\ten{x} - \ten{x}')$ is a Dirac-delta function with
+\begin{equation}
+  \label{eq:unity}
+  \int_{\Omega}\> \delta(\ten{x}) \> d\ten{x} = 1.
+\end{equation}
+The exact function value at $x$ can be retrieved by the following steps,
+\begin{align*}
+  \label{eq:dirac_derivation}
+  A(\ten{x}) &= \int_{\Omega}\> A(\ten{x}') \> \delta(\ten{x} - \ten{x}') \> d\ten{x}'\\
+  A(\ten{x}) &= A(\ten{x}) \int_{\Omega}\> \> \delta(\ten{x} - \ten{x}') \> d\ten{x}'\\
+  A(\ten{x}) &= A(\ten{x})
+\end{align*}
+In SPH, the Dirac delta function is replaced with a compact, smooth function $W$,
+chosen to be as an even function. The function value of $A$ at $\ten{x}$
+interpolated with the smooth kernel $W$ is given by
+\begin{equation}
+  \label{eq:kernel_repr}
+  A(\ten{x}) = \int_{\Omega}\> A(\ten{x}') \> W(\ten{x} - \ten{x}', h)  \> d\ten{x}' + O(h^2).
+\end{equation}
+Here, kernel $W$ satisfies the following conditions,
+\begin{equation}
+  \label{eq:unity}
+  \int_{\Omega}\> W(\ten{x} - \ten{x}', h)  \> d\ten{x}' = 1.
+\end{equation}
+
+\begin{equation}
+  \label{eq:kernel_delta}
+  \lim_{h \to 0} W(\boldsymbol{x} - \boldsymbol{x}', h) = \delta(\boldsymbol{x} - \boldsymbol{x}', h).
+\end{equation}
+\begin{equation}
+  \label{eq:compact_support}
+  W(\boldsymbol{x} - \boldsymbol{x}', h) = 0 \>\>\>\>    \text{when}  \>\>\> |\boldsymbol{x} - \boldsymbol{x}'| > kh.
+\end{equation}
+Here k is a constant, which determines the the non-zero region $W$ for a point
+at position vector $\boldsymbol{x}$. In the current work we have used Quintic
+spline in all our simulation cases. Quintic spline \citep{edac-sph:cf:2019}, is
+given as,
+\begin{equation}
+  \label{eq:quintic_spline}
+  W(r, h) =
+  \begin{cases}
+    \sigma_5\left( (3-q)^5 - 6(2-q)^5 + 15(1-q)^5 \right), & \textrm{for} \ 0\leq q \leq 1,\\
+    \sigma_5\left( (3-q)^5 - 6(2-q)^5 \right), & \textrm{for} \ 1 <  q \leq 2,\\
+    \sigma_5 \ (3-q)^5 , & \textrm{for} \ 2 < q \leq 3,\\
+    0, & \textrm{for} \ q>3,
+  \end{cases}
+\end{equation}
+This type of interpolation leads to a 2nd order function accuracy
+\citep{fatehi2011error}.
+
+Assume that the domain is discretized into N particles with mass
+$m_i$ and volume $\Delta v_i$, We have
+\begin{equation}
+  \label{eq:mass_repr}
+  m_j = \Delta v_i \> \rho_i.
+\end{equation}
+Using \eqref{eq:mass_repr}, \eqref{eq:kernel_repr} is converted to
+discrete form as follows
+\begin{equation}
+  \label{eq:discrete_form}
+  A_i = \sum\> \frac{m_j}{\rho_j} A_j\> W(\ten{x}_i - \ten{x}_j, h)
+\end{equation}
+
+Where $A(\boldsymbol{x}_i = A_i)$ is the value of the field property of particle
+i, similarly for $A_j$.
+
+\subsection{Derivative approximation}
+The continuous SPH interpolation of the derivative of a field variable is
+written as
+\begin{equation}
+  \label{intro:eq:sph-continu-derivative-interpolation}
+  \nabla A(\ten{x}) = \int_{\Omega}\> \nabla A(\ten{x}') \> W(\ten{x} - \ten{x}', h)  \> d\ten{x}
+\end{equation}
+By applying integration by parts to the right hand side results in,
+\begin{equation}
+  \label{eq:sph-continu-derivative-interpolation}
+  \nabla A(\ten{x}) = - \int_{\Omega}\> A(\ten{x}') \> \nabla_{\ten{x}'} W(\ten{x} - \ten{x}', h)  \> d\ten{x}' +
+  - \int_{\Omega}\> \nabla \left( A(\ten{x}') \> W(\ten{x} - \ten{x}', h)\right)  \> d\ten{x}'
+\end{equation}
+From chain rule we get the derivative of the kernel as antisymmetric, given as,
+\begin{equation}
+  \label{intro:eq:sph-kernel-antisymmetric}
+  \nabla_{\ten{x}'} W(\ten{x} - \ten{x}', h) = -\nabla_{\ten{x}} W(\ten{x} - \ten{x}', h).
+\end{equation}
+Furthermore, using the Stokes theorem, the last term of
+\cref{eq:sph-continu-derivative-interpolation} can be written as a surface
+integral, the resulting equation is
+\begin{equation}
+  \label{intro:eq:sph-continu-derivative-stokes}
+  \nabla A(\ten{x}) = \int_{\Omega}\> A(\ten{x}') \> \nabla_{\ten{x}} W(\ten{x} - \ten{x}', h)  \> d\ten{x}'^{m} +
+  \int_{\partial \Omega}\> \left( A(\ten{x}') \> W(\ten{x} - \ten{x}', h)\right) \ten{n}_{\ten{x}'} \> d\Gamma(\ten{x}').
+\end{equation}
+Here, $d\Gamma$ is the area, and $\ten{n}_{\ten{x}'}$ is the normal at
+point $\ten{x}'$. With the domain being unbounded, and with the compact support
+property of the kernel, the above integral becomes,
+\begin{equation}
+  \label{intro:eq:sph-continu-derivative-final}
+  \nabla A(\ten{x}) = \int_{\Omega}\> A(\ten{x}') \> \nabla_{\ten{x}} W(\ten{x} - \ten{x}', h)  \> d\ten{x}'.
+\end{equation}
+The discretized form of the above integral derivative approximation is
+\begin{equation}
+  \label{intro:eq:derivative-discrete_form}
+  \nabla A(\ten{x}_i) = \sum\> \frac{m_j}{\rho_j} A_j\> \nabla W(\ten{x}_i - \ten{x}_j, h).
+\end{equation}
+
+An alternative expression of the derivative approximation is derived by employing
+density, i.e,
+\begin{equation}
+  \label{intro:eq:sph-continu-derivative-final}
+  \nabla (A \rho^n) = n A \rho^{n - 1} \nabla \rho + \rho^n \nabla A,
+\end{equation}
+where $n$ is a real number. The new identity for the derivative of $A$ is
+\begin{equation}
+  \nabla A = \frac{1}{\rho^n} \left[ n A \rho^{n - 1} \nabla \rho + \rho^n \nabla A  \right],
+\end{equation}
+using \cref{eq:discrete_form,intro:eq:derivative-discrete_form}, the new
+derivative approximation can be written as
+\begin{equation}
+  \label{intro:eq:derivative-discrete_form}
+  \nabla A(\ten{x}_i) = \frac{1}{\rho^n(\ten{x}_i)} \sum\>
+  m_j \left(A_j \rho^{n-1}(\ten{x}_j) - n A_i \rho^{n-1}(\ten{x}_i) \right)\> \nabla W(\ten{x}_i - \ten{x}_j, h).
+\end{equation}
+In the current work, we use a symmetric expression, we substitute $n=-1$, resulting in
+\begin{equation}
+  \nabla A(\ten{x}_i) = \rho_i \sum_{j} m_j \left(\frac{A_i}{\rho_i^2} + \frac{A_j}{\rho_j^2}\right) \nabla W_{ij}.
+\end{equation}
+A symmetric gradient operator ensures equal and opposite forces acting on the
+particles.
+
+
+\subsection{Divergence approximation}
+We now look at An SPH approximation of the divergence operator. An approximation
+of the divergence operator is required in order to discretize the \cref{eq:ce} is
+It is given as,
+\begin{equation}
+  \label{intro:eq:discrete_derivative}
+  \nabla \cdot \ten{v}_i = \sum\> \frac{m_j}{\rho_j} \ten{v}_j \cdot \nabla W(\ten{x}_i - \ten{x}_j, h).
+\end{equation}
+Similar to the derivative approximation, we utilize the following identity to approximate the divergence operator,
+\begin{equation}
+  \label{intro:eq:sph-continu-div-intermediate}
+  \nabla \cdot (\ten{v} \rho^n) = \rho^n \nabla \cdot \ten{v} + n  \rho^{n - 1} \ten{v} \cdot \nabla \rho.
+\end{equation}
+In the current work, we employ expression for $n=1$. The discrete SPH approximation for $n=1$ is given as
+\begin{equation}
+  \label{intro:eq:sph-continu-div-final}
+  \nabla \cdot \ten{v}(\ten{x}_i) = \frac{1}{\rho_i} \sum_{j} m_j \left(\ten{v}_j - \ten{v}_i\right) \cdot \nabla W_{ij}.
+\end{equation}
 
 
 \section{Numerical method}
-
 
 Following the TVF~\citep{Adami2013} and similar
 formulations~\citep{oger_ale_sph_2016}, we move the particles with a
@@ -233,12 +395,12 @@ TVF, the term includes a background pressure acceleration that is of the form,
 \end{equation}
 where $p^0_a$ is the background pressure for the given particle $a$,
 $\ten{r}_{ab} = \ten{r}_a - \ten{r}_b$, $\tilde{h}_{ab} = (h_a + h_b)/2$, and
-index $b$ refers to the neighbors of particle $a$. The divergence of this term
-results in the Laplacian of the kernel $W$. For most kernels used in SPH, this
-term is certainly not zero and therefore this should not be ignored. We
-investigate the importance of including these terms in \cref{sec:results}. We
-note that in the case of elastic dynamics that these terms are negligible and
-do not make a significant difference. This has also been pointed out by
+index $b$ refers to the neighbors of particle $a$. The additional terms arising
+while adjusting the continuity and momentum to the transport velocity are
+certainly not zero and therefore this should not be ignored. We investigate the
+importance of including these terms in \cref{sec:results}. We note that in the
+case of elastic dynamics that these terms are negligible and do not make a
+significant difference. This has also been pointed out by
 \cite{zhang_hu_adams17}.
 
 The Jaumann stress rate is also similarly modified to account for the
@@ -270,7 +432,7 @@ principle similar to the EDAC-SPH method but requires the use of the kernel
 gradient corrections which involve the solution of a small matrix ($3 \times
 3$ in 3D), for each particle. The EDAC-SPH method does not require this and is
 therefore simpler and in principle more efficient. In \citep{edac-sph:cf:2019},
-the EDAC pressure evolution equation was,
+the EDAC pressure evolution equation is,
 \begin{equation}
   \label{eq:edac-p-evolve-orig}
      \frac{d p}{d t} = -\rho c_s^2 \text{div}(\ten{u}) + \nu_{edac}  \nabla^2 p,
@@ -296,7 +458,6 @@ The value of $\nu_{edac}$ is,
 \end{equation}
 where $h$ is the smoothing length of the kernel and a value of
 $\alpha_{\textrm{edac}}=0.5$ is recommended as suggested in~\citep{PRKP:edac-sph-iccm2015}.
-
 This along with the momentum equation and evolution of volume or density may
 be employed. A state equation is often used even for elastic dynamics
 problems, we propose to use the EDAC approach for elastic equations as well as
@@ -451,7 +612,7 @@ Firstly, the velocity deviation based equation is given as,
   1 + R \bigg( \frac{W_{ab}}{W(\Delta x)} \bigg)^n  \bigg] \nabla_a W_{ab} V_b,
 \end{equation}
 %
-it is modified to force based as,
+it is modified to a force as,
 \begin{equation}
   \label{eq:sun2019_pst}
   \bigg(\frac{d \ten{u}_a}{dt}\bigg)_{\text{c}} = - \frac{\text{Ma} \;
@@ -476,7 +637,7 @@ Taylor series expansion.
 In the original IPST, the shifting vector is computed as,
 \begin{equation}
   \label{eq:ipst_step1}
-  \delta r_a^m = U_{\max} \; \Delta t \; \sum_b (V_b \; \ten{n}_{ab} \; W_{ab})^m,
+  \delta r_a^m = U_{\max} \; \Delta t \; \sum_b (V_b \; \ten{n}_{ab} \; W_{ab})
 \end{equation}
 where m is the number of iterations, $m=(1, 2, 3, \dots)$, $\ten{n}_{ab}$ is
 the unit vector between particle $a$ and $b$. The particles are then moved
@@ -669,7 +830,6 @@ spline kernel for which the factor is 3. The algorithm is shown in
 $h_b$ is only used for the PST force/displacement computation. This process
 allows us to ensure that the homogenization force does not push these
 particles towards the free-surface.
-
 %
 \begin{algorithm}[!ht]
   \caption{Algorithm to set $h_b$}%
@@ -1332,7 +1492,7 @@ study of an oscillating plate, with a $\nu=0.3975$, and $V_f=0.05$
 m\,s\textsuperscript{-1}, and IPST is used for particle homogenization. The trend of
 the current scheme matches well with the other updated Lagrangian SPH
 schemes~\citep{gray-ed-2001, zhang_hu_adams17}. Hence the current scheme is
-able to work with different PST methods and remove the tensile instability.
+able to work with different PST methods and removes the tensile instability.
 
 \begin{table}[!htpb]
 \centering
@@ -1715,12 +1875,12 @@ shifting technique of Sun~\citep{sun_consistent_2019}. The color contour
 represents the pressure of the particles. The width of the hole created by the
 cylinder is $19.6$ mm. When computed using the GTVF
 scheme~\citep{zhang_hu_adams17} the hole has a size of $19.8$ mm. In
-\cite{howell2002free}, the value citepd is $19.2$ mm. We can see, that the
+\cite{howell2002free}, the value cited is $19.2$ mm. We can see, that the
 current scheme is closer to the one simulated by \citep{howell2002free}, which
 is taken as reference in \citep{zhang_hu_adams17}.
 
 
-\section{Summary}
+\section{Discussion}
 
 The proposed CTVF scheme builds on the original TVF scheme of
 \cite{Adami2013} and is as an improvement on the GTVF of
@@ -1735,7 +1895,7 @@ lid-driven cavity problem with a resolution of $50 \times 50$, the original
 EDAC scheme without any of the correction terms with a one step predictor
 corrector integrator takes $251$ seconds for a time of $25$ seconds, the new
 scheme with a kick-drift-kick scheme takes $293$ seconds. Despite the change
-of the integrator this is a small increase in the performance. For solid
+of the integrator this is a small increase in the computational time. For solid
 mechanics problems we consider the colliding rings problem simulated for a
 total time of $0.016$ seconds. This takes $98$ seconds of time to simulate
 with the full CTVF scheme, and takes $73$ seconds without the corrections (run
