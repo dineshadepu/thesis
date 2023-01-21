@@ -15,9 +15,9 @@ multiple arbitrarily shaped solids is modeled with a coupled SPH-DEM solver.
 
 In the current work, to model the fluid and elastic-plastic dynamics, we have
 developed a CTVF scheme. The proposed scheme builds on the original TVF scheme
-of \citet{Adami2013} and is an improvement on the GTVF of
-\citet{zhang_hu_adams17}. For smoother pressure distributions, we adapted
-EDAC-SPH~\cite{edac-sph:cf:2019} to the transport velocity formulation. Two PSTs
+of \textcite{Adami2013} and is an improvement on the GTVF of
+\textcite{zhang_hu_adams17}. For smoother pressure distributions, we adapted
+EDAC-SPH~\textcite{edac-sph:cf:2019} to the transport velocity formulation. Two PSTs
 are used in the current work for the homogenization of the particles. The developed
 scheme is applied to the Taylor-Green vortex, lid-driven cavity, and dam-break
 problems to verify the improvement due to the correction terms. An improvement in
@@ -44,7 +44,7 @@ pairwise quantities has shown that it can be successfully adapted to serial and
 parallel codes.
 
 
-We have coupled CTVF with a dummy particle approach by \cite{Adami2012}, to
+We have coupled CTVF with a dummy particle approach by \textcite{Adami2012}, to
 model the fluid-structure interaction problems. A sub-stepping integrator is
 used to update the states of the fluid and the solid particles. We have
 validated the coupled scheme by simulating the deformation of an aluminum plate

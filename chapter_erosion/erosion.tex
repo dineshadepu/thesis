@@ -16,7 +16,7 @@ may not provide detailed insight into the erosion process.
 
 In the current chapter, we develop a numerical implementation to study the solid
 particle erosion of a ductile target. We follow the numerical model proposed in
-\citep{takaffoli2009finite,dong2016smoothed}. We utilize the numerical
+\parencite{takaffoli2009finite,dong2016smoothed}. We utilize the numerical
 techniques developed in the previous chapter to model solid-particle erosion. We
 use the formulation proposed in \cref{chap:ctvf,chap:csph,chap:ctvf} to handle
 the collision between the rigid bodies, elastic bodies and to model the dynamics
@@ -85,12 +85,12 @@ The plasticity behavior is incorporated based on the von Mises flow criterion.
 According to the von Mises flow criterion, if the stress state exceeds the yield
 surface, we bring back it the yield limit using the following equation,
 \begin{equation}
-  \sigma^{'}_{\alpha \beta} = \hat{f} \; \sigma^{'}^{*}_{\alpha \beta}.
+  \sigma^{'}_{\alpha \beta} = \hat{f} \; \sigma^{'*}_{\alpha \beta}.
 \end{equation}
-Here, $f_y = \min{(\sigma_y / \sigma^{'}^*, 1)}$, and
-$\sigma^{'}^* = \sqrt{\frac{3}{2} \sigma^{'}^*_{\alpha \beta}
-  \sigma^{'}^*_{\alpha \beta}}$. We use the Johnson-Cook constitutive
-law \citep{johnson1983constitutive} to compute the yield
+Here, $f_y = \min{(\sigma_y / \sigma^{'*}, 1)}$, and
+$\sigma^{'*} = \sqrt{\frac{3}{2} \sigma^{'*}_{\alpha \beta}
+  \sigma^{'*}_{\alpha \beta}}$. We use the Johnson-Cook constitutive
+law \parencite{johnson1983constitutive} to compute the yield
 stress. Johnson-Cook model accounts for the effects of strain hardening, strain
 rate hardening, and thermal softening. The flow stress is computed as
 \begin{equation}
@@ -116,11 +116,11 @@ Finally, the new stress state is computed as
 If a particle exceeds the yield limit, a plastic behaviour is identified and the
 plastic strain increment is computed using
 \begin{equation}
-  \Delta \epsilon^{p}_{\alpha \beta} = (1 - \hat{f}) \sigma^{'}^{*}_{\alpha \beta} / 2 \mu,
+  \Delta \epsilon^{p}_{\alpha \beta} = (1 - \hat{f}) \sigma^{'*}_{\alpha \beta} / 2 \mu,
 \end{equation}
 and the effective plastic strain increment is computed as,
 \begin{equation}
-  \Delta \epsilon^{p} = \frac{1}{3} \frac{1 - \hat{f}}{\mu}\sigma^{'}^{*}.
+  \Delta \epsilon^{p} = \frac{1}{3} \frac{1 - \hat{f}}{\mu}\sigma^{'*}.
 \end{equation}
 
 
@@ -200,7 +200,7 @@ validate the developed solver. While in all the cases, the particle rotates with
 a constant velocity of magnitude $1280$ radians per second. Further, this test is used to
 demonstrate the capabilities of the developed solver to 3D solid-particle
 erosion models. The experimental evaluation is carried out by
-\cite{zang2022investigation}.
+\textcite{zang2022investigation}.
 \begin{table}[!ht]
   \centering
   \caption{Numerical parameters and material properties for sphere impacting a target.}%
@@ -252,7 +252,7 @@ erosion models. The experimental evaluation is carried out by
 \end{figure}
 \Cref{fig:results-sphere-target-impact-vel-vs-depth} depicts the variation of
 the depth against the incident velocity $\ten{V}_i$ of the current solver,
-experimental and FEM result executed by \cite{zang2022investigation}. From
+experimental and FEM result executed by \textcite{zang2022investigation}. From
 \Cref{fig:results-sphere-target-impact-vel-vs-depth}, we can see that the
 current solver penetration depth increases as the velocity is increasing. A
 similar trend is found with the experimental result as well. However, the

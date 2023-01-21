@@ -22,12 +22,12 @@ and is consistent and works for both solid mechanics and fluid mechanics
 problems. We derive the transport velocity equations afresh and note that there
 are some important terms that are ignored in earlier approaches using TVF. These
 terms are significant and improve the accuracy of the method. Similar to
-\citep{oger_ale_sph_2016,sun_consistent_2019}, we detect the free surface
+\parencite{oger_ale_sph_2016,sun_consistent_2019}, we detect the free surface
 particles and compute their normals using a simpler and computationally
 efficient approach which does not require the computation of eigenvalues. This
 allows the method to work with free-surfaces without the introduction of
 numerical parameters or a variable background pressure. We employ the
-EDAC~\citep{PRKP:edac-sph-iccm2015} formulation and show that there are
+EDAC~\parencite{PRKP:edac-sph-iccm2015} formulation and show that there are
 additional correction terms in the EDAC scheme that should be introduced to
 improve the accuracy of the method. Furthermore, we show how the EDAC scheme can
 be used in the context of solid mechanics problems. We make use of the particle
@@ -37,8 +37,8 @@ gradient, strain, and rotation rate tensors are computed using the transport
 velocity.
 
 Our method can be used with any PST and we consider the method of
-\cite{sun_consistent_2019} as well as the iterative PST of
-\cite{huang_kernel_2019}. The method is also robust to the choice of the
+\textcite{sun_consistent_2019} as well as the iterative PST of
+\textcite{huang_kernel_2019}. The method is also robust to the choice of the
 smoothing kernel. The resulting method works for both weakly-compressible fluids
 as well as solids. The new method may be thought of as an improved extension of
 the EDAC-SPH method that can be used for free-surface problems as well as solid
@@ -53,7 +53,7 @@ of other methods where applicable.
 
 \section{Governing Equations}
 For elastic dynamics we use the same equations as in
-\citep{gray-ed-2001,zhang_hu_adams17} which we summarize below. The governing
+\parencite{gray-ed-2001,zhang_hu_adams17} which we summarize below. The governing
 equations of motion involve the conservation of mass, which in Lagrangian
 form is,
 \begin{equation}
@@ -167,7 +167,7 @@ Here, kernel $W$ satisfies the following conditions,
 \end{equation}
 Here k is a constant, which determines the the non-zero region $W$ for a point
 at position vector $\boldsymbol{x}$. In the current work we have used Quintic
-spline in all our simulation cases. Quintic spline \citep{edac-sph:cf:2019}, is
+spline in all our simulation cases. Quintic spline \parencite{edac-sph:cf:2019}, is
 given as,
 \begin{equation}
   \label{eq:quintic_spline}
@@ -180,7 +180,7 @@ given as,
   \end{cases}
 \end{equation}
 This type of interpolation leads to a 2nd order function accuracy
-\citep{fatehi2011error}.
+\parencite{fatehi2011error}.
 
 Assume that the domain is discretized into N particles with mass
 $m_i$ and volume $\Delta v_i$, We have
@@ -284,8 +284,8 @@ In the current work, we employ expression for $n=1$. The discrete SPH approximat
 
 \section{Numerical Method}
 
-Following the TVF~\citep{Adami2013} and similar
-formulations~\citep{oger_ale_sph_2016}, we move the particles with a
+Following the TVF~\parencite{Adami2013} and similar
+formulations~\parencite{oger_ale_sph_2016}, we move the particles with a
 \emph{transport velocity}, $\tilde{\ten{u}}$. The material derivative in this
 case is written as,
 \begin{equation}
@@ -348,7 +348,7 @@ Substituting, this in \cref{eq:tmp:mom1}, we have,
   \frac{\tilde{d} (\rho u_i)}{d t} =
   \frac{\partial}{\partial x_j} (\rho u_i (\tilde{u}_j - u_j)) - \rho u_i \frac{\partial}{\partial x_j} (\tilde{u}_j) + \text{RHS}_i.
 \end{equation}
-In \cite{Adami2013}, the second term is neglected but at this stage we do not
+In \textcite{Adami2013}, the second term is neglected but at this stage we do not
 neglect this term. We simplify this further and write,
 \begin{equation}
   \label{eq:tmp:mom4}
@@ -381,7 +381,7 @@ We therefore write the momentum equation as,
 We note that this equation encompasses both fluid dynamics as well as elastic
 dynamics by simply changing the way $\sigma_{ij}$ is modeled. The first term
 on the right-hand-side of \cref{eq:mom-tvf} is the additional artificial
-stress term that is included in the TVF~\citep{Adami2013}. The second term
+stress term that is included in the TVF~\parencite{Adami2013}. The second term
 involves the divergence of the transport velocity field. In the case of the
 TVF, the term includes a background pressure acceleration that is of the form,
 \begin{equation}
@@ -397,7 +397,7 @@ certainly not zero and therefore this should not be ignored. We investigate the
 importance of including these terms in \cref{sec:results}. We note that in the
 case of elastic dynamics that these terms are negligible and do not make a
 significant difference. This has also been pointed out by
-\cite{zhang_hu_adams17}.
+\textcite{zhang_hu_adams17}.
 
 The Jaumann stress rate is also similarly modified to account for the
 transport velocity as,
@@ -414,7 +414,7 @@ transport velocity as,
 \subsection{The EDAC-SPH Method}
 \label{sec:edac-tvf}
 
-We apply the EDAC-SPH~\citep{edac-sph:cf:2019} in order to evolve the pressure
+We apply the EDAC-SPH~\parencite{edac-sph:cf:2019} in order to evolve the pressure
 accurately and reduce the amount of noise in the pressure field. In the
 original EDAC-SPH implementation, internal flows were evolved using the TVF
 whereas for cases with a free-surface the traditional WCSPH was employed. In
@@ -423,11 +423,11 @@ free-surfaces. The original EDAC-SPH scheme also did not accurately
 incorporate the transport velocity which we include here. This allows us to
 use the same scheme for both internal and external flows.
 
-The $\delta$-SPH~\citep{antuono-deltasph:cpc:2010} implementation is in
+The $\delta$-SPH~\parencite{antuono-deltasph:cpc:2010} implementation is in
 principle similar to the EDAC-SPH method but requires the use of the kernel
 gradient corrections which involve the solution of a small matrix ($3 \times
 3$ in 3D), for each particle. The EDAC-SPH method does not require this and is
-therefore simpler and in principle more efficient. In \citep{edac-sph:cf:2019},
+therefore simpler and in principle more efficient. In \parencite{edac-sph:cf:2019},
 the EDAC pressure evolution equation is,
 \begin{equation}
   \label{eq:edac-p-evolve-orig}
@@ -453,7 +453,7 @@ The value of $\nu_{edac}$ is,
   \nu_{edac} = \frac{\alpha_{\textrm{edac}} h c_s}{8},
 \end{equation}
 where $h$ is the smoothing length of the kernel and a value of
-$\alpha_{\textrm{edac}}=0.5$ is recommended as suggested in~\citep{PRKP:edac-sph-iccm2015}.
+$\alpha_{\textrm{edac}}=0.5$ is recommended as suggested in~\parencite{PRKP:edac-sph-iccm2015}.
 This along with the momentum equation and evolution of volume or density may
 be employed. A state equation is often used even for elastic dynamics
 problems, we propose to use the EDAC approach for elastic equations as well as
@@ -500,11 +500,11 @@ Similarly, the discretized momentum equation for fluids is written as,
 \end{multline}
 where $\ten{A}_a = \rho_a \ten{u}_a \otimes (\ten{\tilde{u}}_a - \ten{u}_a)$,
 $\ten{I}$ is the identity matrix, $\eta$ is the kinematic viscosity of the
-fluid and \cite{morris1997modeling} formulation is used to discretize the
+fluid and \textcite{morris1997modeling} formulation is used to discretize the
 viscosity term.
 
 We add to the momentum equation an additional artificial viscosity term
-$\Pi_{ab}$~\citep{monaghan-review:2005} to maintain the stability of the
+$\Pi_{ab}$~\parencite{monaghan-review:2005} to maintain the stability of the
 numerical scheme, given as,
 \begin{align}
   \label{eq:mom-av}
@@ -542,7 +542,7 @@ equation of solid mechanics as it has a negligible effect.
 
 In addition to these three equations, the Jaumann stress rate equation is also
 solved. In the current work we use the momentum velocity $\ten{u}$ rather than
-$\tilde{\ten{u}}$ as in the GTVF~\citep{zhang_hu_adams17} in the computation of
+$\tilde{\ten{u}}$ as in the GTVF~\parencite{zhang_hu_adams17} in the computation of
 gradient of velocity. The SPH discretization of the gradient of velocity is
 given as,
 \begin{equation}
@@ -586,18 +586,18 @@ The transport velocity is updated using,
 where $\big(\frac{d \ten{u}_a}{dt}\big)_{\text{c}}$ is the homogenization
 acceleration which ensures that the particle positions are homogeneous. In the
 current work we have explored two kinds of homogenization accelerations, one
-is a displacement based technique due to \cite{sun2017deltaplus}, which here
+is a displacement based technique due to \textcite{sun2017deltaplus}, which here
 after we refer as SPST and the other is the iterative particle shifting
-technique due to \cite{huang_kernel_2019} referred as IPST. These are
+technique due to \textcite{huang_kernel_2019} referred as IPST. These are
 discussed in the following.
 
 
 \subsubsection{Sun 2019 PST}
 \label{sec:sunpst}
 
-In \cite{sun2017deltaplus}, the particle shifting technique was implemented as
+In \textcite{sun2017deltaplus}, the particle shifting technique was implemented as
 a particle displacement ($\delta \ten{r}$). This was modified in
-\cite{sun_consistent_2019} to be computed as a change to the velocity. In the
+\textcite{sun_consistent_2019} to be computed as a change to the velocity. In the
 present work we modify this to be treated as an acceleration to the particle
 in order to unify the treatment of different PST methods.
 
@@ -619,13 +619,13 @@ where $R$ is an adjustment factor to handle the tensile instability, and
 $\text{Ma}$ is the mach number of the flow. $V_b$ is the volume of the
 $b$\textsuperscript{th} particle. The acceleration is changed to account for
 particles that are on the free surface. We use $R = 0.2$ and $n = 4$ as
-suggested by \cite{sun_consistent_2019}.
+suggested by \textcite{sun_consistent_2019}.
 
 \subsubsection{IPST}
 \label{sec:ipst}
 
-The Iterative PST of Huang \citep{huang_kernel_2019} builds on the work of
-\cite{xu2009accuracy}. The method iteratively moves the particles every
+The Iterative PST of Huang \parencite{huang_kernel_2019} builds on the work of
+\textcite{xu2009accuracy}. The method iteratively moves the particles every
 timestep in order to achieve a uniform particle distribution determined by a
 convergence criterion. The properties of the particles are corrected using a
 Taylor series expansion.
@@ -675,22 +675,22 @@ where $\ten{r}_a^M$ is the final position of the particle, $a$.
 \label{subsec:free-surface}
 
 Free surfaces must be handled with care especially in the context of the PST
-algorithm. The original TVF~\citep{Adami2013} is not designed to handle
-free-surface problems. \cite{diff_smoothing_sph:lind:jcp:2012} was the first
+algorithm. The original TVF~\parencite{Adami2013} is not designed to handle
+free-surface problems. \textcite{diff_smoothing_sph:lind:jcp:2012} was the first
 to handle free-surfaces carefully in the context of the PST.
-\cite{diff_smoothing_sph:lind:jcp:2012,oger_ale_sph_2016}, and
-\cite{sun_consistent_2019} identify the particles that are on the
+\textcite{diff_smoothing_sph:lind:jcp:2012,oger_ale_sph_2016}, and
+\textcite{sun_consistent_2019} identify the particles that are on the
 free-surface or near it and adjust the particle shifting algorithm so the free
-surface particles remain intact. \cite{zhang_hu_adams17} on the other hand
+surface particles remain intact. \textcite{zhang_hu_adams17} on the other hand
 relies on the pressure being zero at the free surface and scales the
 homogenization force with the pressure.
 
-Both \citep{oger_ale_sph_2016} and \citep{sun_consistent_2019} identify the
+Both \parencite{oger_ale_sph_2016} and \parencite{sun_consistent_2019} identify the
 free-surface particles by computing the eigenvalues of the correction matrix
 employed for the SPH scheme. This is based on the work of
-\citep{marrone:sph:level-set:2010}. This method is computationally expensive
+\parencite{marrone:sph:level-set:2010}. This method is computationally expensive
 and in this work we use a much simpler approach that was introduced
-in~\citep{muta_efficient_2020} to find the free-surface particles as well as
+in~\parencite{muta_efficient_2020} to find the free-surface particles as well as
 their normals. We first compute the normals of all the particles in the medium
 whose free surface need to be identified. The normals are computed as,
 \begin{equation}
@@ -874,7 +874,7 @@ particles towards the free-surface.
 %
 
 
-In the PST of \cite{sun_consistent_2019}, the shifting acceleration is
+In the PST of \textcite{sun_consistent_2019}, the shifting acceleration is
 adjusted using
 \begin{equation}
  \label{eq:shifting_force_free_surface_adjust_sun2019}
@@ -884,7 +884,7 @@ adjusted using
    \big(\frac{d \ten{u}_a}{dt}\big)_{\text{c}}& \text{if $h_b = h$}.
  \end{cases}
 \end{equation}
-Whereas while using IPST~\citep{huang_kernel_2019}, rather than adjusting the
+Whereas while using IPST~\parencite{huang_kernel_2019}, rather than adjusting the
 final shifting acceleration, we adjust the increment in the position of
 \cref{eq:ipst_step2},
 \begin{equation}
@@ -898,7 +898,7 @@ final shifting acceleration, we adjust the increment in the position of
 
 \subsection{Boundary Conditions}
 
-The ghost particle approach of \cite{Adami2012} is used to model the
+The ghost particle approach of \textcite{Adami2012} is used to model the
 boundaries. We use three layers of ghost particles to model the solid wall.
 The properties of the solid wall are interpolated from the fluid particles.
 
@@ -1038,8 +1038,8 @@ dam-break problem. We then consider problems in elastic dynamics like the
 oscillating plate, a uniaxial compression problem, the collision of rubber
 rings, and a high-velocity impact problem. We show how the proposed method is an
 improvement on previous work. The method is implemented using the PySPH
-framework~\citep{PR:pysph:scipy16,pysph2020}. Every result shown is produced
-using an automation framework~\citep{pr:automan:2018}. The source code is
+framework~\parencite{PR:pysph:scipy16,pysph2020}. Every result shown is produced
+using an automation framework~\parencite{pr:automan:2018}. The source code is
 available at \url{https://gitlab.com/pypr/ctvf}.
 
 \FloatBarrier%
@@ -1269,8 +1269,8 @@ IPST  appears to be better than that of SPST.
 We evaluate the ability of the proposed scheme to handle solid wall boundary
 conditions by simulating a lid-driven cavity. The lid-driven cavity is a
 classic problem that can be challenging to simulate in the context of the SPH.
-It has been simulated by \citep{Adami2013}, \citep{huang_kernel_2019},
-\citep{edac-sph:cf:2019} to note a few. A rectangular cavity with length 1 m
+It has been simulated by \parencite{Adami2013}, \parencite{huang_kernel_2019},
+\parencite{edac-sph:cf:2019} to note a few. A rectangular cavity with length 1 m
 which is filled with fluid is constrained by four walls. Top wall has a
 velocity of $U = 1 $ m\,s\textsuperscript{-1}. A unit density is assumed for the
 fluid. The speed of sound of the fluid particle is set to $c = 10 U_{max}$. We
@@ -1310,7 +1310,7 @@ eliminated with the current scheme.
   \caption{Velocity profiles for the lid-driven-cavity using the steady state
     simulation procedure for $Re = 1000$ with initial partial arrangement of
     $50 \times 50$, $100 \times 100$, and $200 \times 200$ compared with
-    the results of~\citep{ldc:ghia-1982}.}%
+    the results of~\parencite{ldc:ghia-1982}.}%
 \label{fig:ldc:uv_re1000}
 \end{figure}
 
@@ -1321,7 +1321,7 @@ numbers 100 and 1000 respectively. For the $Re=100$ case we use three
 different resolutions of $50\times 50, 100 \times 100$ and $150 \times
 150$. For the $Re=1000$ case, we use an initial $50 \times 50$,
 $100 \times 100$, and $200 \times 200$ grid of particles. These are compared
-against the results of \citep{ldc:ghia-1982}. As we can see that the current
+against the results of \parencite{ldc:ghia-1982}. As we can see that the current
 scheme is able to predict the velocity profiles well.
 
 
@@ -1331,8 +1331,8 @@ scheme is able to predict the velocity profiles well.
 
 We apply the proposed scheme to free surface flows by simulating a
 dam-break. This problem has been extensively studied before for example in
-\citep{muta_efficient_2020}, \citep{zhang_hu_adams17}, and
-\citep{edac-sph:cf:2019}.
+\parencite{muta_efficient_2020}, \parencite{zhang_hu_adams17}, and
+\parencite{edac-sph:cf:2019}.
 
 A block of fluid having width 1m and a height of $2$ m is allowed to settle
 under the influence of gravity inside a tank of length $4$ m. The fluid block
@@ -1349,14 +1349,14 @@ $\alpha=0.05$ is used for the artificial viscosity \cref{eq:mom-av} term.
   \centering
   \includegraphics[width=0.8\textwidth]{figures/ctvf/figures/dam_break_2d/etvf_sun2019/x_vs_t}
   \caption{Position of the toe of the water versus time of CTVF as compared
-    with the simulation of ~\citep{koshizuka1996moving}. Z is the
+    with the simulation of ~\parencite{koshizuka1996moving}. Z is the
     distance of toe of the dam from the left wall and L is the initial width
     of the dam}
 \label{fig:dam-break}
 \end{figure}
 
 \Cref{fig:dam-break} compares the position of the toe of the fluid block with
-time against \citep{koshizuka1996moving}, where the authors use the moving
+time against \parencite{koshizuka1996moving}, where the authors use the moving
 particle semi-implicit scheme to simulate the same.
 
 The evolution of the fluid at three different time instants t$=0.6, 1.1, 2.0$
@@ -1380,11 +1380,11 @@ created due to the splashing of the fluid. The colors in
 \label{sec:oscillating-plate}
 In this section, we test the improvement due to the correction terms while
 simulating elastic solids. We show the elimination of tensile instability
-while extending the transport velocity formulation~\citep{Adami2013} scheme to
+while extending the transport velocity formulation~\parencite{Adami2013} scheme to
 more particle shifting techniques. We consider a thin oscillating
-plate that is clamped on one side. \cite{landau1960} provide an analytical
+plate that is clamped on one side. \textcite{landau1960} provide an analytical
 solution for this problem. This is also simulated numerically in
-\citep{gray-ed-2001} and \citep{zhang_hu_adams17}.
+\parencite{gray-ed-2001} and \parencite{zhang_hu_adams17}.
 
 
 An oscillating plate with a length of $0.2$ m and a height of $0.02$ m is
@@ -1403,12 +1403,12 @@ is given by,
 In the present example $kL$ is 1.875. The material properties of the plate are
 as follows, Young's modulus $E=2.0\times 10^6$ Pa, a Poisson's ratio of
 $\nu=0.3975$. $c_0$ is speed of sound, and a density of $\rho=1000$
-kg\,m\textsuperscript{-3}, as done in~\citep{gray-ed-2001}.  In all the cases
+kg\,m\textsuperscript{-3}, as done in~\parencite{gray-ed-2001}.  In all the cases
 simulated here, we use an $\alpha$ of $1$ for artificial viscosity.
 
-The GTVF~\citep{zhang_hu_adams17} eliminates the tensile instability while
+The GTVF~\parencite{zhang_hu_adams17} eliminates the tensile instability while
 using the special PST proposed in the original paper. We show that the
-GTVF~\citep{zhang_hu_adams17} scheme is unable to eliminate numerical fracture
+GTVF~\parencite{zhang_hu_adams17} scheme is unable to eliminate numerical fracture
 when a different PST algorithm is employed. Instead of using
 the standard GTVF homogenization acceleration we use Sun's particle shifting
 technique (SPST). This results in a numerical fracture, as seen in
@@ -1499,12 +1499,12 @@ $0.1$. The difference between the analytical result and the numerical result
 is due to the fact that the analytical results are based on thin plate theory
 where as the plate considered here has a finite thickness. Further, we can see
 that the current numerical results are in agreement with the previously
-reported numerical results~\citep{gray-ed-2001, zhang_hu_adams17}. In
+reported numerical results~\parencite{gray-ed-2001, zhang_hu_adams17}. In
 \cref{fig:oscillating:ipst_convergence_plot}, we have performed a convergence
 study of an oscillating plate, with a $\nu=0.3975$, and $V_f=0.05$
 m\,s\textsuperscript{-1}, and IPST is used for particle homogenization. The trend of
 the current scheme matches well with the other updated Lagrangian SPH
-schemes~\citep{gray-ed-2001, zhang_hu_adams17}. Hence the current scheme is
+schemes~\parencite{gray-ed-2001, zhang_hu_adams17}. Hence the current scheme is
 able to work with different PST methods and removes the tensile instability.
 
 \begin{table}[!htpb]
@@ -1542,9 +1542,9 @@ able to work with different PST methods and removes the tensile instability.
 
 This benchmark is used to test the proposed scheme. A uniaxial bar is
 compressed by a moving piston on top of it. This problem has been simulated by
-\cite{das2015evaluation}. We compare the von Mises stress at the center point
+\textcite{das2015evaluation}. We compare the von Mises stress at the center point
 of the bar with the result of the FEM analysis and SPH provided in
-\citep{das2015evaluation}.
+\parencite{das2015evaluation}.
 
 The numerical model consists of three parts. It has an axially loaded
 rectangular specimen of width $82$ mm and height of $140$ mm. The specimen has
@@ -1593,16 +1593,16 @@ Where the principal stress are found by
   \includegraphics[width=0.8\textwidth]{figures/ctvf/figures/uniaxial_compression/von_mises_A}
   \caption{von Mises stress at point A in uniaxial compression with three
     different resolutions compared against those from
-    \citep{das2015evaluation}.}
+    \parencite{das2015evaluation}.}
 \label{fig:uniaxial}
 \end{figure}
 
 \Cref{fig:uniaxial} shows the von Mises stress versus time of the current
 scheme, when simulated with three different resolutions compared against with
-the finite element result and SPH result provided in \citep{das2015evaluation}.
+the finite element result and SPH result provided in \parencite{das2015evaluation}.
 It also shows the result with the GTVF scheme using the medium resolution. As
 can be seen in \cref{fig:uniaxial} the GTVF result does not match very well
-with FEM and SPH result provided by \cite{das2015evaluation}, and the current
+with FEM and SPH result provided by \textcite{das2015evaluation}, and the current
 scheme performs significantly better.
 
 %
@@ -1615,7 +1615,7 @@ Having shown the flexibility of proposed scheme to work with different PST
 methods in \cref{sec:oscillating-plate}, in the current example, we compare
 the robustness of the PST methods by investigating the collision of rubber
 rings with different Poisson ratios. This was first studied in SPH by
-\cite{swegle1995smoothed}.
+\textcite{swegle1995smoothed}.
 
 The inner ring radius of the ring is $r_{min} = 0.03$ m and the outer ring
 radius $r_{max} = 0.04$ m. Both the rings have the same material properties:
@@ -1795,7 +1795,7 @@ problem.
   \end{subfigure}
   \caption{The evolution of the $x$ and $y$ coordinates of points A and B for
     the CTVF using SPST, IPST, and compared with that of
-    Gray~\citep{gray-ed-2001}.}
+    Gray~\parencite{gray-ed-2001}.}
 \label{fig:rings_compare}
 \end{figure}
 
@@ -1812,7 +1812,7 @@ is 10mm in diameter and the rectangular target has a size of $2 \times 50$ mm.
 The projectile and the target have the following material properties: density
 $\rho = 2785 $ kg\,m\textsuperscript{-3}, sound speed $c_0 = 5328$
  m\,s\textsuperscript{-1}, shear modulus $G=2.76 \times 10^{7}$ kPa, yield modulus
-$Y_0 = 3.0 \times 10^{5}$ kPa, as studied in~\citep{zhang_hu_adams17}. The impact velocity is set to
+$Y_0 = 3.0 \times 10^{5}$ kPa, as studied in~\parencite{zhang_hu_adams17}. The impact velocity is set to
 $V_0 = 3100.0$m\,s\textsuperscript{-1}. The initial particle spacing is
 $\Delta x = 0.5$ mm.
 \begin{figure}
@@ -1884,21 +1884,21 @@ $\alpha=1$ in \cref{eq:mom-av} in the current case.
 
 \Cref{fig:hvi:etvf-sun2019} shows the plots of cylinder impacting the
 structure at different time instants. This is computed using the particle
-shifting technique of Sun~\citep{sun_consistent_2019}. The color contour
+shifting technique of Sun~\parencite{sun_consistent_2019}. The color contour
 represents the pressure of the particles. The width of the hole created by the
 cylinder is $19.6$ mm. When computed using the GTVF
-scheme~\citep{zhang_hu_adams17} the hole has a size of $19.8$ mm. In
-\cite{howell2002free}, the value cited is $19.2$ mm. We can see, that the
-current scheme is closer to the one simulated by \citep{howell2002free}, which
-is taken as reference in \citep{zhang_hu_adams17}.
+scheme~\parencite{zhang_hu_adams17} the hole has a size of $19.8$ mm. In
+\textcite{howell2002free}, the value cited is $19.2$ mm. We can see, that the
+current scheme is closer to the one simulated by \parencite{howell2002free}, which
+is taken as reference in \parencite{zhang_hu_adams17}.
 
 
 \section{Discussion}
 
 The proposed CTVF scheme builds on the original TVF scheme of
-\cite{Adami2013} and is as an improvement on the GTVF of
-\cite{zhang_hu_adams17}. In addition it generalizes the implementation of the
-EDAC-SPH method~\citep{edac-sph:cf:2019} where the TVF formulation was used for
+\textcite{Adami2013} and is as an improvement on the GTVF of
+\textcite{zhang_hu_adams17}. In addition it generalizes the implementation of the
+EDAC-SPH method~\parencite{edac-sph:cf:2019} where the TVF formulation was used for
 internal flows and a separate WCSPH formulation used for fluid flows with a
 free-surface. The current work proposes the addition of a few correction terms
 which improve the accuracy of the method as demonstrated in the earlier
@@ -1915,13 +1915,13 @@ with the full CTVF scheme, and takes $73$ seconds without the corrections (run
 on Intel i5-7400, quad core machine). Free-surfaces are handled carefully.
 The method produces smoother pressure fields due to the use of the EDAC
 scheme. Finally the method is robust to changes in the PST method used. This
-has been demonstrated using both the PST of \cite{sun_consistent_2019} and
-the IPST of \cite{huang_kernel_2019}.
+has been demonstrated using both the PST of \textcite{sun_consistent_2019} and
+the IPST of \textcite{huang_kernel_2019}.
 
 An important feature of the proposed scheme is that it works well in the
 context of both fluid mechanics and solid mechanics. For elastic dynamics we
 propose correction terms that improve the accuracy and robustness of the
-method. The GTVF~\citep{zhang_hu_adams17} method fails when the PST method is
+method. The GTVF~\parencite{zhang_hu_adams17} method fails when the PST method is
 changed as demonstrated in \cref{sec:oscillating-plate}, however the proposed
 method is more robust. Furthermore, our method uses the true velocity in order
 to compute the velocity gradient. The results of the uniaxial compression
@@ -1944,7 +1944,7 @@ the EDAC equation. This does not make a significant difference for these
 problems since there is no additional damping added to the evolution equation
 for the deviatoric stresses. The EDAC evolution equation does make a
 significant improvement to the pressure evolution in the fluid mechanics
-problems as discussed earlier in \citep{edac-sph:cf:2019}.
+problems as discussed earlier in \parencite{edac-sph:cf:2019}.
 
 The newly proposed method has not been applied to three dimensional problems
 or to fluid structure interaction (FSI) problems. We believe that the method

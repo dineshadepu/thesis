@@ -33,6 +33,7 @@
 %%% Some commonly used packages (make sure your LaTeX installation
 %%% contains these packages, if not ask your senior to help installing
 %%% the packages)
+\usepackage{placeins}
 \usepackage{lipsum}
 \newcounter{question}
 \setcounter{question}{0}
@@ -52,6 +53,30 @@
 \usepackage{subcaption}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\usepackage{microtype}
+
+\usepackage[backend=biber,
+            bibstyle=numeric,
+            citestyle=authoryear-comp,
+            uniquelist=false,
+            uniquename=false,
+            sorting=nyt,
+            url=false,
+            maxbibnames=99,
+            maxcitenames=1]{biblatex}
+
+
+\definecolor{linkcolour}{rgb}{0,0.2,0.6}
+\definecolor{citecolour}{rgb}{0,0.6,0.2}
+\definecolor{urlcolour} {rgb}{0.8,0,0.8}
+\hypersetup{%
+  pdftitle={Coupled Smoothed Particle Hydrodynamics - Discrete Element Method
+  for Fluid and Solid Mechanics},
+    pdfauthor={Dinesh Adepu},
+    linkcolor=linkcolour,citecolor=citecolour,
+    filecolor=urlcolour,urlcolor=urlcolour,
+  }
+
 
 
 %%% Macro definitions for Commonly used symbols
@@ -77,6 +102,22 @@
 \DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{12} % for bold
 \DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{12}  % for normal
 
+
+% Bibliography using biblatex
+\addbibresource[datatype=bibtex]{mylit.bib}
+\urlstyle{tt}
+\emergencystretch=1em
+
+\DeclareSourcemap{
+  \maps[datatype=bibtex]{
+    \map{
+      \step[fieldsource=url,final]
+      \step[fieldset=doi,null]
+    }
+  }
+}
+
+
 % Custom colors
 \usepackage{color}
 \definecolor{deepblue}{rgb}{0,0,0.5}
@@ -84,7 +125,6 @@
 \definecolor{deepgreen}{rgb}{0,0.5,0}
 
 \usepackage{listings}
-\usepackage{minted}
 
 \lstset{language=Python,
   basicstyle=\ttfamily\bfseries\small,
@@ -257,7 +297,12 @@
 %******************************************************************
 %                         Bibliography or References
 %******************************************************************
-\bibliography{mylit}
+% \setcitestyle{numbers}
+% \bibliography{mylit}
+\begingroup
+\sloppy
+\printbibliography%
+\endgroup
 
 %*******************************************************************
 %                         List of publications

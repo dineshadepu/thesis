@@ -11,7 +11,7 @@ details of the sub-stepping algorithm while handling different materials in a
 simulation. We discuss the implementation details and outline the implementation
 of the algorithms proposed in earlier chapters and the upcoming ones. The
 current work is implemented in an open-source framework, PySPH
-\citep{pysph2020}. In PySPH, particle arrays are initiated using a structure of
+\parencite{pysph2020}. In PySPH, particle arrays are initiated using a structure of
 arrays formulation, with each index corresponding to a particle. Equations
 compute accelerations on the particles using these particle arrays. PySPH is
 primarily written to model SPH schemes. However, it can be used to implement
@@ -748,8 +748,8 @@ to the correct particle array.
 This example demonstrates the implementation in simulating motion of sand in a
 rotating drum. The algorithms discussed in \cref{sec:tracking-many-bodies} are
 used to handle the contact between the sand particles. The dynamics of the
-particles follow the formulation by \cite{cundall_discrete_1979} and
-\cite{luding_dem_2008}. The drum is initially static and starts rotating with an
+particles follow the formulation by \textcite{cundall_discrete_1979} and
+\textcite{luding_dem_2008}. The drum is initially static and starts rotating with an
 angular velocity of 5 rad/s after the sand settles down. Figure 14 shows the
 arrangement of the sand particles, the top row depicts the results when the drum
 is not rotating, while the bottom row is when the drum is rotating. This shows

@@ -5,7 +5,7 @@ to model fluid-structure interaction problems. Fluid-structure interaction (FSI)
 is a common engineering problem that is seen in daily life. Some examples
 include the deformation of wind turbine blade due to the fluid flow, blood flow
 in heart value, coastal engineering, and vortex-induced vibration
-\citep{williamson2004vortex,bearman2011circular}. An accurate study of FSI can
+\parencite{williamson2004vortex,bearman2011circular}. An accurate study of FSI can
 allow us to optimize the systems where FSI is dominant. However, studying the
 FSI phenomena through experiments or analytical techniques are complex due to
 their nonlinear behavior.
@@ -33,7 +33,7 @@ governing equations of the fluid and solid dynamics in discretized form.
 The governing equations of the fluid are conservation of mass and momentum. We
 follow the SPH discretization of the continuity
 equation~\eqref{eq:fsi:sph-discretization-continuity} and the EDAC
-based~\citep{PRKP:edac-sph-iccm2015} pressure evolution
+based~\parencite{PRKP:edac-sph-iccm2015} pressure evolution
 equation~\eqref{eq:fsi:sph-discretization-edac} given in \cref{chap:ctvf}, given
 as
 \begin{equation}
@@ -72,7 +72,7 @@ particles. The discretized momentum equation is written as,
 \end{multline}
 $\ten{F}^a_{\text{FSI}}$ is the force due to the interaction with elastic
 structure. This force modeling is explained in \cref{subsec:fsi}. We utilize the
-ghost particle approach proposed in \citep{Adami2012} to handle the boundaries.
+ghost particle approach proposed in \parencite{Adami2012} to handle the boundaries.
 
 
 Similar to the governing equations for the fluid, the governing equations of
@@ -90,13 +90,13 @@ fluid particles. The resulting equation is given as
 
 We utilize SPST formulation described in \cref{sec:sunpst} to compute the
 transport velocity of the fluid particles, while for the elastic phase
-IPST \citep{huang_kernel_2019} formulation is used.
+IPST \parencite{huang_kernel_2019} formulation is used.
 
 \subsection{Fluid-Structure Interaction}\label{subsec:fsi}
 Coupling is handled in a straight forward way in SPH. While modelling the fluid
 phase and treating the fluid-structure interactions, the solid particles are
 assumed to be boundary particles. From the boundary handling given in Adami
-\citep{Adami2012}, we compute the pressure of the boundary particles from
+\parencite{Adami2012}, we compute the pressure of the boundary particles from
 the extrapolated equation as,
 \begin{equation}
   \label{eq:fsi:pressure-bc}
@@ -123,7 +123,7 @@ hydrodynamics loads from a hydrostatic tank. Further, the model is applied to
 study the deformation of an elastic obstacle due to the impact of fluid. A
 convergence study is undertaken for both the UDL and elastic deformation under
 hydrodynamic load problems. All the results are fully automated with the automan
-package \citep{automan2018} and made easy to reproduce. The source code for all
+package \parencite{automan2018} and made easy to reproduce. The source code for all
 the problems demonstrated in this manuscript is made available at
 \url{https://github.com/dineshadepu/fsi_etvf}.
 
@@ -225,14 +225,14 @@ solver compared against the analytical solution. From
 \cref{fig:ng2020hsplate:deflection} we can see that the current solver is able
 to predict the displacement of the clamped beam within the vicinity of the
 analytical results. The current solver's beam displacement is closer to the
-numerical results provided by \cite{ng2020coupled}. The convergence of the
+numerical results provided by \textcite{ng2020coupled}. The convergence of the
 beam displacement is shown with the particle spacing is reduced.
 \begin{figure}
   \centering
   \includegraphics[scale=0.5]{{{figures/fsi/figures/ng_2020_hydrostatic_water_column_on_elastic_plate/y_amplitude}}}
   \caption{The mid-span deflection of the structure under hydrodynamic loading
     with time for different resolutions, compared against the analytical and
-    the numerical result of \citep{ng2020coupled}.}
+    the numerical result of \parencite{ng2020coupled}.}
 \label{fig:ng2020hsplate:deflection}
 \end{figure}
 %
@@ -244,7 +244,7 @@ In this case, we study the deformation of the elastic
 plate due to the impact of water from a dam break.
 \Cref{fig:dam-break-flow-impact-plate-initial-setup} shows the initial positions
 of fluid and the structure inside the dam, including the dimensions. Following
-\cite{sun2019fully}, we set the material properties of the elastic plate with a
+\textcite{sun2019fully}, we set the material properties of the elastic plate with a
 density of $2500$ kgm\textsuperscript{-3}, Young's modulus of $10^6$ Pa, and a
 Poisson ratio of $0$. The material properties of the fluid are a density of 1000
 kgm\textsuperscript{-3}, with no dynamic viscosity. A particle spacing of $5$
@@ -268,7 +268,7 @@ numerical techniques for quantitative validation.
   \includegraphics[scale=0.45]{figures/fsi/figures/sun_2019_dam_breaking_flow_impacting_an_elastic_plate/x_amplitude}
   \caption{Time histories of horizontal displacement of the free end of the
     elastic structure compared against the numerical results of
-    \citep{sun2019fully,bogaers2016evaluation}- Water impact onto an elastic
+    \parencite{sun2019fully,bogaers2016evaluation}- Water impact onto an elastic
     plate.}
 \label{fig:water-impact-plate-deflection-quantitative}
 \end{figure}
@@ -305,7 +305,7 @@ numerical techniques for quantitative validation.
     \label{fig:dam-breaking-onto-plate-snapshot}
 \end{figure}
 The time variation of the x-displacement of the elastic structure is compared
-against other numerical results~\citep{sun2019fully,bogaers2016evaluation}. From
+against other numerical results~\parencite{sun2019fully,bogaers2016evaluation}. From
 the \cref{fig:water-impact-plate-deflection-quantitative}, we can see that the
 displacement computed by the current solver is within the vicinity of the other
 results produced. \Cref{fig:dam-breaking-onto-plate-snapshot} shows the

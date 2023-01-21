@@ -18,8 +18,8 @@ arbitrary shapes.
 
 The collision of arbitrary solid bodies occurs everywhere around us. Apart
 from the elastic collision of bodies, other important examples include surface
-erosion, waterjet machining \citep{natarajan2020abrasive}, and machining
-processes \citep{islam2020numerical} to note a few. It is important to be able
+erosion, waterjet machining \parencite{natarajan2020abrasive}, and machining
+processes \parencite{islam2020numerical} to note a few. It is important to be able
 to simulate such problems accurately.
 
 % When body A discretized into n particles is colliding a body B which is
@@ -27,7 +27,7 @@ to simulate such problems accurately.
 % compute the accelerations of density and velocity of particles in A. A few
 % drawbacks of this approach is, the bodies come in to contact even when the
 % bodies are physically not touching, and the no frictional modeling is modeled.
-% \cite{yan2021simulation} has proposed a interfacial SPH scheme , where each
+% \textcite{yan2021simulation} has proposed a interfacial SPH scheme , where each
 % elastic body uses their own particles in computation of divergence, momentum
 % and strain rate. While, the bodies interact by a repulsive force inspired from
 % Ansys. Where they have shown the improvement on modeling the collision with
@@ -39,13 +39,13 @@ to simulate such problems accurately.
 % are not touching physically.
 
 % The contact force model used in Yan is inspired from ANSYS model and is given.
-% A similar work is done by \cite{vyas2021collisional}, where the author models
+% A similar work is done by \textcite{vyas2021collisional}, where the author models
 % the interaction between a circular rigid body impacting a target surface. In
 % his work, author proposes a non-linear penalty based force model which could
 % handle friction as well and studies the rebounding characteristic of the
 % impactor. Here, the author studies the post collision behaviour of the
 % circular rigid body which is interacting the elastic plastic solid at
-% different incident angles. \cite{mohseni2021particle} proposed an advanced
+% different incident angles. \textcite{mohseni2021particle} proposed an advanced
 % version of the collision model where he models the interaction between a rigid
 % body with a brittle solids and models the erosion of the brittle solid.
 
@@ -59,12 +59,12 @@ In the current work, the collision between elastic solids is modeled using a
 penalty-based contact force model. A contact force based approach for collision
 handling will eliminate the spurious interaction between bodies, which occurs
 while modeling with an SPH-based model. We address the importance of choosing
-the primary and secondary body. The work of \cite{mohseni2021particle} takes
-inspiration from that of \cite{vyas2021collisional} where too there is a clear
-distinction between primary and secondary bodies. \cite{vyas2021collisional}
+the primary and secondary body. The work of \textcite{mohseni2021particle} takes
+inspiration from that of \textcite{vyas2021collisional} where too there is a clear
+distinction between primary and secondary bodies. \textcite{vyas2021collisional}
 also consider the collision between a rigid and elastic body. In the present
-work we only implement the collision model of \citep{mohseni2021particle} due to
-its simplicity. The model proposed by \cite{vyas2021collisional} is more complex
+work we only implement the collision model of \parencite{mohseni2021particle} due to
+its simplicity. The model proposed by \textcite{vyas2021collisional} is more complex
 to implement. Several examples are simulated to validate the current scheme,
 ranging from simulations compared with FEM, analytical results as well as
 experimental. We next look at the numerical method used to model the collision
@@ -113,12 +113,12 @@ of the particles.
 \section{Contact Algorithm}
 \label{sec:contact-algorithm}
 In the current work we have utilized the contact force model proposed by
-\cite{mohseni2021particle}. The force acting on a particle $a$ of body A due
+\textcite{mohseni2021particle}. The force acting on a particle $a$ of body A due
 to the interaction with the particles of body $B$ can be resolved into a
 normal and tangential component. The normal force component is utilised to
 make sure that the particles of different bodies do not penetrate into each
 other, while the tangential component is used to model the friction between
-the interacting solids. According to \cite{mohseni2021particle}, we divide the
+the interacting solids. According to \textcite{mohseni2021particle}, we divide the
 bodies under interaction into primary and secondary bodies, as shown in
 \cref{fig:bodies_under_collision}.
 % In usual DEM to compute the force on particle i of body A, the force is
@@ -282,7 +282,7 @@ when different bodies are chosen as primary.
 In the interest of reproducibility and easier ability
 for researchers to build on this work, our code is open source and can be
 found at \url{https://gitlab.com/pypr/collision_sph}. We use the
-\texttt{automan} package~\citep{automan2018} to automate all the results
+\texttt{automan} package~\parencite{automan2018} to automate all the results
 generated.
 
 \FloatBarrier%
@@ -375,7 +375,7 @@ of the disc.
 
 \Cref{fig:results-yan-curved-velocity-vs-time} presents the time histories of
 the velocity of the center of mass of both the discs in comparison with the
-results by FEM solver presented in \citep{yan2021simulation}. The rebound the
+results by FEM solver presented in \parencite{yan2021simulation}. The rebound the
 velocity of the bodies with the current scheme is in good match with the FEM
 result.
 % \todoin{Add why CTVF is different}
@@ -445,8 +445,8 @@ of $0.0025$ m is used, resulting in $3321$ particles per body.
 
 \Cref{fig:results-yan-linear-velocity-vs-time} shows the velocity of the
 center of mass of both the bodies using current scheme along with the
-formulation of \cite{gray2001sph} and with FEM results provided by
-\cite{yan2021simulation}. From the
+formulation of \textcite{gray2001sph} and with FEM results provided by
+\textcite{yan2021simulation}. From the
 \cref{fig:results-yan-linear-velocity-vs-time} we can see that rebound
 velocities match well with the FEM results provided, as well as the
 interaction between the bodies start when their physical boundaries have come
@@ -473,7 +473,7 @@ The current scheme results are better than the CTVF model.
 This test applies the current solver in modeling large deformation solids
 under collision. We consider the collision between two elastic rubber rings.
 This benchmark is simulated by various works in SPH literature, such as in
-\cite{gray2001sph,adepu2021corrected,zhang2017generalized}.
+\textcite{gray2001sph,adepu2021corrected,zhang2017generalized}.
 
 \begin{figure}[!htpb]
   \centering
@@ -534,7 +534,7 @@ in the rings is maximum. After that, both the rings bounce off and start to
 separate. Further, we can see the rings being under tension as well as
 compression, while it is deforming in \cref{fig:rings:ipst-nu-0.47-3}. The
 results are consistent with other numerical methods proposed by
-\cite{gray2001sph} and \cite{zhang2017generalized}.
+\textcite{gray2001sph} and \textcite{zhang2017generalized}.
 \begin{figure}[!htpb]
   \centering
   \begin{subfigure}{0.48\textwidth}
@@ -604,8 +604,8 @@ with time is considered.
 \end{figure}
 The dimensions of the elastic bodies under consideration are as follows, the
 length and height are $0.2$ m and $0.1$ m, respectively. Both bodies are made
-of density $1200$ kg\,m\textsuperscript{-3}, Young¡¯s modulus of $10$ MPa and
-Poisson¡¯s ratio of $0.4$. The left body is allowed to
+of density $1200$ kg\,m\textsuperscript{-3}, Young's modulus of $10$ MPa and
+Poisson's ratio of $0.4$. The left body is allowed to
 move to the right in the x-direction with a velocity of $v_0=20$
 m\,s\textsuperscript{-1}, and the right body with $v_0=-20$
 m\,s\textsuperscript{-1}. A particle spacing of dx $=0.0025$ m is used, which
@@ -672,7 +672,7 @@ shifting in the current test case as no deformation of the bodies is expected.
 \end{figure}
 %
 \Cref{fig:dinesh-2022-passing-ctvf} shows the snapshots of bodies at multiple
-time instants simulated using the formulation of \cite{adepu2021corrected}.
+time instants simulated using the formulation of \textcite{adepu2021corrected}.
 From \Cref{fig:dinesh-2022-passing-ctvf} we can see that the bodies interact
 with each other though they are not touching physically, this is because in
 SPH the particles at the boundaries have an influence radius exceeding its
@@ -705,7 +705,7 @@ mass in the x and y-direction. From
 \cref{fig:results-dinesh-passing-velocity-x-y-vs-time} we can see that the
 velocity of the left body, as well as the right body, is constant throughout
 the time. While a velocity in the y-direction is induced while simulated using
-\cite{adepu2021corrected} formulation. Hence the current scheme is successful
+\textcite{adepu2021corrected} formulation. Hence the current scheme is successful
 in modeling the free moment of elastic solids passing close by each other.
 
 % ====================================================================================
@@ -934,7 +934,7 @@ with the analytical solution.
 \end{figure}
 In the current example, we simulate the impact of a 3D sphere on a wall at
 different incident angles, where the experimental evaluation is done by
-\cite{thornton2011investigation}. The model description is shown in
+\textcite{thornton2011investigation}. The model description is shown in
 \cref{fig:results-vyas-3d-rebound-schematic}. The sphere is assumed to be
 rigid and the material properties as well as the numerical parameters used are
 displayed in \cref{tab:sphere-wall-impact}. The sphere is impacted on the wall
@@ -967,7 +967,7 @@ velocity constant, $5$ m\,s\textsuperscript{-1}.
   \includegraphics[width=0.6\textwidth]{figures/csph/figures/vyas_2021_rebound_kinematics_3d/theta_vs_omega}
   \caption{The plot of the variation of $\omega^*_r$ with $\theta^*_i$ of the
     impacting sphere simulated with the current numerical scheme, compared
-    with the experimental result by \cite{thornton2011investigation}.}
+    with the experimental result by \textcite{thornton2011investigation}.}
 \label{fig:results-sphere-impact-theta-vs-omega}
 \end{figure}
 \Cref{fig:results-sphere-impact-theta-vs-omega} depicts the variation of the
@@ -983,7 +983,7 @@ incident angle $\theta^{*}_i$, where $\theta^{*}$ and $\omega^*_r$ are defined a
 \end{equation}
 respectively. Here, $\omega_r$ corresponds to the z-component of the angular
 velocity vector. The simulated results are compared to the experimental
-results by \cite{thornton2011investigation}. From the
+results by \textcite{thornton2011investigation}. From the
 \cref{fig:results-sphere-impact-theta-vs-omega}, we can see that the current
 solver is able to replicate the original behavior to an acceptable
 degree. We observe that the variation of the $\omega^{*}_r$ with
@@ -1004,7 +1004,7 @@ in the current scheme.
 So far, we have modeled the collision between two bodies, in the current
 section, we study the collision among multiple bodies. The elastic wave
 propagation in a granular media is carried out, and whose experimental study was
-executed by \cite{guilkey2001improved}. To our knowledge this problem has not
+executed by \textcite{guilkey2001improved}. To our knowledge this problem has not
 yet been performed in SPH literature yet. We consider five identical disks
 placed at an angle of $45$ degrees, allowed to be impacted by a moving wall from
 right with a velocity $5.6$ m\,s\textsuperscript{-1} in horizontal direction as
@@ -1033,9 +1033,9 @@ simulation are listed in \cref{tab:de-stress-part-2-params}.
   \label{tab:de-stress-part-2-params}
 \end{table}
 \Cref{fig:de-stress-wave-compare} shows the particle plots of the granular
-discs with the stress fringes from the experiment \citep{guilkey2001improved},
+discs with the stress fringes from the experiment \parencite{guilkey2001improved},
 and the simulation carried in the present study, and from the numerical study
-of \cite{de2021modelling}, where the simulation is carried out using a total
+of \textcite{de2021modelling}, where the simulation is carried out using a total
 Lagrangian material point method (TLMPM). The snapshots of the current work
 are taken at time $0.2$ ms, while the results of experimental and TLMPM result
 correspond to the time at $0.12$ ms. This is due to the initial placement of
@@ -1073,7 +1073,7 @@ G\,Pa\textsuperscript{-1}. The difference in the in-plane principal stress is co
     \subcaption{}\label{fig:de-stress-wave-current}
   \end{subfigure}
   \caption{Stress fringes of the granular discs from (a) experiment
-    \citep{guilkey2001improved}, (b) TLMPM \citep{de2021modelling} (c) Current work}
+    \parencite{guilkey2001improved}, (b) TLMPM \parencite{de2021modelling} (c) Current work}
 \label{fig:de-stress-wave-compare}
 \end{figure}
 From the qualitative comparison of the stress fringes in the granular discs of

@@ -100,6 +100,7 @@
             pdfstartview=Fit,%
             pdfcenterwindow=true,%
             linkbordercolor={1 0 1},%
+            colorlinks=true,%
             pdfusetitle]
             {hyperref}
 

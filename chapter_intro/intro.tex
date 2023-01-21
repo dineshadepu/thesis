@@ -7,11 +7,11 @@ deforming, and eroding an elastic-plastic target. In addition, several
 industrial applications involve modeling of some or all of the above processes.
 Few such process are, material erosion with a high-pressure water jet with
 abrasives, and is widely found in the industry applied to design machining of
-metals~\citep{llanto_recent_2021} and composites~\citep{alberdi_composite_2013}.
+metals~\parencite{llanto_recent_2021} and composites~\parencite{alberdi_composite_2013}.
 Such machining is widely known as abrasive water jet machining. This is used for
 cutting metallic sheets, glass, and composite materials for automobiles,
 housing, and aircraft industries
-\citep{alberdi_composite_2013,aich_abrasive_2014,llanto_recent_2021},
+\parencite{alberdi_composite_2013,aich_abrasive_2014,llanto_recent_2021},
 respectively.
 \begin{figure}
   \centering
@@ -67,87 +67,87 @@ current formulation.
 \subsection{Fluid and Elastic Dynamics in SPH}
 The smoothed particle hydrodynamics (SPH) method has been widely applied since
 it was originally proposed to simulate hydrodynamic problems in astrophysics
-independently by \citet{lucy77}, and \citet{monaghan-gingold-stars-mnras-77}. It
+independently by \textcite{lucy77}, and \textcite{monaghan-gingold-stars-mnras-77}. It
 has been extensively applied to simulate problems involving
-fluids~\citep{dalrymple2001sph,shao2003incompressible} for both
-compressible~\citep{monaghan-review:2005}, incompressible fluid
-flows~\citep{sph:fsf:monaghan-jcp94,sph:psph:cummins-rudman:jcp:1999} as well as
-elastic dynamics problems~\citep{randles-1996,gray-ed-2001}, fluid-structure
-interaction \citep{khayyer2018enhanced,he2017coupled}, granular physics
-\citep{bui2008lagrangian,bui2021smoothed} among other areas.
-\cite{monaghan2012smoothed} provides a detailed review of SPH and its
+fluids~\parencite{dalrymple2001sph,shao2003incompressible} for both
+compressible~\parencite{monaghan-review:2005}, incompressible fluid
+flows~\parencite{sph:fsf:monaghan-jcp94,sph:psph:cummins-rudman:jcp:1999} as well as
+elastic dynamics problems~\parencite{randles-1996,gray-ed-2001}, fluid-structure
+interaction \parencite{khayyer2018enhanced,he2017coupled}, granular physics
+\parencite{bui2008lagrangian,bui2021smoothed} among other areas.
+\textcite{monaghan2012smoothed} provides a detailed review of SPH and its
 applications.
 
 % in addition to a
-% variety of other problems~\citet{rafiee:fsi-2009,khayyer-fsi-2018,
+% variety of other problems~\textcite{rafiee:fsi-2009,khayyer-fsi-2018,
 %   sun2021accurate, bui2008lagrangian}.
 
 
 % The SPH method is a meshless numerical method originally proposed by
-% \cite{gingold1977smoothed} and \cite{lucy1977numerical} to model
-% astrophysics problems. structural dynamics \citep{randles1996smoothed,dong2016smoothed},
+% \textcite{gingold1977smoothed} and \textcite{lucy1977numerical} to model
+% astrophysics problems. structural dynamics \parencite{randles1996smoothed,dong2016smoothed},
 
 The SPH method is meshless and Lagrangian, and therefore particles move with the
 local velocity. This motion can introduce disorder in the particles and thereby
-significantly reduce the accuracy of the method. \cite{acc_stab_xu:jcp:2009}
+significantly reduce the accuracy of the method. \textcite{acc_stab_xu:jcp:2009}
 proposed an approach to shift the particles so as to obtain a uniform
 distribution of particles. This significantly improves accuracy and the method
 is referred to as the Particle Shifting Technique (PST). Many different kinds of
 PST methods are available in the
-literature~\citep{diff_smoothing_sph:lind:jcp:2012,fickian_smoothing_sph:skillen:cmame:2013,huang_kernel_2019,ye2019sph}.
+literature~\parencite{diff_smoothing_sph:lind:jcp:2012,fickian_smoothing_sph:skillen:cmame:2013,huang_kernel_2019,ye2019sph}.
 An alternative approach that ensures particle homogenization for incompressible
 fluid flow was proposed as the Transport Velocity Formulation
-(TVF)~\citep{Adami2013}. The method introduced an additional stress term to
+(TVF)~\parencite{Adami2013}. The method introduced an additional stress term to
 account for the motion introduced by the particle shifting. The TVF produces
-very accurate results but only works for internal flows. \cite{zhang_hu_adams17}
+very accurate results but only works for internal flows. \textcite{zhang_hu_adams17}
 proposed the Generalized Transport Velocity Formulation (GTVF) thereby allowing
 the TVF to be used for free-surface problems as well as elastic dynamics
 problems. This allows for a unified treatment of both fluids and solids.
-Similarly, \cite{oger_ale_sph_2016} introduce ideas from a consistent arbitrary
+Similarly, \textcite{oger_ale_sph_2016} introduce ideas from a consistent arbitrary
 Lagrangian Eulerian formulation for improving the accuracy of SPH. They employ a
 Riemann-based formulation to solve fluid mechanics problems and introduce
 particle shifting to obtain highly accurate simulations for internal and
 free-surface problems. The PST has also been employed in the
-context of the $\delta$-SPH schemes\citep{sun_consistent_2019}.
+context of the $\delta$-SPH schemes\parencite{sun_consistent_2019}.
 
 
 The Entropically Damped Artificial Compressibility SPH scheme
-(EDAC-SPH)~\citep{edac-sph:cf:2019} introduces an evolution equation for the
+(EDAC-SPH)~\parencite{edac-sph:cf:2019} introduces an evolution equation for the
 pressure and significantly reduces the noise in the pressure since it features
 a pressure diffusion term. The approach has a thermodynamic
-justification~\citep{Clausen2013} and produces very accurate
+justification~\parencite{Clausen2013} and produces very accurate
 results.
 
 
-Recently, \cite{antuono2021delta} carefully combine the ALE-SPH method of
-\cite{oger_ale_sph_2016} and the consistent $\delta$-SPH formulation of
-\cite{sun_consistent_2019} to improve the accuracy of the $\delta$-SPH
+Recently, \textcite{antuono2021delta} carefully combine the ALE-SPH method of
+\textcite{oger_ale_sph_2016} and the consistent $\delta$-SPH formulation of
+\textcite{sun_consistent_2019} to improve the accuracy of the $\delta$-SPH
 method. They show the importance of the additional terms to the accuracy.
 
 
 Modeling of elastic solids in SPH was first proposed by
-\cite{libersky1991smooth}, where the authors studied the high-speed impact
+\textcite{libersky1991smooth}, where the authors studied the high-speed impact
 problems. Despite SPH being applied to elastic solid modeling, it suffers from
-tensile instability~\citep{swegle1995smoothed}. The tensile instability problem
-has given rise to the total Lagrangian SPH \citep{belytschko2000unified,
+tensile instability~\parencite{swegle1995smoothed}. The tensile instability problem
+has given rise to the total Lagrangian SPH \parencite{belytschko2000unified,
   bonet2002alternative, vignjevic2006sph}, where the derivatives of particle
 properties are computed in the reference configuration using the deformation
-gradient. The updated Lagrangian approach is used by \cite{gray2001sph} and
-\cite{monaghan2000sph} where an artificial stress term is introduced to control
+gradient. The updated Lagrangian approach is used by \textcite{gray2001sph} and
+\textcite{monaghan2000sph} where an artificial stress term is introduced to control
 instabilities. Many other variants of the updated Lagrangian SPH have been
-proposed. Godunov SPH \citep{sugiura2017extension} utilizes a Riemann solver to
+proposed. Godunov SPH \parencite{sugiura2017extension} utilizes a Riemann solver to
 reduce the usage of artificial viscosity and a new equation of state is
-formulated to solve the tensile instability problem. \cite{dyka1995approach} use
+formulated to solve the tensile instability problem. \textcite{dyka1995approach} use
 two sets of particles, where on one set of particles the stress is computed, and
 the other set of particles are used for the evolution of other properties,
 through which the tensile instability has been overcome.
-\cite{zhang2017generalized} extended the transport velocity formulation (TVF) of
-\cite{adami2013transport} to structural dynamics problems and free-surface fluid
+\textcite{zhang2017generalized} extended the transport velocity formulation (TVF) of
+\textcite{adami2013transport} to structural dynamics problems and free-surface fluid
 mechanics problems. Here the particles are moved with a transport velocity
 rather than the momentum velocity to ensure a more homogeneous particle
 distribution. This approach also solves the tensile instability problem.
 
-With the notable exception of the GTVF scheme~\citep{zhang_hu_adams17}, most
+With the notable exception of the GTVF scheme~\parencite{zhang_hu_adams17}, most
 other applications of the PST have been in the context of fluid mechanics. The
 GTVF method provides a unified approach to solve both weakly-compressible fluids
 as well as solids. However, the method suffers from a few issues. In order to
@@ -168,45 +168,45 @@ between the elastic solids using the SPH method and its drawbacks.
 
 \subsection{Collision SPH}
 The dynamics of projectiles can be modeled by assuming the bodies to be
-rigid, as done in the discrete element method (DEM) \citep{zhan2021surface}.
+rigid, as done in the discrete element method (DEM) \parencite{zhan2021surface}.
 However, this does not consider any elastic or elastic-plastic deformations of
 these colliding bodies. In these cases either finite element methods (FEM)
-\citep{rodrigues2019elastic} or meshless methods such as material point
-method~\citep{sulsky1994particle} or smoothed particle hydrodynamics (SPH)
-\citep{gingold1977smoothed} can be used. In this context, meshless methods, such
+\parencite{rodrigues2019elastic} or meshless methods such as material point
+method~\parencite{sulsky1994particle} or smoothed particle hydrodynamics (SPH)
+\parencite{gingold1977smoothed} can be used. In this context, meshless methods, such
 as the SPH method, are advantageous when modeling large deformation of solids as
 they do not suffer from issues such as mesh entanglement.
 
 SPH has been successful in modeling the collision between the elastic as well as
-elastic-plastic solids \citep{gray2001sph, cleary2010elastoplastic}.
-\cite{yan2021simulation} introduced the interfacial SPH scheme, where the SPH
+elastic-plastic solids \parencite{gray2001sph, cleary2010elastoplastic}.
+\textcite{yan2021simulation} introduced the interfacial SPH scheme, where the SPH
 forces are computed only within each body but the interaction between two bodies
 is computed using a repulsive force inspired from ABAQUS.
-\cite{vyas2021collisional} has modeled the interaction between a rigid body with
+\textcite{vyas2021collisional} has modeled the interaction between a rigid body with
 an elastic solid, using a penalty-based contact force model.
-\cite{mohseni2021particle} use a contact model in order to simulate the
+\textcite{mohseni2021particle} use a contact model in order to simulate the
 collision between non-smooth rigid bodies with elasto-plastic targets. In both
-\citep{vyas2021collisional} and \citep{mohseni2021particle} the friction between
+\parencite{vyas2021collisional} and \parencite{mohseni2021particle} the friction between
 the rigid body and target is considered.
 
 
-Though SPH~\citep{gray2001sph} has been successful in modeling the collision
+Though SPH~\parencite{gray2001sph} has been successful in modeling the collision
 between the elastic solids, it does not consider friction between the colliding
 solids. Another problem is that the model generates spurious forces on bodies
 which are moving close to each other (within the influence radius of the SPH
-particles) but not actually interacting. \cite{yan2021simulation} introduced the
+particles) but not actually interacting. \textcite{yan2021simulation} introduced the
 interfacial SPH scheme, which eliminates the spurious interactions but it cannot
 handle friction between the solids. The interaction force does not consider the
-shape of the solids in contact. \cite{mohseni2021particle} models the
+shape of the solids in contact. \textcite{mohseni2021particle} models the
 interaction between a rigid body and a ductile solid using a contact force
 model, where the bodies are divided as being primary and a secondary. In
-\citep{mohseni2021particle}, the primary body is usually treated as the rigid
+\parencite{mohseni2021particle}, the primary body is usually treated as the rigid
 body and the body on which the erosion is simulated is treated as secondary.
-\cite{vyas2021collisional} also consider the collision between a rigid and
+\textcite{vyas2021collisional} also consider the collision between a rigid and
 elastic body and also makes a clear distinction between primary and secondary
 bodies. It is not clear what would happen if both bodies were elastic or if
 there is no clear way to distinguish between a primary and secondary body. The
-methods proposed by \cite{vyas2021collisional,mohseni2021particle} are not
+methods proposed by \textcite{vyas2021collisional,mohseni2021particle} are not
 applied to model the interaction between elastic solids.
 
 We next look at modeling of fluid-structure interaction.
@@ -215,30 +215,30 @@ We next look at modeling of fluid-structure interaction.
 \subsection{Fluid-Structure Interaction}
 The interaction between the ductile target and the incoming jet can be
 considered as a fluid-structure interaction phenomenon. Mesh-based schemes such
-as finite element method (FEM) \citep{lozovskiy2015unconditionally} and finite
-volume method (FVM) \citep{jasak2007updated} have been used for the last few
+as finite element method (FEM) \parencite{lozovskiy2015unconditionally} and finite
+volume method (FVM) \parencite{jasak2007updated} have been used for the last few
 decades in modeling the FSI problems. However, mesh-based methods are not
 favorable when dealing with free surface flow problems or problems involving
 large deformation of the structure. This is due to explicit free surface
-tracking, and mesh distortion \citep{moresi2003lagrangian} while dealing with
+tracking, and mesh distortion \parencite{moresi2003lagrangian} while dealing with
 large deformation in solids. Therefore, meshless methods are preferred while
 handling FSI problems involving free surfaces, multiphase flows, and large
 deformation in solids. The smoothed particle hydrodynamics (SPH) and material
 point method (MPM) are more commonly used to model the fluid, while the
 solids are modeled with SPH or Reproducing Kernel Particle Methods (RKPM), or
-the Discrete Element Method (DEM) \citep{hu2010material,li2022material}. These
+the Discrete Element Method (DEM) \parencite{hu2010material,li2022material}. These
 meshless techniques have been coupled for the past two decades to model the
 fluid-structure interaction. A few schemes with SPH and MPM are SPH-DEM~
-\citep{wu2016coupled}, SPH-total Lagrangian SPH
-(TLSPH)~\citep{salehizadeh2022coupled}, SPH-reproduction kernel particle method
-(RKPM)~\citep{peng2021coupling}, SPH-Peridynamics~\citep{sun2020smoothed},
-MPM-DEM~\citep{singer2022partitioned}. For more, see the review by
-\citep{khayyer2022systematic}.
+\parencite{wu2016coupled}, SPH-total Lagrangian SPH
+(TLSPH)~\parencite{salehizadeh2022coupled}, SPH-reproduction kernel particle method
+(RKPM)~\parencite{peng2021coupling}, SPH-Peridynamics~\parencite{sun2020smoothed},
+MPM-DEM~\parencite{singer2022partitioned}. For more, see the review by
+\parencite{khayyer2022systematic}.
 
 Several different meshless techniques are coupled in order to simulate the FSI
 phenomenon. FSI is modeled by several works using SPH, such as, WCSPH-Total
-Lagrangian SPH (TLSPH) \citep{zhan2019stabilized}, WCSPH-Updated Lagrangian SPH
-(ULSPH) \citep{antoci2007numerical}, ISPH-TLSPH\citep{salehizadeh2022coupled}.
+Lagrangian SPH (TLSPH) \parencite{zhan2019stabilized}, WCSPH-Updated Lagrangian SPH
+(ULSPH) \parencite{antoci2007numerical}, ISPH-TLSPH\parencite{salehizadeh2022coupled}.
 However, no work is reported in an updated Lagrangian framework to model FSI
 with a transport velocity formulation with corrections included.
 
@@ -253,47 +253,47 @@ consider the shape of the solid during the collision.
 If we consider particles in a jet of fluid, we may assume the the incoming
 projectiles as rigid bodies. The influence of rigid body on the incoming jet and
 vice versa is modeled as rigid fluid coupling. In rigid fluid coupling problems,
-mesh-based schemes \citep{dettmer_computational_2006} have been used in practice
+mesh-based schemes \parencite{dettmer_computational_2006} have been used in practice
 to model fluid dynamics for several decades. However, these schemes are
 unfavorable when dealing with free surface flows and mediums undergoing huge
-deformation \citep{walkley_finite_2005}. Among many meshless techniques, moving
+deformation \parencite{walkley_finite_2005}. Among many meshless techniques, moving
 particle semi-implicit (MPS) - discrete element method (DEM)
-\citep{guo2017numerical} and smoothed particle hydrodynamics (SPH)-DEM
-\citep{canelas2016sph} are two coupling strategies used to handle rigid-fluid
+\parencite{guo2017numerical} and smoothed particle hydrodynamics (SPH)-DEM
+\parencite{canelas2016sph} are two coupling strategies used to handle rigid-fluid
 coupling problems. The rigid body interaction is modeled with DEM. In addition
-to DEM, works where SPH \citep{amicarelli2015smoothed} is used to model the
+to DEM, works where SPH \parencite{amicarelli2015smoothed} is used to model the
 rigid-rigid interaction. However, it does not incorporate the friction between
 the bodies. MPS and SPH are used to model the fluid phase, and a coupling
 strategy is utilized to model the interaction between the rigid body and the
 fluid phase.
 
-\cite{cundall_discrete_1979} proposed DEM to study discrete granular materials.
+\textcite{cundall_discrete_1979} proposed DEM to study discrete granular materials.
 In DEM, the particle dynamics follow simple Newtonian force laws and interact at
 their surfaces through a contact force. A shape, mass, and moment of inertia are
 assigned to each particle, and originally the particles are assumed to have a
 spherical shape. Variations of the DEM were proposed to handle bodies with
-different shapes, such as dilated polyhedral DEM \citep{liu_new_2020}, Fourier
-series-based discrete element method \citep{lai_fourier_2020}
-Gilbert-Johnson-Keerthi (GJK)-DEM \citep{wachs2012grains3d}, discrete function
-representation based DEM \citep{lu2012critical}, level set DEM method
-\citep{duriez2021precision}.
+different shapes, such as dilated polyhedral DEM \parencite{liu_new_2020}, Fourier
+series-based discrete element method \parencite{lai_fourier_2020}
+Gilbert-Johnson-Keerthi (GJK)-DEM \parencite{wachs2012grains3d}, discrete function
+representation based DEM \parencite{lu2012critical}, level set DEM method
+\parencite{duriez2021precision}.
 
 Interaction between bodies with irregular geometries is modeled by multi-sphere
-approach \citep{kruggel-emden_study_2008}, and surface mesh represented
-(SMR)-DEM ~\citep{zhan2021surface}. However, the multi-sphere approach fails to
+approach \parencite{kruggel-emden_study_2008}, and surface mesh represented
+(SMR)-DEM ~\parencite{zhan2021surface}. However, the multi-sphere approach fails to
 handle the contact accurately with bodies involving sharp corners, as the force
 law assumes the contact between two spherical particles. SMR-DEM requires
 additional information to handle the collision, such as connectivity between the
 particles comprising the body in addition to the particle positions. However, we
 need additional sets of particles to handle the interaction between the rigid
-body and the fluid particles. \cite{mohseni2021particle} proposed a new contact
+body and the fluid particles. \textcite{mohseni2021particle} proposed a new contact
 force law, which handles the collision between the bodies based on particle
 positions alone. Here the amount of overlap between the bodies is computed using
-an SPH method. Utilizing \citep{mohseni2021particle} to model contact between
+an SPH method. Utilizing \parencite{mohseni2021particle} to model contact between
 the bodies allows us to handle the interaction between the fluid particles with
-the same set of particles in contrast to SMR-DEM ~\cite{zhan2021surface}.
-However, \citep{mohseni2021particle} is applied to contacts involving rigid and
-a ductile solids. \citep{mohseni2021particle} is not applied to model the
+the same set of particles in contrast to SMR-DEM ~\textcite{zhan2021surface}.
+However, \parencite{mohseni2021particle} is applied to contacts involving rigid and
+a ductile solids. \parencite{mohseni2021particle} is not applied to model the
 interaction between inelastic rigid bodies, and in problems involving fluids.
 
 We finally discuss solid particle erosion modeling with mesh-based and meshless
@@ -301,24 +301,24 @@ techniques in the next section.
 
 
 \subsection{Solid Particle Erosion}
-In theoretical studies, \cite{finnie1972some}, \cite{bitter1963study}
+In theoretical studies, \textcite{finnie1972some}, \textcite{bitter1963study}
 studied the surface erosion of ductile and brittle materials. An analytical
 expression for the material removal at different angles of impact is derived in
 these studies. Further, an analytical study is carried out by
-\cite{hutchings1977erosion}, who provides various results relating the
+\textcite{hutchings1977erosion}, who provides various results relating the
 crater depth, erosion rate, and shape of the impactor particles. In numerical
 modeling, mesh based methods are in use for the past few decades in modeling the
-solid particle erosion. \cite{molinari2002study,takaffoli2009finite} have
+solid particle erosion. \textcite{molinari2002study,takaffoli2009finite} have
 studied the single impact problem using FEM. Meshless techniques are been used
 in studying the erosion process, this is due to its advantage in handling
-problems with large deformation. \cite{dong2016smoothed} uses smoothed
+problems with large deformation. \textcite{dong2016smoothed} uses smoothed
 particle hydrodynamics (SPH) to model the erosion of a ductile target.
 
-FEM~\citep{takaffoli2009finite} is successful in modeling solid particle
+FEM~\parencite{takaffoli2009finite} is successful in modeling solid particle
 erosion, however, it is inefficient when modeling the erosion due to many
 particles. Further, FEM is not suitable for modeling multiphysics problems.
-\cite{dong2016smoothed} uses smoothed particle hydrodynamics (SPH) to model the
-erosion of a ductile target. However, \cite{dong2016smoothed} does not consider
+\textcite{dong2016smoothed} uses smoothed particle hydrodynamics (SPH) to model the
+erosion of a ductile target. However, \textcite{dong2016smoothed} does not consider
 the arbitrary shape of the projectile. Further, collision among the projectiles
 while interacting with the target is not modeled in SPH. To the authors
 knowledge there is no open-source implementation in the literature which can
@@ -348,7 +348,7 @@ consistent and which works for both solid mechanics and fluid mechanics
 problems. We derive the transport velocity equations afresh and note that there
 are some important terms that are ignored in earlier approaches using TVF. These
 terms are significant and improve the accuracy of the method. Similar to
-\cite{oger_ale_sph_2016,sun_consistent_2019}, we detect the free surface
+\textcite{oger_ale_sph_2016,sun_consistent_2019}, we detect the free surface
 particles and compute their normals using a simpler and computationally
 efficient approach which does not require the computation of eigenvalues. This
 allows the method to work with free-surfaces without the introduction of
@@ -359,23 +359,23 @@ Furthermore, we show how the EDAC scheme can be used in the context of solid
 mechanics problems. We make use of the particle velocity rather than the
 transport velocity to compute the velocity gradient, strain, and rotation rate
 tensors. Our method can be used with any PST and we consider the method of
-\citet{sun_consistent_2019} as well as the iterative PST of
-\citet{huang_kernel_2019}. The method is also robust to the choice of the
+\textcite{sun_consistent_2019} as well as the iterative PST of
+\textcite{huang_kernel_2019}. The method is also robust to the choice of the
 smoothing kernel. The resulting method works for both weakly-compressible fluids
 as well as solids. The new method may be thought of as an improved extension of
-the EDAC-SPH method~\citep{edac-sph:cf:2019} that can be used for free-surface
+the EDAC-SPH method~\parencite{edac-sph:cf:2019} that can be used for free-surface
 problems as well as solid mechanics problems.
 
 
 In the current work, the collision between elastic solids is modeled using a
 penalty-based contact force model. Unlike the approach of
-\cite{yan2021simulation}, the proposed contact force model can handle friction
+\textcite{yan2021simulation}, the proposed contact force model can handle friction
 between the solids as well. The bodies themselves are elastic and this is
-simulated using the CTVF SPH method \cite{adepu2021corrected} presented in the
+simulated using the CTVF SPH method \textcite{adepu2021corrected} presented in the
 thesis. The penalty-based force considered here is the one proposed by
-\citet{mohseni2021particle}. In the original model proposed by
-\cite{mohseni2021particle}, the contact force is between a primary body and a
-secondary body. In \cite{mohseni2021particle}, the primary body is usually
+\textcite{mohseni2021particle}. In the original model proposed by
+\textcite{mohseni2021particle}, the contact force is between a primary body and a
+secondary body. In \textcite{mohseni2021particle}, the primary body is usually
 treated as the rigid body and the body on which the erosion is simulated is
 treated as secondary. It is not clear what would happen if both bodies were
 elastic or if there is no clear way to distinguish between a primary and
@@ -392,7 +392,7 @@ homogeneous particle distribution, resulting in accurate fluid modeling. While
 DEM is used to handle rigid-rigid interactions and applied to 3D problems, and
 it is further modified to handle inelastic collisions by introducing a damping
 term in the contact force equation. The interaction between the fluid phase and
-rigid bodies is handled using the dummy particle approach \citep{Adami2012}.
+rigid bodies is handled using the dummy particle approach \parencite{Adami2012}.
 
 We develop a framework to model the solid particle erosion with CTVF method to
 model the elastic-plastic behavior of the ductile target. Where, the plastic
@@ -413,7 +413,7 @@ force model in SPH while the bodies are colliding. This essentially eliminates
 spurious interaction between the bodies and incorporates friction between the
 interacting bodies. In \Cref{chap:implementation_detail}, we discuss the
 implementation details of contact force algorithms and a sub-stepping
-integration strategy in PySPH~\citep{pysph2020}. \Cref{chap:fsi} discusses the
+integration strategy in PySPH~\parencite{pysph2020}. \Cref{chap:fsi} discusses the
 interaction between the elastic structure and fluids. We use CTVF to model both
 both fluid and solid materials and handle the interaction between the fluid and
 solid using a dummy particle approach. In \cref{chap:rfc}, we couple CTVF with

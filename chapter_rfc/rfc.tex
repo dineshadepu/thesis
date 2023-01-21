@@ -6,9 +6,9 @@
 In the current chapter, we model the dynamics of rigid bodies in fluid flow and
 the coupled behavior of fluid and rigid bodies. Transport of arbitrarily shaped
 rigid bodies in fluid flows is a common phenomenon that occurs widely in nature.
-The transport of bodies in internal systems \citep{Dai2021}, debris flow
-\citep{Qingyun2022}, the food processing industry \citep{Karunasena2014}, and
-ice-sea modeling \citep{Mintu2018} are a few areas to mention. These systems are
+The transport of bodies in internal systems \parencite{Dai2021}, debris flow
+\parencite{Qingyun2022}, the food processing industry \parencite{Karunasena2014}, and
+ice-sea modeling \parencite{Mintu2018} are a few areas to mention. These systems are
 studied as part of two-way coupling models. The two-way coupling phenomena are
 nonlinear, and an analytical study is not feasible. A numerical study is
 preferable while handling such a phenomenon. A mesh-based or meshless technique
@@ -21,7 +21,7 @@ velocity formulation developed in \cref{chap:ctvf}. CTVF provides smooth
 pressure distribution with EDAC formulation and homogeneous particle
 distribution, resulting in accurate fluid modeling. Rigid-rigid interactions are
 modeled with DEM. The interaction between the fluid phase and rigid bodies is
-handled using the dummy particle approach \citep{Adami2012}.
+handled using the dummy particle approach \parencite{Adami2012}.
 % We explore different rigid fluid coupling strategies by simulating high
 % density ratio simulations.
 
@@ -115,7 +115,7 @@ timestep are computed as,
   \label{eq:rfc:ang_mom_update}
   \ten{L}^{n+1} = \ten{L}^{n} + \teng{\tau}_{cm} \; \Delta t.
 \end{equation}
-Here, $\ten{F}_{cm} = \Sum_i \ten{F}_i$.
+Here, $\ten{F}_{cm} = \sum_i \ten{F}_i$.
 
 The position of the center of mass and the rotation matrix ($\ten{R}$) are updated
 by,
@@ -139,10 +139,10 @@ where moment of inertia ($\textit{\teng{\overline{I}}}^{-1}$) in body frame is
 used to compute in global frame at every time instant for faster computations.
 The moment of inertia ($\textit{\teng{\overline{I}}}$) is computed as,
 \begin{equation*}
-$\textit{\teng{\overline{I}}}$ =
+\textit{\teng{\overline{I}}} =
 \begin{bmatrix}
 \sum_i m_i (y_i^2 + z_i^2) & -\sum_i m_i x_iy_i & -\sum_i m_i x_iz_i\\
--\sum_i m_i x_iy_i & \Sum_i m_i (x_i^2 + z_i^2) &  -\sum_i m_i y_iz_i\\
+-\sum_i m_i x_iy_i & \sum_i m_i (x_i^2 + z_i^2) &  -\sum_i m_i y_iz_i\\
 -\sum_i m_i  x_iz_i & -\sum_i m_i y_iz_i & \sum_i m_i (x_i^2 + y_i^2)
 \end{bmatrix}.
 \end{equation*}
@@ -166,7 +166,7 @@ We follow \cref{sec:contact-algorithm} to compute force
 the rigid bodies. The force ($\ten{F}_{\text{Fl}}^i$) acting due to the
 interaction with the fluid particles follows \cref{subsec:fsi}.
 
-We model the fluid phase with the CTVF \citep{adepu2021corrected} scheme
+We model the fluid phase with the CTVF \parencite{adepu2021corrected} scheme
 developed in \cref{chap:ctvf}. Similar to the fluid phase modeling in
 \cref{chap:fsi}, we modify the momentum equation to include the force acting due
 to the interaction with a solid body. The discretized momentum equation of the
@@ -220,7 +220,7 @@ In the current section we validate the developed schemes. We first, validate the
 DEM model by simulating, rolling, sliding and collapse of rigid bodies. Falling
 and rising of bodies in hydrostatic tank are considered to validate the coupled
 model. All the results are fully automated with the automan package
-\citep{automan2018} and made fully reproducible. The source code for all the
+\parencite{automan2018} and made fully reproducible. The source code for all the
 problems demonstrated in this manuscript is made available at
 \url{https://github.com/dineshadepu/rfc}.
 
@@ -280,7 +280,7 @@ to compare with the current numerical solver.
     Smoothing length factor, $h/\Delta x$ & 1\\
     gravity $[g_x, g_y, g_z]$ & $[g\,\sin(\theta), g\,\cos(\theta), 0.0]$\\
     $k_r$, Repulsive stiffness coefficient & $1e7$ \\
-    $k_f$, Repulsive stiffness coefficient & $1e5$
+    $k_f$, Repulsive stiffness coefficient & $1e5$ \\
     % $\alpha_{damp}$ & 0.\\
     \bottomrule
   \end{tabular}
@@ -505,7 +505,7 @@ regimes of the sliding case for a 3D case.
 This test case is used to validate the current solid-solid contact force model
 with an experimental problem. In this test case, a stack of cylinders initially
 at rest are allowed to settle under gravity inside a tank. This experiment is
-conducted by \citep{zhang_simulation_2009}, and a numerical analysis is carried
+conducted by \parencite{zhang_simulation_2009}, and a numerical analysis is carried
 out for the same with DEM. The material and numerical parameters of the
 cylinders are listed in \Cref{tab:stack-of-cylinders}. An additional damping
 term is used while model the contact to consider the inelastic collision between
@@ -543,7 +543,7 @@ the bodies. The schematic of the cylinders can be seen in
 \Cref{fig:snapshots-stack-of-cylinders} presents a set of snapshots
 corresponding to the simulation of a stack of cylinders collapsing under gravity
 using developed solver in comparison with the corresponding experimental photos
-by \citep{zhang_simulation_2009}. From the presented
+by \parencite{zhang_simulation_2009}. From the presented
 \cref{fig:snapshots-stack-of-cylinders}, the reproduced cylinders' positions
 appear to be consistent with those observed in the experiment.
 \begin{figure}[!htpb]
@@ -589,7 +589,7 @@ appear to be consistent with those observed in the experiment.
   \end{subfigure}
   \caption{Snapshot of the collapsing cylinders at different time stamps
     simulated with the current solver, compared against the experimental
-    pictures \citep{zhang_simulation_2009}.}
+    pictures \parencite{zhang_simulation_2009}.}
 \label{fig:snapshots-stack-of-cylinders}
 \end{figure}
 For a quantitative validation, we compare the time histories of the x and y
@@ -625,12 +625,12 @@ center of mass of the cylinders is in good agreement with the experiment result.
 
 % % \FloatBarrier%
 % % \subsection{A rigid box rotating and sinking in viscous liquid}
-% % Rotating box in fluid \citep{sun2015numerical}.
+% % Rotating box in fluid \parencite{sun2015numerical}.
 
 
 % % \FloatBarrier%
 % % \subsection{Water entry of 2-D cylinder}
-% % Water entry of 2-D cylinder \citep{sun2015numerical}.
+% % Water entry of 2-D cylinder \parencite{sun2015numerical}.
 
 
 % % \FloatBarrier%
@@ -713,8 +713,8 @@ and the center of mass co-inside as time increases.
 \label{sec:falling-solid-in-water}
 In this section, the rigid fluid coupling part of the current solver is
 evaluated by simulating water entry of a rigid cube in a hydrostatic tank
-\citep{qiu_3d_2017}. The CTVF-DEM solver is employed to simulate water entry of
-a rigid cube, which is studied experimentally by \cite{wu_two-way_2014}. The
+\parencite{qiu_3d_2017}. The CTVF-DEM solver is employed to simulate water entry of
+a rigid cube, which is studied experimentally by \textcite{wu_two-way_2014}. The
 numerical and material parameters of the current test case are listed in
 \cref{tab:rfc:qiu-falling-cube}. The length of the cube is $20$ mm, and the
 height and length of the water in the tank are taken as $131$ mm and $140$ mm,
@@ -773,7 +773,7 @@ the transport velocity formulation.
 \end{figure}
 \Cref{fig:disp-falling-solid-in-water} presents the time history of the
 displacement of the rigid cube with time in comparison with the experimental
-result by \cite{wu_two-way_2014}. From the presented figure, we can see that the
+result by \textcite{wu_two-way_2014}. From the presented figure, we can see that the
 CTVF-DEM model has reproduced the displacement of the rigid cube within an
 acceptable accuracy. We believe the reason for the difference between the
 current solver with the experimental result is that we carried out a falling of
@@ -794,7 +794,7 @@ a 2D square body, while the experiment deals with a rigid cube.
 % % % https://www.sciencedirect.com/science/article/pii/S0997754621001412#fig2
 
 % % In this section we reproduce the water entry of a single sphere experiment
-% % done by \citep{aristoff_water_2010}. A sphere of diameter $24.4$ mm is allowed
+% % done by \parencite{aristoff_water_2010}. A sphere of diameter $24.4$ mm is allowed
 % % to settle under gravity in a water tank of dimensions, $0.2$ m $\times$ $0.2$
 % % m $\times$ $0.14$ m, with a water depth of $0.11$ m
 % % (\cref{fig:cylinders-in-series-schematic}). The initial velocity of the sphere
@@ -828,7 +828,7 @@ a 2D square body, while the experiment deals with a rigid cube.
 % % \FloatBarrier%
 % % \subsection{3D dam breaking flow hitting cubes}
 
-% % \citep{amaro2019improvement}
+% % \parencite{amaro2019improvement}
 
 % % In the current case we simulate a 3d dam breaking flow hitting different
 % % configuration of rigid cubes. This is experimentally studied by SPH DCDEM,
@@ -973,16 +973,16 @@ a 2D square body, while the experiment deals with a rigid cube.
 % % \subsection{Dam break with body transport}
 % % \label{sec:dam-break-with-body-transport}
 
-% % \cite{wang2019numerical}
+% % \textcite{wang2019numerical}
 
 % % \subsection{Dam break with multiple bodies transport}
 % % \label{sec:dam-break-with-multiple-bodies-transport}
-% % \cite{wang2019numerical}
+% % \textcite{wang2019numerical}
 
 
 % % \subsection{Cylinders in water collapsed under gravity}
 % % \label{sec:cylinders-collapse-in-water}
-% % \cite{chen2019coupled}
+% % \textcite{chen2019coupled}
 
 
 \FloatBarrier%
@@ -1014,3 +1014,8 @@ model the interaction between the rigid and a ductile target. The ductile target
 is modelled assuming elastic-plastic, where the solver in \cref{chap:ctvf} is
 extended to handle the plastic behaviour through the Johnson-Cook constitutive
 model.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
