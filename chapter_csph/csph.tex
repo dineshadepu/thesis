@@ -58,25 +58,14 @@ to simulate such problems accurately.
 In the current work, the collision between elastic solids is modeled using a
 penalty-based contact force model. A contact force based approach for collision
 handling will eliminate the spurious interaction between bodies, which occurs
-while modeling with an SPH-based model. Unlike the approach of
-\citep{yan2021simulation}, the proposed contact force model can handle friction
-between the solids as well. The bodies themselves are elastic and this is
-simulated using the CTVF SPH method \citep{adepu2021corrected}. The
-penalty-based force considered here is the one proposed by
-\cite{mohseni2021particle}. In the original model proposed by
-\citep{mohseni2021particle}, the contact force is between a primary body and a
-secondary body. In \citep{mohseni2021particle}, the primary body is usually
-treated as the rigid body and the body on which the erosion is simulated is
-treated as secondary. It is not clear what would happen if both bodies were
-elastic or if there is no clear way to distinguish between a primary and
-secondary body. We explore these questions in the present work. The work of
-\cite{mohseni2021particle} takes inspiration from that of
-\cite{vyas2021collisional} where too there is a clear distinction between
-primary and secondary bodies. \cite{vyas2021collisional} also consider the
-collision between a rigid and elastic body. In the present work we only
-implement the collision model of \citep{mohseni2021particle} due to its
-simplicity. The model proposed by \cite{vyas2021collisional} is more complex to
-implement. Several examples are simulated to validate the current scheme,
+while modeling with an SPH-based model. We address the importance of choosing
+the primary and secondary body. The work of \cite{mohseni2021particle} takes
+inspiration from that of \cite{vyas2021collisional} where too there is a clear
+distinction between primary and secondary bodies. \cite{vyas2021collisional}
+also consider the collision between a rigid and elastic body. In the present
+work we only implement the collision model of \citep{mohseni2021particle} due to
+its simplicity. The model proposed by \cite{vyas2021collisional} is more complex
+to implement. Several examples are simulated to validate the current scheme,
 ranging from simulations compared with FEM, analytical results as well as
 experimental. We next look at the numerical method used to model the collision
 among the elastic solids.
@@ -116,8 +105,8 @@ Here, $\ten{F}^{cont}_{a}$ is the force acting on particle $a$ due to
 \end{figure}
 contact with the other elastic bodies which will be discussed in
 \cref{sec:contact-algorithm}. We follow \cref{chap:ctvf} in handling the
-boundaries , in updating the state of the bodies to the next stage, while
-transporting particles with a PST.
+boundaries, updating the state of the bodies, to compute the transport velocity
+of the particles.
 
 
 \FloatBarrier%
@@ -838,8 +827,8 @@ different frictional coefficients is given as
   \label{eq:analytical-x-cm-rolling-cylinder}
   x_{cm}(t) =
   \begin{cases}
-  x_0 + \frac{1}{2} \, g \, t^2 \, (\sin(\theta) - \mu \cos(\theta)) & \tan{\theta} > 3.5\mu,\\
-  x_0 + \frac{1}{3} \, g \, t^2 \, \sin(\theta) & \tan{\theta} \leq 3.5\mu.
+  x_0 + \frac{1}{2} \, g \, t^2 \, (\sin(\theta) - \mu \cos(\theta)) & \tan{\theta} > 3.5\mu (\text{ slip}),\\
+  x_0 + \frac{1}{3} \, g \, t^2 \, \sin(\theta) & \tan{\theta} \leq 3.5\mu (\text{ stick}).
 \end{cases}
 \end{align}
 Here, $g=9.81$ is the magnitude of acceleration due to gravity.

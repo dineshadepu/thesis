@@ -17,8 +17,8 @@ formulation. The developed technique is applied to different problems involving
 boundaries and free surfaces in both fluid and solid dynamics for validation.
 
 In this current chapter, we propose a scheme which we call Corrected Transport
-Velocity Formulation (CTVF) that is inspired by the various recent developments.
-CTVF is consistent and works for both solid mechanics and fluid mechanics
+Velocity Formulation (CTVF) that is inspired by the various recent developments
+and is consistent and works for both solid mechanics and fluid mechanics
 problems. We derive the transport velocity equations afresh and note that there
 are some important terms that are ignored in earlier approaches using TVF. These
 terms are significant and improve the accuracy of the method. Similar to
@@ -44,16 +44,12 @@ as well as solids. The new method may be thought of as an improved extension of
 the EDAC-SPH method that can be used for free-surface problems as well as solid
 mechanics problems.
 
-The method is implemented using the PySPH
-framework~\citep{PR:pysph:scipy16,pysph2020}. The source code for all the
-problems demonstrated in this chapter is made available at
-\url{https://gitlab.com/pypr/ctvf}. Every result produced in the chapter is
-fully automated using the \texttt{automan} package~\citep{pr:automan:2018}.
 
 We next discuss the formulation for fluid mechanics as well as solid mechanics
 along with the use of particle shifting. The consistent correction terms are
-derived. We then consider a suite of benchmark problems for both fluids and
-solids and compare our results with those of other methods where applicable.
+derived. We then give a brief overview of SPH. We then consider a suite of
+benchmark problems for both fluids and solids and compare our results with those
+of other methods where applicable.
 
 \section{Governing equations}
 For elastic dynamics we use the same equations as in
@@ -225,7 +221,7 @@ Furthermore, using the Stokes theorem, the last term of
 integral, the resulting equation is
 \begin{equation}
   \label{intro:eq:sph-continu-derivative-stokes}
-  \nabla A(\ten{x}) = \int_{\Omega}\> A(\ten{x}') \> \nabla_{\ten{x}} W(\ten{x} - \ten{x}', h)  \> d\ten{x}'^{m} +
+  \nabla A(\ten{x}) = \int_{\Omega}\> A(\ten{x}') \> \nabla_{\ten{x}} W(\ten{x} - \ten{x}', h)  \> d\ten{x}' +
   \int_{\partial \Omega}\> \left( A(\ten{x}') \> W(\ten{x} - \ten{x}', h)\right) \ten{n}_{\ten{x}'} \> d\Gamma(\ten{x}').
 \end{equation}
 Here, $d\Gamma$ is the area, and $\ten{n}_{\ten{x}'}$ is the normal at
@@ -267,9 +263,9 @@ particles.
 
 
 \subsection{Divergence approximation}
-We now look at An SPH approximation of the divergence operator. An approximation
-of the divergence operator is required in order to discretize the \cref{eq:ce} is
-It is given as,
+We now look at an SPH approximation of the divergence operator. An approximation
+of the divergence operator is used to discretize the \cref{eq:ce}. It is given
+as,
 \begin{equation}
   \label{intro:eq:discrete_derivative}
   \nabla \cdot \ten{v}_i = \sum\> \frac{m_j}{\rho_j} \ten{v}_j \cdot \nabla W(\ten{x}_i - \ten{x}_j, h).
@@ -1037,15 +1033,14 @@ where $c_0$ is the speed of sound of the solid body.
 
 We validate the proposed scheme using a suite of benchmark problems for both
 fluid and solid mechanics. We first consider fluids where we look at the
-Taylor-Green vortex problem, the lid-driven cavity,
-and the two-dimensional dam-break problem. We then consider
-problems in elastic dynamics like the oscillating plate, a uniaxial
-compression problem, the collision of rubber rings, and a high-velocity impact
-problem.
-
-We show how the proposed method is an improvement on previous work. Every
-result shown is produced using an automation framework~\citep{pr:automan:2018}.
-The source code is available at \url{https://gitlab.com/pypr/ctvf}.
+Taylor-Green vortex problem, the lid-driven cavity, and the two-dimensional
+dam-break problem. We then consider problems in elastic dynamics like the
+oscillating plate, a uniaxial compression problem, the collision of rubber
+rings, and a high-velocity impact problem. We show how the proposed method is an
+improvement on previous work. The method is implemented using the PySPH
+framework~\citep{PR:pysph:scipy16,pysph2020}. Every result shown is produced
+using an automation framework~\citep{pr:automan:2018}. The source code is
+available at \url{https://gitlab.com/pypr/ctvf}.
 
 \FloatBarrier%
 

@@ -141,11 +141,12 @@ The moment of inertia ($\textit{\teng{\overline{I}}}$) is computed as,
 \begin{equation*}
 $\textit{\teng{\overline{I}}}$ =
 \begin{bmatrix}
-\Sum_i m_i (y_i^2 + z_i^2) & -\Sum_i m_i x_iy_i & -\Sum_i m_i x_iz_i\\
--\Sum_i m_i x_iy_i & \Sum_i m_i (x_i^2 + z_i^2) &  -\Sum_i m_i y_iz_i\\
--\Sum_i m_i  x_iz_i & -\Sum_i m_i y_iz_i & \Sum_i m_i (x_i^2 + y_i^2)
-\end{bmatrix}
+\sum_i m_i (y_i^2 + z_i^2) & -\sum_i m_i x_iy_i & -\sum_i m_i x_iz_i\\
+-\sum_i m_i x_iy_i & \Sum_i m_i (x_i^2 + z_i^2) &  -\sum_i m_i y_iz_i\\
+-\sum_i m_i  x_iz_i & -\sum_i m_i y_iz_i & \sum_i m_i (x_i^2 + y_i^2)
+\end{bmatrix}.
 \end{equation*}
+
 The position and velocity of the particles of the rigid body are updated by
 \begin{eqnarray}
   \label{eq:rfc:rb_particle_pos_update}
@@ -207,7 +208,7 @@ step is constrained as,
 A minimum timestep is chosen as
 \begin{equation}
   \label{eq:rfc:time-step-body-force}
-  \Delta t = min((\Delta t)_{\text{fluid}}, (\Delta t)_{\text{rb}}).
+  \Delta t = min(\Delta t_{\text{fluid}}, \Delta t_{\text{rb}}).
 \end{equation}
 
 
@@ -294,7 +295,7 @@ respectively. From the \cref{fig:cylinder-xcom-vs-time} we can see that the
 current solver matches well with the analytical solution.
 \begin{figure}[!htpb]
   \centering
-  \includegraphics[width=0.4\textwidth]{figures/rfc/figures/de_2021_cylinder_rolling_on_an_inclined_plane_2d/xcom_vs_time}
+  \includegraphics[width=0.6\textwidth]{figures/rfc/figures/de_2021_cylinder_rolling_on_an_inclined_plane_2d/xcom_vs_time}
   \caption{x-component of center of mass variation with time for a cylinder
     rolling down an inclined plane.}
 \label{fig:cylinder-xcom-vs-time}
@@ -372,7 +373,7 @@ solver has an excellent match with the analytical solution and covers all the
 regimes of the sliding case.
 \begin{figure}[!htpb]
   \centering
-  \includegraphics[width=0.5\textwidth]{figures/rfc/figures/mohseni_2021_free_sliding_on_a_slope_2d/velocity_vs_time}
+  \includegraphics[width=0.6\textwidth]{figures/rfc/figures/mohseni_2021_free_sliding_on_a_slope_2d/velocity_vs_time}
   \caption{Variation of the velocity of the rigid body with time for different
     friction coefficients. Present result is compared against the analytical
     result.}
@@ -639,11 +640,11 @@ center of mass of the cylinders is in good agreement with the experiment result.
 % % To be done
 
 \FloatBarrier%
-\subsection{Water-entry of a single sphere}
+\subsection{Cylinder rising in a hydrostatic tank}
 \label{sec:water-entry-sphere}
 % https://www.sciencedirect.com/science/article/pii/S0997754621001412#fig2
 In this section, we study the behavior of a circular cylinder of density $500$
-kg\textsuperscript{-3} immersed in a hydrostatic tank under gravity. The
+kg\,m\textsuperscript{-3} immersed in a hydrostatic tank under gravity. The
 cylinder has a diameter of $0.4$ m, initially placed inside the steady water
 tank. The dimensions of the water, including the tank, are given in
 \cref{fig:water-entry-sphere-schematic}. Since the density of the solid body is
@@ -651,7 +652,7 @@ half of the fluid, the body will be half afloat while coming to rest.
 \begin{figure}[!htpb]
   \centering
   \includegraphics[width=0.4\textwidth]{images/rfc/images/water_entry_of_sphere/schematic}
-  \caption{Schematic of an immersed cylinder of 500 kg\textsuperscript{-3}
+  \caption{Schematic of an immersed cylinder of 500 kg\,m\textsuperscript{-3}
     in a hydrostatic tank.}
 \label{fig:water-entry-sphere-schematic}
 \end{figure}
@@ -659,13 +660,13 @@ half of the fluid, the body will be half afloat while coming to rest.
 \Cref{fig:snapshots-rising-solid-in-water} presents snapshots of the rising
 cylinder inside a hydrostatic tank. From the presented
 \cref{fig:snapshots-stack-of-cylinders}, we can see that the cylinder half
-floats at time $t = 0.5$ seconds. As the density of the cylinders is $500$
-kg\textsuperscript{-3}, the cylinder floats at half of its diameter. This is due
+floats at time $t = 15$ seconds. As the density of the cylinder is $500$
+kg\,m\textsuperscript{-3}, the cylinder floats at half of its diameter. This is due
 to the buoyancy force acting on the solid, which depends on the volume of the
 solid. For the quantitative validation, we plot the variation of the y-component of
 the center of mass of the cylinder with time versus the maximum height of the
 fluid in \cref{fig:raising-falling-solid-in-water}. Since the cylinder is of
-density $500$ kg\textsuperscript{-3}, we can both see that the maximum height of the fluid
+density $500$ kg\,m\textsuperscript{-3}, we can both see that the maximum height of the fluid
 and the center of mass co-inside as time increases.
 \begin{figure}[!htpb]
   \centering
@@ -692,7 +693,7 @@ and the center of mass co-inside as time increases.
     \includegraphics[width=1.0\textwidth]{figures/rfc/figures/dinesh_2022_body_in_hs_tank_2d/time11}
     \subcaption*{t = $15$ sec}
   \end{subfigure}
-  \caption{Snapshots of a 2D-cylinder of density $500$ kg\textsuperscript{-3}
+  \caption{Snapshots of a 2D-cylinder of density $500$ kg\,m\textsuperscript{-3}
     rising in a hydrostatic tank at four different time instants simulated
     with the current solver. The color of the fluid particles represent pressure.}
 \label{fig:snapshots-rising-solid-in-water}

@@ -18,7 +18,9 @@ primarily written to model SPH schemes. However, it can be used to implement
 other meshless techniques as well. PySPH has several SPH methods implemented,
 such as, WCSPH, TVF, and Godunov SPH, to note a few among others. The
 documentation at \url{https://pysph.readthedocs.io} covers details on how to
-implement new SPH algorithms in PySPH in some detail.
+implement new SPH algorithms in PySPH in some detail. We assume the reader to
+have some familiarity with PySPH and one may safely skip the chapter if not
+interested in the details.
 
 
 % Write the difficulty of implementing contact algorithm in PySPH (discuss
@@ -40,7 +42,7 @@ When simulating different materials, they often require different timesteps. A
 sub-stepping algorithm is suitable, where a material with a larger timestep is
 updated first with a larger timestep, and a material with a smaller timestep is
 updated with a smaller timestep. Substepping is efficient as it reduces
-computation for the material with a higher timestep. The documentation at
+computations for the material with a higher timestep. The documentation at
 \url{https://pysph.readthedocs.io} doesn't have clear details on how to
 implement this algorithm. However, PySPH provides tools to implement this. We
 consider a problem involving fluid and solids to demonstrate a sub-stepping
@@ -161,7 +163,7 @@ where $\psi$ in the figure is a real number. Since particle $k$ is in contact
 with body id $2$, we can see from \cref{fig:id:k_f_overlap_t_1} that the overlap
 amount of particle $k$ with body id $2$ is saved as $\psi_1$. This overlap
 amount is saved at its fixed array index of $4k+2$. Since particle $l$ is in
-contact with body id $3$, we save the overlap with body $3$ at $4k+3$ index.
+contact with body id $3$, we save the overlap with body $3$ at $4l+3$ index.
 Similarly, let us assume a particle with an index $q$ is in contact with the
 body $2$ and $3$. The pairwise array belonging to the particle $q$ is shown in
 \cref{fig:id:overlap_of_q_at_t_1}. From \cref{fig:id:overlap_of_q_at_t_1}, we
@@ -385,7 +387,7 @@ Code fragment of adding the new stride properties is given as
 %
 The configuration of particles at an intermediate time $t_1$ are shown in
 \cref{fig:id:15_particle_t_1}. Particles marked in red are contacts of $1$, $8$,
-and $11$ indices. From \cref{fig:id:15_particle_t_1}, we can see that
+and $11$ particles. From \cref{fig:id:15_particle_t_1}, we can see that
 particle with index $1$ is in contact with $0, 6, 7$ particles and a particle
 with index $8$ with $5$ and $9$. Let us assume the contacts are formed for the
 first time. \Cref{fig:many_bodies_initialize_overlap_1_8_11_t_1} shows the
@@ -410,13 +412,14 @@ particles with index $1, 8$, and $11$.
 \end{figure}
 
 Dynamic pairwise contact tracking is handled in two parts. The first part is to
-remove any contact particle that is previously in contact with and is no more in
-contact. As a second step, we add new contacts. To implement this in PySPH, we
-use two equations. One is to add new contacts and update the value of the
-existing contacts, while the second one is to remove particle indices that are
-no more in contact. We outline the code to add new contacts and update the
-existing ones in the following code snippet.
-\lstset{caption={Code snippet to add new contact and update existing contact properties in dynamic pairwise tracking algorithm.}} \lstset{basicstyle=\footnotesize\ttfamily}
+update the tracking array by removing the indices which are no more in contact.
+As a second step, we add new contacts. We use two equations to implement it in
+PySPH. One equation is used to add new contacts and update the values of the
+existing contacts, while the second equation can be used to remove the
+indices that are no more in contact. We outline the code to add new contacts and
+update the existing ones in the following code snippet.
+\lstset{caption={Code snippet to add new contact and update existing contact properties in dynamic
+    pairwise tracking algorithm.}} \lstset{basicstyle=\footnotesize\ttfamily}
 \begin{lstlisting}[label={code:add_contacts_many},frame=lines,language=Python,upquote=True]
 class AddParticlesInContact(Equation):
     def loop(self, d_idx, d_m, d_contact_id, d_overlap, d_total_contacts,
@@ -470,12 +473,12 @@ class AddParticlesInContact(Equation):
 \end{figure}
 
 \Cref{fig:id:15_particle_t_2} shows the particles positions at time $t_2$. From
-\cref{fig:id:15_particle_t_2}, we can see that a few particles lose contacts, and
-a few gain new contacts. We will add the new particles to the tracking array
-using the above code. However, after every time step, we need to update the
-tracking array by removing particle indices that are no more in contact before
-adding new contacts. \Cref{fig:many_bodies_initialize_overlap_1_8_11_t_2} shows
-the updated contact indices array and the overlapping array at time $t_2$.
+\cref{fig:id:15_particle_t_2}, we can see that a few particles lose contacts,
+and a few gain new contacts. We will add the new particles to the tracking array
+using the above code. However, after every time step, first we need to update
+the tracking array by removing the indices that are no more in contact.
+\Cref{fig:many_bodies_initialize_overlap_1_8_11_t_2} shows the updated contact
+indices array and the overlapping array at time $t_2$.
 \begin{figure}[!htpb]
   \centering
   \begin{tikzpicture}
@@ -495,8 +498,7 @@ the updated contact indices array and the overlapping array at time $t_2$.
 
 The following code snippet is used to remove the contacts that are no more in
 contact with the particle.
-\lstset{caption={Code snippet to remove lost contacts in
-dynamic pairwise tracking algorithm.}} \lstset{basicstyle=\footnotesize\ttfamily}
+\lstset{caption={Code snippet to remove lost contacts in dynamic pairwise tracking algorithm.}} \lstset{basicstyle=\footnotesize\ttfamily}
 \begin{lstlisting}[label={contact:equations},frame=lines,language=Python,upquote=True]
 class RemoveParticlesNotInContact(Equation):
     def initialize_pair(self, d_idx, d_x, d_y, d_z, d_rad,
@@ -556,6 +558,7 @@ class RemoveParticlesNotInContact(Equation):
                     k = k + 1
                 count += 1
 \end{lstlisting}
+
 The above equations are used in the $create\_equations$ method of $Application$
 class of PySPH to execute in execution loop using the following code.
 \lstset{caption={An equation execution order to handle the pairwise tracking algorithm in PySPH.}} \lstset{basicstyle=\footnotesize\ttfamily}
@@ -775,9 +778,9 @@ where $K$ is some integer. We use a sub-stepping integration scheme to update
 the state of $fluid$ and $solid$ particles. Let us say $fluid$ has $10,000$
 particles, and the solid has $1000$ particles, and let $K$ be $10$. Using a
 sub-stepping scheme, instead of iterating $10,000$ particles $10$ times, we only
-do it one time. We first move the higher timestep material to the next time
-step, here fluid, then update the material with lower timestep in $K$ times,
-such that the simulation is stable.
+do it one time. We first move the higher timestep material to the next timestep,
+here fluid, then update the material with lower timestep $K$ times, such that
+the simulation is stable.
 \begin{figure}[!htpb]
   \centering
   \includegraphics[width=1.0\textwidth]{images/implementation_detail/images/multiphase/time_stepping}
@@ -823,15 +826,15 @@ arrays with different timesteps is given as,
   Group(equations=[
       Group(equations=[
           SolidEquations(dest='solid', sources=['fluid', 'solid'],
-                         dt=dt_1/K)
+                         dt=dt_1/10)
       ])
   ]
   iterate=True, max_iterations=10, min_iterations=10)
 \end{lstlisting}
 Since here, $fluid$ has a higher timestep, we first update it to the next
 timestep using $FluidEquations$ and the $solid$ state is updated to $t + \Delta t_1$
-timestep using $10$ updates with a timestep of $\frac{\Delta t_1}{K}$. At each
-iteration we advance the $solid$ particles by $\Delta t_1 / K$ time using
+timestep using $10$ updates with a timestep of $\frac{\Delta t_1}{10}$. At each
+iteration we advance the $solid$ particles by $\Delta t_1 / 10$ time using
 $SolidEquations$ equations.
 
 

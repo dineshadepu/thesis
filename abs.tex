@@ -30,7 +30,7 @@
   benchmark problems involving both fluid and solid mechanics to demonstrate the
   accuracy and applicability of the method.
 
-  We extend the CTVF technique to handle the collision among the frictional
+  We extend the CTVF model to handle the collision among the frictional
   elastic solids using a contact force model. Classically, smoothed particle
   hydrodynamics (SPH) is used to model collision between elastic solids, which
   involves handling the deformation of bodies and the interaction with other
@@ -52,40 +52,42 @@
   loads with the CTVF model. CTVF is adopted to handle both fluid and structural
   dynamics, as it can eliminate inhomogeneous particle distribution in fluid
   flow and tensile instability in elastic structures without any additional
-  terms. A ghost particle-based approach is used to handle the coupling between
+  terms. A dummy particle-based approach is used to handle the coupling between
   the fluid and solid phases. The proposed scheme is verified by simulating a
   few test cases, which are validated with exact analytical solutions. An
   elastic plate deformation due to dam-breaking fluid is simulated as an
-  application. We outline sub-stepping algorithm used to update the states of
-  two different materials for computationally efficient simulation.
+  application. We use sub-stepping algorithm to update the states of fluid and
+  the structure for computationally efficient simulation. We outline the
+  implementation details of the algorithm in PySPH.
 
   Next, we study the two-way coupling between the rigid body and the fluid flow
-  using a particle-based framework. The interaction between the rigid bodies is
-  handled with the discrete element method (DEM), where the contact force model
-  developed to handle the collision between arbitrarily shaped elastic solids is
-  used. The fluid phase is modeled with CTVF. The interaction between the fluid
-  and rigid bodies is modeled using a dummy particle approach which is similar
-  to handling the interaction between the fluid and the elastic structure. The
-  accuracy of the developed method is evaluated via several numerical examples
-  involving analytical and experimental results. The rigid-rigid interaction
-  part of the solver is validated through the study of rolling and sliding body
-  cases. The collapse of a stack of cylinders under gravity is studied and
-  compared against its experimental counterpart. The rigid-fluid interaction is
-  studied with the water entry of a rigid cube and with a rising cylindrical body
-  case in the hydrostatic water tank.
+  using a coupled CTVF and discrete element method (DEM) model. The
+  interaction between the rigid bodies is handled with the discrete element
+  method (DEM), where the contact force model developed to handle the collision
+  between arbitrarily shaped elastic solids is used. The fluid phase is modeled
+  with CTVF. The interaction between the fluid and rigid bodies is modeled using
+  a dummy particle approach which is similar to handling the interaction between
+  the fluid and the elastic structure. The accuracy of the developed method is
+  evaluated via several numerical examples involving analytical and experimental
+  results. The rigid-rigid interaction part of the solver is validated through
+  the study of rolling and sliding body cases. The collapse of a stack of
+  cylinders under gravity is studied and compared against its experimental
+  counterpart. The rigid-fluid interaction is studied with the water entry of a
+  rigid cube and with a rising cylindrical body case in the hydrostatic water
+  tank.
 
   We finally model the erosion of a ductile solid due to the impact of multiple
-  arbitrarily shaped projectiles. We model the elastic-plastic behavior of the
+  arbitrarily shaped particles. We model the elastic-plastic behavior of the
   ductile solid by incorporating a Johson-Cook constitutive model in CTVF. We
-  adapt the contact force between the elastic bodies formulation to
-  rigid-elastic solids. We further build a framework that can handle erosion of
-  the target due to the impact of multiple bodies, which can interact or do not
-  interact among themselves. 2D and 3D numerical cases are simulated to
-  demonstrate the developed framework abilities. Erosion of a 2D ductile target
-  due to multiple square particle impacts, with cases where square particles can
-  self-interact and with no self-interaction, is simulated. A rotating spherical
-  particle impacting a ductile target at different impact velocities is
-  considered part of the 3D case.
+  adapt the contact force formulation between the elastic-elastic bodies to
+  rigid-elastic bodies. We further build a framework that can handle erosion of
+  the target due to the impact of multiple bodies, which are allowed to interact
+  or do not interact among each other. 2D and 3D numerical cases are simulated
+  to demonstrate the developed framework abilities. Erosion of a 2D ductile
+  target due to multiple square particle impacts, with cases where square
+  particles can self-interact and with no self-interaction, is simulated. A
+  rotating spherical particle impacting a ductile target at different impact
+  velocities is considered as part of a 3D case.
 
 %
 %
