@@ -1,6 +1,6 @@
 \chapter{Fluid-Structure Interaction}\label{chap:fsi}
 \section{Introduction}
-In the current chapter, we couple the CTVF scheme developed in \cref{chap:ctvf}
+In the current chapter, we use the CTVF scheme developed in \cref{chap:ctvf}
 to model fluid-structure interaction problems. Fluid-structure interaction (FSI)
 is a common engineering problem that is seen in daily life. Some examples
 include the deformation of wind turbine blade due to the fluid flow, blood flow
@@ -48,7 +48,7 @@ as
   \frac{\tilde{d}p_a}{dt} = \sum_{b} \; \frac{m_b}{\rho_{b}} \; \bigg(
   (p_{a} - \rho_{a} c_{s}^2) \; \ten{u}_{ab} \; + \;
   p_{a} \; \tilde{\ten{u}}_{ab} \; - \;
-  (p \; (\tilde{\ten{u}} - \ten{u}))_{ab} \; + \;
+  (p \; (\tilde{\ten{u}} - \ten{u}))_{ab} \; + \;\\
   4 \; \nu_{edac}
   \frac{p_a - p_b}{(\rho_a + \rho_b) (r^2_{ab} + 0.01 h_{ab}^{2})} \ten{r}_{ab}
   \bigg) \; \cdot \nabla_{a} W_{ab}.
@@ -299,20 +299,21 @@ numerical techniques for quantitative validation.
     \includegraphics[scale=0.5]{figures/fsi/figures/sun_2019_dam_breaking_flow_impacting_an_elastic_plate/snap_t_4.png}
   \end{subfigure}
     \caption
-    {
-        Snapshot of the fluid and the structure at different time stamps.
-    }
+    { Snapshot of the fluid and the structure at different time stamps. The
+      color of the fluid particles represent the velocity magnitude. }
     \label{fig:dam-breaking-onto-plate-snapshot}
 \end{figure}
 The time variation of the x-displacement of the elastic structure is compared
-against other numerical results~\parencite{sun2019fully,bogaers2016evaluation}. From
-the \cref{fig:water-impact-plate-deflection-quantitative}, we can see that the
-displacement computed by the current solver is within the vicinity of the other
-results produced. \Cref{fig:dam-breaking-onto-plate-snapshot} shows the
-snapshots of the fluid and the elastic structure at different time instances.
-From \cref{fig:dam-breaking-onto-plate-snapshot}, we can see that the fluid,
-after hitting the structure, rises and hits the other end of the tank and
-travels back to hit the structure again.
+against other numerical results~\parencite{sun2019fully,bogaers2016evaluation}.
+From the \cref{fig:water-impact-plate-deflection-quantitative}, we can see that
+the displacement computed by the current solver is within the vicinity of the
+other results produced. The differences between the current solver with the
+other numerical results are due to the linear stress-strain model used in the
+current work. \Cref{fig:dam-breaking-onto-plate-snapshot} shows the snapshots of
+the fluid and the elastic structure at different time instances. From
+\cref{fig:dam-breaking-onto-plate-snapshot}, we can see that the fluid, after
+hitting the structure, rises and hits the other end of the tank and travels back
+to hit the structure again.
 
 % ========================================================
 % ========================================================
@@ -326,13 +327,14 @@ issues SPH faces while solving fluid and solid problems. CTVF improves the
 accuracy of fluid problems, and eliminates tensile instability while solving
 elastic dynamics problems without any additional artificial stress terms.
 
-We validated the developed scheme by solving a UDL problem to test the structure
-equations, and an aluminum plate over a hydrostatic tank where an analytical
-solution is available is utilized to validate the FSI part of the current
-solver. The current solver is applied to a dam break hitting an elastic plate.
-Here, the deformation of the elastic plate is compared to the computational
-results of other numerical models. A convergence analysis is undertaken for both fundamental benchmarks,
-UDL, and hydrostatic tank.
+We validated the developed scheme by solving a uniformly distributed load over a
+clamped beam problem to test the structure equations, and an aluminum plate over
+a hydrostatic tank where an analytical solution is available is utilized to
+validate the FSI part of the current solver. The current solver is applied to a
+dam break striking an elastic plate. Here, the deformation of the elastic plate
+is compared to the computational results of other numerical models. A
+convergence analysis is undertaken for both fundamental benchmarks, UDL, and
+hydrostatic tank.
 
 FSI is one essential multiphysics problem to be modeled in order to simulate
 complex physical processes. In the next chapter we will consider the rigid-fluid

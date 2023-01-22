@@ -63,6 +63,7 @@
             sorting=nyt,
             url=false,
             maxbibnames=99,
+            bibencoding=utf8,
             maxcitenames=1]{biblatex}
 
 
@@ -76,6 +77,11 @@
     linkcolor=linkcolour,citecolor=citecolour,
     filecolor=urlcolour,urlcolor=urlcolour,
   }
+
+% For key workds
+\newbox\keywbox
+\setbox\keywbox=\hbox{\bfseries Keywords:}%
+\newcommand\keywords{\noindent\rule{\wd\keywbox}{0.25pt}\\\textbf{Keywords:}\ }
 
 
 
@@ -301,7 +307,7 @@
 % \bibliography{mylit}
 \begingroup
 \sloppy
-\printbibliography%
+\printbibliography[heading=bibintoc]
 \endgroup
 
 %*******************************************************************

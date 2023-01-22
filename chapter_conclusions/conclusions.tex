@@ -17,7 +17,7 @@ In the current work, to model the fluid and elastic-plastic dynamics, we have
 developed a CTVF scheme. The proposed scheme builds on the original TVF scheme
 of \textcite{Adami2013} and is an improvement on the GTVF of
 \textcite{zhang_hu_adams17}. For smoother pressure distributions, we adapted
-EDAC-SPH~\textcite{edac-sph:cf:2019} to the transport velocity formulation. Two PSTs
+EDAC-SPH~\parencite{edac-sph:cf:2019} to the transport velocity formulation. Two PSTs
 are used in the current work for the homogenization of the particles. The developed
 scheme is applied to the Taylor-Green vortex, lid-driven cavity, and dam-break
 problems to verify the improvement due to the correction terms. An improvement in
@@ -89,9 +89,9 @@ The proposed method, CTVF, has not been applied to multiphase flow problems. We
 believe that the study of correction terms introduced in the current work in
 transport velocity-based schemes to model multiphase flows will be of
 importance. The developed scheme, CTVF, has applied to model isotropic elastic
-dynamics in the current work. It can be extended to handle composite
-solids. The current FSI solver can be extended to handle the fluid-structure
-interaction of anisotropic structures and can be applied to 3D FSI problems.
+dynamics in the current work. It can be extended to handle composite solids. The
+current FSI solver can be extended to handle the fluid-structure interaction of
+anisotropic structures and can be applied to three-dimensional FSI problems.
 
 
 In the current work, we assumed a linear spring contact force model while
@@ -103,9 +103,10 @@ the particle-shifting strategy will be helpful in studying the occurrence of
 cavitation due to rigid body entries.
 
 
-A framework to study the solid particle erosion of ductile solids due to multiple
-particle impact is developed in the current work. The framework can be easily
-extended to study the SPE of brittle solids. The complete framework can be applied
-to large-scale industrial problems, such as abrasive water jet machining.
-
-\todoin{Add practical improved}
+A framework to study the solid particle erosion of ductile solids due to
+multiple particle impact is developed in the current work. The current erosion
+model doesn't predict the penetration depth of the ductile solid accurately. As
+part of future work, accurate modeling of damage and plasticity can be done. The
+framework can be easily extended to study the SPE of brittle solids. The
+complete framework can be applied to large-scale industrial problems, such as
+abrasive water jet machining.

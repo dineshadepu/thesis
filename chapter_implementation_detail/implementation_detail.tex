@@ -50,7 +50,6 @@ algorithm. The implemented sub-stepping algorithm is used in \cref{chap:fsi}.
 Minimal code snippets are provided covering the basic outline of the algorithm.
 
 
-\FloatBarrier%
 \section{Contact Force Modeling with a Few Number of Bodies}
 \label{sec:tracking-few-bodies}
 In this section, we compute the contact force on a particle due to the
@@ -94,29 +93,29 @@ list data structure to track the overlap with this body, and the value of this
 is retrieved and updated until the body stays in contact with the particle.
 However, PySPH does not allow one to use a linked list data structures. Here, we
 propose an algorithm where we can track these pairwise contact quantities using
-one-dimensional arrays. A unique \texttt{body\_id} is assigned to each particle. In the
-current case, all particles belonging to the body $0$ in
+one-dimensional arrays. A unique \texttt{body\_id} is assigned to each particle.
+In the current case, all particles belonging to the body $0$ in
 \cref{fig:id:four_bodies_contact} have their \texttt{body\_id} set to $0$. This
 property is used to index the pairwise contact property of a particle with other
 bodies. To demonstrate the algorithm, we consider the computation of contact
 force on particles of the body $1$, such that $x=1$ and $y$ corresponds to
-$0, 2, 3$. We create an array of length $M \times total\_no\_bodies$. Here, $M$
-is the total no of particles of the body $1$. This array is used to save the
-pairwise quantities, such as contact overlap. Each particle is assigned a chunk,
-in the current case, a chunk of size $4$, as the total number of bodies in the
-simulation is $4$. This is depicted in \cref{fig:stride_index_trace}, which
-shows the state of the arrays at the time of initiation. Since at time $t=0$, no
-bodies are overlapping, we initialize the pairwise overlap quantity to $0$. From
-\cref{fig:stride_index_trace}, we can see that each particle is assigned a chunk
-of size $4$. Specially, \cref{fig:stride_index_trace} shows the array values for
-particles with index $0, k$ and $M-1$. Since the number of bodies is small, we
-assign a constant index for each possible pair. This can be seen in
-\cref{fig:stride_index_trace}, as particle id of $0, k$ and $M-1$, has a
-corresponding array space to track the pairwise quantity, such as overlap, with
-four bodies in the simulation. However, in the current case, we assume that a
-particle could not be in contact with the body it belongs to. So the
-corresponding array element entry would remain $0$ or to the initialized value
-the throughout the simulation.
+$0, 2, 3$. We create an array of length $M \times$
+\texttt{d\_total\_no\_bodies}. Here, $M$ is the total no of particles of the
+body $1$. This array is used to save the pairwise quantities, such as contact
+overlap. Each particle is assigned a chunk, in the current case, a chunk of size
+$4$, as the total number of bodies in the simulation is $4$. This is depicted in
+\cref{fig:stride_index_trace}, which shows the state of the arrays at the time
+of initiation. Since at time $t=0$, no bodies are overlapping, we initialize the
+pairwise overlap quantity to $0$. From \cref{fig:stride_index_trace}, we can see
+that each particle is assigned a chunk of size $4$. Specially,
+\cref{fig:stride_index_trace} shows the array values for particles with index
+$0, k$ and $M-1$. Since the number of bodies is small, we assign a constant
+index for each possible pair. This can be seen in \cref{fig:stride_index_trace},
+as particle id of $0, k$ and $M-1$, has a corresponding array space to track the
+pairwise quantity, such as overlap, with four bodies in the simulation. However,
+in the current case, we assume that a particle could not be in contact with the
+body it belongs to. So the corresponding array element entry would remain $0$ or
+to the initialized value the throughout the simulation.
 \begin{figure}[!htpb]
   \centering
   \footnotesize
@@ -242,7 +241,6 @@ $4q+3$.
 In the next section we look at the code to implement this algorithm in
 PySPH.
 
-\FloatBarrier%
 \subsection{Implementation in PySPH}
 We implement the above algorithm in PySPH using the following code. We first
 create a particle array with the required properties. A sample code segment
@@ -286,7 +284,7 @@ class ComputeContactForce(Equation):
         d_overlap[t2] += RIJ
         # ... Code redacted ...
 \end{lstlisting}
-Here, \textit{d\_total\_no\_bodies} is the total number of bodies in a given
+Here, \texttt{d\_total\_no\_bodies} is the total number of bodies in a given
 case. In the above code listing, in order to compute the overlap of the
 particles on a given body with the other bodies, we first initialize the
 pairwise quantity, overlap, to zero. \texttt{initialize} method depicts the
@@ -312,7 +310,6 @@ We execute the equation of computation of the contact force of each body due to 
 the interaction with the other three bodies.
 
 
-\FloatBarrier%
 \section{Contact Force Modeling with a Large Number of Particles}
 \label{sec:tracking-many-bodies}
 In the previous section, we used a strided array with a fixed index per
@@ -571,7 +568,6 @@ class of PySPH to execute in execution loop using the following code.
 \end{lstlisting}
 
 
-\FloatBarrier%
 \subsection{Dealing with Multiple Particle Arrays}
 Let us consider a case where particles of two different particle arrays
 interact with each other. A schematic is shown in \cref{fig:mb:2_pa}. Here,
@@ -742,7 +738,6 @@ particle array code. This check ensures that the indices we are tracking belong
 to the correct particle array.
 
 
-\FloatBarrier%
 \subsection{Sand in a Rotating Drum}
 \label{sec:dem-drum-case}
 This example demonstrates the implementation in simulating motion of sand in a
@@ -764,7 +759,6 @@ results when the drum is not rotating, and the bottom row is when the drum is ro
 \end{figure}
 
 
-\FloatBarrier%
 \section{Sub-stepping Update Algorithm}
 \label{sec:substepping-algorithm}
 Problems involving two different materials, such as fluid-structure interaction,
@@ -800,7 +794,6 @@ equal to $\Delta t_{\text{material 2}}$, such that the simulation is stable.
 \end{equation}
 
 
-\FloatBarrier%
 \subsection{Implementation in PySPH}
 \label{sec:pysph-substepping-algorithm}
 The following integrator routine is used for the sub-stepping algorithm
@@ -835,11 +828,10 @@ arrays with different timesteps is given as,
 Since here, \texttt{fluid} has a higher timestep, we first update it to the next
 timestep using \texttt{FluidEquations} and the \texttt{solid} state is updated
 to $t + \Delta t_1$ timestep using $10$ updates with a timestep of
-$\frac{\Delta t_1}{10}$. At each iteration we advance the $solid$ particles by
+$\frac{\Delta t_1}{10}$. At each iteration we advance the \texttt{solid} particles by
 $\Delta t_1 / 10$ time using \texttt{SolidEquations} equations.
 
 
-\FloatBarrier%
 \section{Summary}
 \label{sec:id:summary}
 In the current chapter, we demonstrated the implementation details of the

@@ -149,8 +149,8 @@ From \cref{chap:rfc}, the governing equations of the rigid body are,
   \frac{d \ten{L}}{d t} = \teng{\tau},
 \end{equation}
 where $\ten{F}_i = \ten{F}^{RB}_i + \ten{F}^{DS}_i$ are the forces acting on
-particle $i$ due to the contact with the other rigid bodies ($\ten{F}^{RB}_a$)
-and the ductile solid ($\ten{F}^{DS}_a$). Following
+particle $i$ due to the contact with the other rigid bodies $\ten{F}^{RB}_a$
+and the ductile solid $\ten{F}^{DS}_a$. Following
 \cref{sec:contact-algorithm}, we compute the contact
 forces on the ductile body and the rigid body. While computing the contact
 force, we choose the ductile body as primary and the rigid projectile as
@@ -195,7 +195,7 @@ a rotating spherical particle. The model description is shown in
 and the material properties as well as the numerical parameters used are
 displayed in \cref{tab:sphere-target-impact,tab:sphere-target-impact-Johnson}.
 The penetration depth of the ductile solid against the varying impact velocity
-($\ten{V}_i$) with constant impact angle ($45$ degrees) is considered to
+$\ten{V}_i$ with constant impact angle ($45$ degrees) is considered to
 validate the developed solver. While in all the cases, the particle rotates with
 a constant velocity of magnitude $1280$ radians per second. Further, this test is used to
 demonstrate the capabilities of the developed solver to 3D solid-particle
@@ -257,7 +257,10 @@ experimental and FEM result executed by \textcite{zang2022investigation}. From
 current solver penetration depth increases as the velocity is increasing. A
 similar trend is found with the experimental result as well. However, the
 current solver is producing a higher penetration depth compared to the
-experimental result.
+experimental result. The reason for this discrepancy is due to plasticity model
+implemented. We need a more accurate implementation and validation of the
+plasticity algorithm to ensure the correct prediction of penetration depth.
+
 
 \subsection{Solid-particle Erosion due to Multiple Square Particles: with no Self
   Interaction}
@@ -268,7 +271,6 @@ interact among themselves. The schematic of the test case is shown in
 \cref{fig:mpe-2-pm}. This test is used to demonstrate the capabilities of the
 developed an open-source solver for handling the erosion of a target due to multiple
 non-interacting particles. The length of the square
-
 \begin{figure}[!htpb]
   \centering
   \includegraphics[width=0.6\textwidth]{images/erosion/images/multi_body_erosion_example_2/physical_model.pdf}
@@ -284,7 +286,7 @@ The square particle is oriented such that the hypotenuse makes an angle of $40$
 degrees with the vertical line. The simulation is run for a total time of $40$
 microseconds. We use two computational models to study the multi-particle
 erosion problem. One where the rigid body is represented using the boundary
-particles, and in another case, the complete democratization of the rigid body
+particles, and in another case, the complete discretization of the rigid body
 is utilized. These computational models are shown in
 \cref{fig:mpe-2-cm}.
 \begin{figure}[!htpb]
@@ -577,8 +579,8 @@ of the proposed computational models are shown in
   for solid particle erosion for interacting particles.}
 \label{table:mpe-1-time-comparison}
 \end{table}
-The demonstrated test cases show that the developed software can handle the
-modeling erosion of a body in 2 and 3 dimensions. Further, we verified that the
+The demonstrated test cases show that the developed software can simulate
+erosion of a body in two and three dimensions. Further, we verified that the
 representation of projectiles with border particles reduces the time of
 computation. We established the current framework for handling erosion due to
 multiple particle impacts.
@@ -617,5 +619,5 @@ us to model the rigid body using just boundary particles by using body and
 global frame axis representation. We compared the performance of both the
 formulation in multiple square particle collision cases. We have seen upto twofold
 performance improvement using boundary representation than full discretization.
-We have made the current implementation open-source, and all the study cases fully
+We have made the current implementation open-source, and all the cases are fully
 reproducible.

@@ -16,11 +16,11 @@ can be utilized to study rigid fluid coupling (RFC) numerically.
 
 
 In the current chapter, we couple CTVF with DEM to handle the rigid fluid
-coupling problems. The fluid phase is modeled using a corrected transport
+coupling problems. The fluid is modeled using a corrected transport
 velocity formulation developed in \cref{chap:ctvf}. CTVF provides smooth
 pressure distribution with EDAC formulation and homogeneous particle
 distribution, resulting in accurate fluid modeling. Rigid-rigid interactions are
-modeled with DEM. The interaction between the fluid phase and rigid bodies is
+modeled with DEM. The interaction between the fluid and rigid bodies is
 handled using the dummy particle approach \parencite{Adami2012}.
 % We explore different rigid fluid coupling strategies by simulating high
 % density ratio simulations.
@@ -45,7 +45,7 @@ angular momentum given by,
 where $M$, $\ten{v}_{cm}$ are the mass and velocity of the center of mass of the rigid body.
 $\ten{F}_i, \teng{\tau}_{cm}, \ten{L} $ are force acting at point $i$, torque and
 angular momentum about the center of mass of the rigid body. In the current
-case, force acting on the particle $i$ $\ten{F}_i$, is due to the interaction
+case, force acting on the particle $i$, $\ten{F}_i$, is due to the interaction
 with the other bodies and with the fluid particles, and any other body forces.
 The torque $\teng{\tau}_{cm}$ and angular momentum $\ten{L}$ are computed as,
 \begin{equation}
@@ -162,12 +162,12 @@ bodies, and the fluid, given as
   \ten{F}_i = \ten{F}_{\text{Fl}}^i + \ten{F}_{\text{cont}}^i
 \end{eqnarray}
 We follow \cref{sec:contact-algorithm} to compute force
-($\ten{F}_{\text{cont}}^a$) acting on particle $i$ due to the interaction with
-the rigid bodies. The force ($\ten{F}_{\text{Fl}}^i$) acting due to the
+$\ten{F}_{\text{cont}}^a$ acting on particle $i$ due to the interaction with
+the rigid bodies. The force $\ten{F}_{\text{Fl}}^i$ acting due to the
 interaction with the fluid particles follows \cref{subsec:fsi}.
 
-We model the fluid phase with the CTVF \parencite{adepu2021corrected} scheme
-developed in \cref{chap:ctvf}. Similar to the fluid phase modeling in
+We model the fluid with the CTVF \parencite{adepu2021corrected} scheme
+developed in \cref{chap:ctvf}. Similar to the fluid modeling in
 \cref{chap:fsi}, we modify the momentum equation to include the force acting due
 to the interaction with a solid body. The discretized momentum equation of the
 fluid particle including the interaction force is given as
@@ -189,11 +189,10 @@ approach as described in \cref{chap:ctvf}.
 
 \subsection{Time Integration}
 
-Rigid body and the fluid phase follow the kick-drift-kick time integration
-scheme. The modeling of rigid-rigid interaction requires lower time step than the fluid. We choose the minimum of both the timesteps to move the system forward
-in time.
-
-For the numerical stability of fluid phase, the time step depends on the CFL condition as,
+Rigid body and the fluid follow the kick-drift-kick time integration scheme. The
+modeling of rigid-rigid interaction requires lower time step than the fluid. We
+choose the minimum of both the timesteps to move the system forward in time. For
+the numerical stability of fluid, the time step depends on the CFL condition as,
 \begin{equation}
   \label{eq:rfc:time-step-cfl}
   \Delta t_{\text{fluid}} = \mathrm{min} \bigg( 0.25 \; \frac{h}{c + |U|} ,  0.25 \; \frac{h^2}{\nu},  0.25 \; \frac{h^2}{g} \bigg),
@@ -599,7 +598,7 @@ experimental result. From the presented figure, we can see that the effective
 center of mass of the cylinders is in good agreement with the experiment result.
 \begin{figure}[!htpb]
   \centering
-  \includegraphics[width=0.4\textwidth]{figures/rfc/figures/stack_of_cylinders_2d/Mohseni_Vyas/xcom}
+  \includegraphics[width=0.7\textwidth]{figures/rfc/figures/stack_of_cylinders_2d/Mohseni_Vyas/xcom}
   \caption{Variation of the x-component of the center of mass of the collapsing
     cylinders computed using the current solver compared against experimental
     results.}
@@ -607,7 +606,7 @@ center of mass of the cylinders is in good agreement with the experiment result.
 \end{figure}
 \begin{figure}[!htpb]
   \centering
-  \includegraphics[width=0.4\textwidth]{figures/rfc/figures/stack_of_cylinders_2d/Mohseni_Vyas/ycom}
+  \includegraphics[width=0.7\textwidth]{figures/rfc/figures/stack_of_cylinders_2d/Mohseni_Vyas/ycom}
   \caption{Variation of the y-component of the center of mass of the collapsing
     cylinders computed using the current solver compared against experimental
     results.}
@@ -703,7 +702,7 @@ and the center of mass co-inside as time increases.
   \includegraphics[width=0.4\textwidth]{figures/rfc/figures/dinesh_2022_body_in_hs_tank_2d/ycom}
   \caption{Variation of the y-component of the center of mass of the cylinder
     with time versus the maximum height of the fluid for a rising cylinder in
-    hydrostatic tank. Color coding of the fluid particles represent the pressure.}
+    hydrostatic tank.}
 \label{fig:raising-falling-solid-in-water}
 \end{figure}
 
@@ -767,7 +766,7 @@ the transport velocity formulation.
     \subcaption{t = $0.5$ sec}
   \end{subfigure}
   \caption{Snapshots of a square rigid body falling in a steady hydrostatic tank
-    at four different time instants. The color of the fluid particles represent
+    at four different time instants. The color of the fluid particles represents
     pressure. }
 \label{fig:snapshots-falling-solid-in-water}
 \end{figure}
@@ -781,8 +780,8 @@ a 2D square body, while the experiment deals with a rigid cube.
 \begin{figure}[!htpb]
   \centering
   \includegraphics[width=0.4\textwidth]{figures/rfc/figures/qiu_2017_falling_solid_in_water_2d/y_cm_vs_time}
-  \caption{Snapshots of the rigid cube entering a hydrostatic tank at four
-    different time instants simulated with the current solver.}
+  \caption{Time variation of the center of mass of the falling cube with time,
+    simulated with the current solver and the experimental result.}
 \label{fig:disp-falling-solid-in-water}
 \end{figure}
 
