@@ -2,7 +2,7 @@
 \label{chap:SPH}
 Several real-life applications involve fluid dynamics, structural dynamics, and
 interaction between these two materials. Examples include fluid-structure
-interaction, rigid bodies collision inside fluid flow, rigid bodies - colliding,
+interaction, rigid bodies collision inside fluid flow, rigid bodies colliding,
 deforming, and eroding an elastic-plastic target. In addition, several
 industrial applications involve modeling of some or all of the above processes.
 Few such process are, material erosion with a high-pressure water jet with
@@ -17,7 +17,7 @@ respectively.
   \centering
   \includegraphics[width=1.0\textwidth]{images/intro/images/intro_section/erosion_hand_drawn_2}
   \caption{A schematic of erosion of a ductile solid due to several arbitrarily
-    shaped solids impact in a fluid flow.}
+    shaped solids impacting it in a fluid flow.}
 \label{fig:intro-big-picture}
 \end{figure}
 \Cref{fig:intro-big-picture} depicts abrasive water jet machining. From
@@ -33,22 +33,22 @@ labels, one needs to model the following physics to model a problem such as this
 \item rigid-fluid coupling (RFC) and rigid-rigid interaction and,
 \item solid particle erosion (SPE).
 \end{enumerate}
-An analytical study of such complex problems are impossible as it is highly
-nonlinear and involves several different multi-physical processes. Therefore, we
-choose numerical modeling due to its flexibility in handling the nonlinearity of
-complexity. Mesh-based techniques such as finite element methods (FEM) and
+An analytical study of such complex problems is impossible as it is highly
+nonlinear and involves several different physical processes. Therefore, we
+choose numerical modeling due to its flexibility in handling the nonlinearity
+and complexity. Mesh-based techniques such as finite element methods (FEM) and
 finite volume methods (FVM) are flexible in modeling physics and have been in
 the field for the past few decades. However, these mesh-based techniques are not
 flexible while modeling many physical processes together. This is due to mesh
 distortion and free surface handling. Meshless techniques can naturally handle
-free surfaces and large deformation problems. Meshless schemes can be easily
-parallelized. Therefore, in the current work, we chose particle-based numerical
-methods to model the physical processes involved in handling a problems like
-abrasive water jet machining. We use a coupled SPH and DEM formulations to
-model the physical processes. We develop a unified framework that can solve
-problems involving all such processes using a single framework that runs in
-serial and parallel. Test cases with exact analytical solutions and experimental
-cases are used to validate the proposed formulations.
+free surfaces and large deformation problems. They can be easily parallelized.
+Therefore, in the current work, we chose particle-based numerical methods to
+model the physical processes involved in handling a problems like abrasive water
+jet machining. We use a coupled SPH and DEM formulations to model the physical
+processes. We develop a unified framework that can solve problems involving all
+such processes using a single framework that runs in serial and parallel. Test
+cases with exact analytical solutions and experimental cases are used to
+validate the proposed formulations.
 
 
 % \textbf{Write about SPH and why we choose SPH, about software, updated
